@@ -27,6 +27,12 @@ class BusinessException extends Exception
             'message' => $this->getMessage(),
             'data' => $this->data,
         ], JSON_UNESCAPED_UNICODE);
+
+        // return json_encode([
+        //     'code' => $this->code,
+        //     'message' => $this->getMessage(),
+        //     'data' => $this->data,
+        // ]);
     }
 }
 
@@ -73,7 +79,7 @@ function init_app($di)
         if ($app->request->isOptions()) {
             $app->response->setStatusCode(200);
             $app->response->setHeader('Access-Control-Allow-Origin', '*');
-            $app->response->setHeader('Access-Control-Allow-Headers', 'X-ACCESS-TOKEN,X-ACCESS-ID');
+            $app->response->setHeader('Access-Control-Allow-Headers', 'X-TOKEN');
             $app->response->setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,HEAD');
             $app->response->sendHeaders();
             return;
@@ -101,6 +107,7 @@ function init_app($di)
                 'message' => 'success',
                 'data' => $app->getReturnedValue(),
             ], JSON_UNESCAPED_UNICODE);
+    
             send_response($app, $ctx);
         }
     });
@@ -115,9 +122,9 @@ function init_app($di)
         
         $app->response->setStatusCode(500);
         if (is_debugging($app)) {
-            send_response($app, json_encode(['error' => $exception->getMessage()]));
+            send_response($app, json_encode(['code' => 500, 'message' => $exception->getMessage()]));
         } else {
-            send_response($app, json_encode(['error' => 'service error']));
+            send_response($app, json_encode(['code' => 500, 'message' => 'service error']));
         }
     });
 
@@ -148,14 +155,23 @@ function send_response($app, $ctx)
 
 function is_debugging($app)
 {
-    
+    if ($app->config->env !== 'production') {
+        $debug = $app->request->getHeader('debug');
+        if ($debug && $debug === $app->config->params['debug']) {
+            return true;
+        }
+    }
 }
 
 function is_valid_access($app)
 {
     $method = $app->request->getMethod();
     if ($method != 'OPTIONS' && $method != 'HEAD') {
-        $access_token = $app->request->getHeader('TOKEN');
+        if (isset($_REQUEST['token'])) {
+            $access_token = $_REQUEST['token'];
+        } else {
+            $access_token = $app->request->getHeader('token');
+        }
 
         if (!$access_token) {
             raise_bad_request($app);
@@ -168,20 +184,6 @@ function is_valid_access($app)
     }
 }
 
-function login_check($app)
-{
-    if (isset($_GET['_url']) && preg_match('#^/user/\d+#', $_GET['_url'])) {
-        $router_params = $app->getRouter()->getParams();
-        if (isset($router_params['user_id']) && $app->user_id != $router_params['user_id']) {
-            $ctx = json_encode([
-                'code' => 4001,
-                'message' => 'User Authorize Failed'
-            ]);
-            send_response($app, $ctx);
-            exit;
-        }
-    }
-}
 
 function raise_errors($app, $code, $text = '')
 {
@@ -197,14 +199,14 @@ function raise_errors($app, $code, $text = '')
         $text = $status;
     }
 
-    $ctx = @json_encode($text);
-    $app->response->setStatusCode($code, $status);
-    $app->response->setHeader('Content-Type', 'application/json; charset=utf8');
-    $app->response->setHeader('Content-Length', strlen($ctx));
-    $app->response->setHeader('Access-Control-Allow-Origin', '*');
-    $app->response->sendHeaders();
-    echo $ctx;
-    exit;
+    $app->response->setStatusCode($code);
+
+    $ctx = @json_encode([
+        'code' => $code,
+        'message' => $text,
+    ], JSON_UNESCAPED_UNICODE);
+
+    send_response($app, $ctx);
 }
 
 function raise_not_found($app)

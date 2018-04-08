@@ -29,19 +29,4 @@ class Util
 
         return $data;
     }
-
-    public static function getWxSessionId($app, $appid, $secret, $code) {
-        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='. $appid .'&secret='. $secret .'&js_code='. $code .'&grant_type=authorization_code';
-
-        return $app->curl->get($url, 60);
-    }
-
-    public static function getUser($app, $session) {
-        $result = $app->redis->get($session);
-        return json_decode($result, true);
-    }
-
-    public static function getAuditFlag($uid) {
-        return Users::findFirst($uid)->auditflag;
-    }
 }

@@ -10,4 +10,6 @@ return [
     'file' => [
         'path' => __DIR__ . "/../../public/files/",
     ],
+    'env' => 'production',
+    'params' => require(__DIR__ . "/params.php"),
 ];
