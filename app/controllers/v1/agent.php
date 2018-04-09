@@ -31,6 +31,11 @@ $app->post('/v1/agent/apply', function () use ($app) {
     $ar->manager_id = $managerId;
 
     if ($ar->save()) {
+        $token = $app->util->getToken($app);
+        if (!empty($token)) {
+            $app->redis->hmset($token, ['agent_id' => $ar->id]);
+        }
+
         return 1;
     } else {
         throw new BusinessException(1000, '注册失败，请联系客服');

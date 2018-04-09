@@ -28,4 +28,14 @@ class Util
 
         return $data;
     }
+
+    public static function getToken($app) {
+        if (isset($_REQUEST['token'])) {
+            $token = $_REQUEST['token'];
+        } else {
+            $token = $app->request->getHeader('token');
+        }
+
+        return $token;
+    }
 }

@@ -22,11 +22,16 @@ class BusinessException extends Exception
 
     public function toJson()
     {
+        // return @json_encode([
+        //     'code' => $this->code,
+        //     'message' => $this->getMessage(),
+        //     'data' => $this->data,
+        // ], JSON_UNESCAPED_UNICODE);
         return @json_encode([
             'code' => $this->code,
             'message' => $this->getMessage(),
             'data' => $this->data,
-        ], JSON_UNESCAPED_UNICODE);
+        ]);
     }
 }
 
@@ -96,11 +101,17 @@ function init_app($di)
         if ($ctx = ob_get_clean()) {
             send_response($app, $ctx);
         } else {
+            // $ctx = @json_encode([
+            //     'code' => 1,
+            //     'message' => 'success',
+            //     'data' => $app->getReturnedValue(),
+            // ], JSON_UNESCAPED_UNICODE);
+
             $ctx = @json_encode([
                 'code' => 1,
                 'message' => 'success',
                 'data' => $app->getReturnedValue(),
-            ], JSON_UNESCAPED_UNICODE);
+            ]);
     
             send_response($app, $ctx);
         }
@@ -194,10 +205,15 @@ function raise_errors($app, $code, $text = '')
 
     $app->response->setStatusCode($code);
 
+    // $ctx = @json_encode([
+    //     'code' => $code,
+    //     'message' => $text,
+    // ], JSON_UNESCAPED_UNICODE);
+
     $ctx = @json_encode([
         'code' => $code,
         'message' => $text,
-    ], JSON_UNESCAPED_UNICODE);
+    ]);
 
     send_response($app, $ctx);
 }
