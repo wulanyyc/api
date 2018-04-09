@@ -10,9 +10,9 @@ class BusinessException extends Exception
 
     public function __construct($code, $message = 'Unknown business error', $data = [])
     {   
-        if (preg_match("/[\x{4e00}-\x{9fa5}]+/u", $message)) {
-            $message = json_encode($message);
-        }
+        // if (preg_match("/[\x{4e00}-\x{9fa5}]+/u", $message)) {
+        //     $message = json_encode($message);
+        // }
 
         parent::__construct($message);
 
@@ -27,12 +27,6 @@ class BusinessException extends Exception
             'message' => $this->getMessage(),
             'data' => $this->data,
         ], JSON_UNESCAPED_UNICODE);
-
-        // return json_encode([
-        //     'code' => $this->code,
-        //     'message' => $this->getMessage(),
-        //     'data' => $this->data,
-        // ]);
     }
 }
 
@@ -177,8 +171,7 @@ function is_valid_access($app)
             raise_bad_request($app);
         }
 
-        $token = $app->redis->get($access_token);
-        if (empty($token)) {
+        if (!$app->redis->exists($access_token)) {
             raise_unauthorized($app);
         }
     }

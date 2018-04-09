@@ -1,5 +1,4 @@
 <?php
-use Shop\Model\Users;
 
 class Util
 {

@@ -3,9 +3,9 @@ namespace Biaoye\Model;
 
 use Phalcon\Mvc\Model;
 
-class Users extends Model
+class School extends Model
 {
     public function getSource() {
-        return "users";
+        return "location_school";
     }
 }

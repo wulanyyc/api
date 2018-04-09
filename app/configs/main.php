@@ -10,6 +10,7 @@ return [
     'file' => [
         'path' => __DIR__ . "/../../public/files/",
     ],
-    'env' => 'production',
+    'env' => 'env',
     'params' => require(__DIR__ . "/params.php"),
+    'login_cache_time' => 86400,
 ];
