@@ -1,4 +1,5 @@
 <?php
+use Phalcon\Security\Random;
 
 class Util
 {
@@ -37,5 +38,10 @@ class Util
         }
 
         return $token;
+    }
+
+    public static function uuid() {
+        $random = new Random();
+        return $random->uuid();
     }
 }

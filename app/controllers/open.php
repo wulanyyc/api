@@ -39,7 +39,7 @@ $app->post('/open/sms/app/vcode', function () use ($app) {
         //     throw new Exception(1000, '邀请码有误');
         // }
 
-        $token = uniqid();
+        $token = $app->util->uuid();
 
         $app->redis->setex($phone . '_token', $app->config->login_cache_time, $token);
 
@@ -77,10 +77,10 @@ $app->post('/open/login', function () use ($app) {
             $app->redis->del($exsitToken);
         }
 
-        $token = uniqid();
+        $token = $app->util->uuid();
 
         $app->redis->setex($phone . '_token', $app->config->login_cache_time, $token);
-        
+
         $app->redis->hmset($token, ['phone' => $phone]);
         $app->redis->expire($token, 86400);
 
