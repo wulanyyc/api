@@ -18,6 +18,5 @@ $app->get('/v1/home/page', function () use ($app) {
     return [
         'school_id' => $info['school_id'],
         'school_list' => $list,
-        
     ]
 });

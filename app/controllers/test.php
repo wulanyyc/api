@@ -3,7 +3,8 @@ use Biaoye\Model\Agent;
 use Biaoye\Model\Customer;
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductCategory;
-use Biaoye\Model\ProductTags;
+use Biaoye\Model\ProductTag;
+use Biaoye\Model\ProductTagRelation;
 
 // 获取短信验证码
 $app->get('/test/product/add', function () use ($app) {
@@ -21,6 +22,11 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
         $ar->status = 1;
         $ar->save();
+
+        $relation = new ProductTagRelation();
+        $relation->product_id = $ar->id;
+        $relation->tag_id = rand(1,3);
+        $relation->save();
     }
 
     for ($i = 0; $i < 10; $i++) {
@@ -37,6 +43,11 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
         $ar->status = 1;
         $ar->save();
+
+        $relation = new ProductTagRelation();
+        $relation->product_id = $ar->id;
+        $relation->tag_id = rand(1,3);
+        $relation->save();
     }
 
     return 1;
@@ -84,10 +95,14 @@ $app->get('/test/init/category', function () use ($app) {
     return 1;
 });
 
-$app->get('/test/init/productTag', function () use ($app) {
+
+$app->get('/test/init/product/tag', function () use ($app) {
     $tags = ['精选', '活动', '特价'];
-    $ar = new ProductTags();
-    
+    foreach($tags as $value) {
+        $ar = new ProductTag();
+        $ar->name = $value;
+        $ar->save();
+    }
 
     return 1;
 });
