@@ -1,4 +1,8 @@
 <?php
+/**
+ * 学校公共接口
+ */
+
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
 

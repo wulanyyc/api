@@ -47,7 +47,7 @@ class Util
 
     public static function getCustomerId($app) {
         $token = $app->util->getToken($app);
-        return $app->redis->hmget($token, 'customer_id');
+        return $app->redis->hget($token, 'customer_id');
     }
 
     public static function getNoncestr() {

@@ -1,4 +1,8 @@
 <?php
+/**
+ * 商城客户
+ */
+
 use Biaoye\Model\Customer;
 
 $app->post('/v1/customer/reg', function () use ($app) {
