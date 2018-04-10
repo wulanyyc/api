@@ -129,7 +129,8 @@ function init_app($di)
         if (is_debugging($app)) {
             send_response($app, json_encode(['code' => 500, 'message' => $exception->getMessage()]));
         } else {
-            send_response($app, json_encode(['code' => 500, 'message' => 'service error']));
+            send_response($app, json_encode(['code' => 500, 'message' => $exception->getMessage()]));
+            // send_response($app, json_encode(['code' => 500, 'message' => 'service error']));
         }
     });
 

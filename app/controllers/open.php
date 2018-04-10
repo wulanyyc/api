@@ -16,7 +16,7 @@ $app->post('/open/sms/code', function () use ($app) {
         $code = rand(100000, 999999);
         // TODO send sms
 
-        $app->redis->setex($key, 60, $code);
+        $app->redis->setex($key, 600, $code);
         return $code;
     }
 });
@@ -51,7 +51,8 @@ $app->post('/open/sms/app/vcode', function () use ($app) {
         $app->redis->setex($phone . '_token', $app->config->login_cache_time, $token);
 
         $app->redis->hmset($token, [
-            'phone' => $phone
+            'phone' => $phone,
+            'invite_code' => $inviteCode,
         ]);
 
         $app->redis->expire($token, $app->config->login_cache_time);

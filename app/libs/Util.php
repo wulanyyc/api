@@ -49,4 +49,14 @@ class Util
         $token = $app->util->getToken($app);
         return $app->redis->hmget($token, 'customer_id');
     }
+
+    public static function getNoncestr() {
+        $str = "";
+        $str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+        $max = strlen($str_pol) - 1;
+        for ($i = 0; $i < 16; $i++) {
+            $str .= $str_pol[mt_rand(0, $max)];
+        }
+        return $str;
+    }
 }

@@ -3,7 +3,7 @@ namespace Biaoye\Model;
 
 use Phalcon\Mvc\Model;
 
-class Products extends Model
+class Product extends Model
 {
     public function getSource() {
         return "product_list";
