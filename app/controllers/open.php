@@ -11,7 +11,8 @@ $app->post('/open/sms/code', function () use ($app) {
 
     $key = $phone . '_smscode';
     if ($app->redis->get($key)) {
-        throw new BusinessException(1000, '已发送，请查看短信');
+        // throw new BusinessException(1000, '已发送，请查看短信');
+        return $code;
     } else {
         $code = rand(100000, 999999);
         // TODO send sms
