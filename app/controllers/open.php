@@ -16,7 +16,7 @@ $app->post('/open/sms/code', function () use ($app) {
         $code = rand(100000, 999999);
         // TODO send sms
 
-        $app->redis->setex($key, 600, $code);
+        $app->redis->setex($key, 60, $code);
         return $code;
     }
 });

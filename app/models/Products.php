@@ -6,8 +6,6 @@ use Phalcon\Mvc\Model;
 class Products extends Model
 {
     public function getSource() {
-        return "products";
+        return "product_list";
     }
-
-    
 }

@@ -27,10 +27,11 @@ class BusinessException extends Exception
         //     'message' => $this->getMessage(),
         //     'data' => $this->data,
         // ], JSON_UNESCAPED_UNICODE);
+        
         return @json_encode([
             'code' => $this->code,
             'message' => $this->getMessage(),
-            'data' => $this->data,
+            // 'data' => $this->data,
         ]);
     }
 }
