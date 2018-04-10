@@ -129,8 +129,7 @@ function init_app($di)
         if (is_debugging($app)) {
             send_response($app, json_encode(['code' => 500, 'message' => $exception->getMessage()]));
         } else {
-            send_response($app, json_encode(['code' => 500, 'message' => $exception->getMessage()]));
-            // send_response($app, json_encode(['code' => 500, 'message' => 'service error']));
+            send_response($app, json_encode(['code' => 500, 'message' => 'service error']));
         }
     });
 
@@ -162,18 +161,17 @@ function send_response($app, $ctx)
 
 function is_debugging($app)
 {
-    if ($app->config->env !== 'production') {
-        $debug = $app->request->getHeader('debug');
-        if ($debug && $debug === $app->config->params['debug']) {
-            return true;
-        }
-    }
+    return $app->config->params->debug;
 }
 
 function is_valid_access($app)
 {
     $method = $app->request->getMethod();
     if ($method != 'OPTIONS' && $method != 'HEAD') {
+        if (is_debugging($app)) {
+            return true;
+        }
+
         if (isset($_REQUEST['token'])) {
             $access_token = $_REQUEST['token'];
         } else {

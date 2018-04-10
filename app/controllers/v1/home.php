@@ -4,6 +4,7 @@
  */
 use Biaoye\Model\Customer;
 use Biaoye\Model\School;
+use Biaoye\Model\Product;
 
 $app->get('/v1/home/page', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
@@ -15,8 +16,10 @@ $app->get('/v1/home/page', function () use ($app) {
         'conditions' => 'status = 0 and city=' . $schoolInfo['city']
     ])->toArray();
 
-    return [
-        'school_id' => $info['school_id'],
-        'school_list' => $list,
-    ]
+    return Product::getProductByTag(4);
+
+    // return [
+    //     'school_id' => $info['school_id'],
+    //     'school_list' => $list,
+    // ]
 });
