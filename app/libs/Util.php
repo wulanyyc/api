@@ -44,4 +44,9 @@ class Util
         $random = new Random();
         return $random->uuid();
     }
+
+    public static function getCustomerId($app) {
+        $token = $app->util->getToken($app);
+        return $app->redis->hmget($token, 'customer_id');
+    }
 }

@@ -8,4 +8,6 @@ class Products extends Model
     public function getSource() {
         return "products";
     }
+
+    
 }

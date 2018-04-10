@@ -6,7 +6,7 @@ $app->post('/v1/agent/login', function () use ($app) {
 });
 
 
-$app->post('/v1/agent/apply', function () use ($app) {
+$app->post('/v1/agent/reg', function () use ($app) {
     $params = $_POST;
 
     $exsit = Agent::count("phone = " . $params['phone']);
@@ -15,7 +15,7 @@ $app->post('/v1/agent/apply', function () use ($app) {
         throw new BusinessException(1000, '该手机号已注册过');
     }
 
-    $info = Agent::findFirst('phone = ' . $params['invite_code'] . ' and manager_flag = 1');
+    $info = Agent::findFirst('phone = ' . $params['invite_code'] . ' and manager_flag = 1 and status = 1');
     if ($info->id) {
         $managerId = $info->id;
     } else {
@@ -32,9 +32,7 @@ $app->post('/v1/agent/apply', function () use ($app) {
 
     if ($ar->save()) {
         $token = $app->util->getToken($app);
-        if (!empty($token)) {
-            $app->redis->hmset($token, ['agent_id' => $ar->id]);
-        }
+        $app->redis->hmset($token, ['agent_id' => $ar->id]);
 
         return 1;
     } else {

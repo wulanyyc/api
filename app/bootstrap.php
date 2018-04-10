@@ -90,7 +90,7 @@ function init_app($di)
         ob_start();
 
         $requestUrl = $_SERVER['REQUEST_URI'];
-        if (preg_match('/^\/open\/.*/', $requestUrl) || $requestUrl == "/") {
+        if (preg_match('/^\/open\/.*/', $requestUrl) || $requestUrl == "/" || preg_match('/^\/test\/.*/', $requestUrl)) {
             return true;
         }
 
@@ -122,7 +122,6 @@ function init_app($di)
         if ($exception instanceof BusinessException) {
             $ctx = $exception->toJson();
             send_response($app, $ctx);
-            return false;
         }
         
         $app->response->setStatusCode(500);
@@ -156,6 +155,7 @@ function send_response($app, $ctx)
     $app->response->setHeader('Access-Control-Allow-Origin', '*');
     $app->response->sendHeaders();
     echo $ctx;
+    exit;
 }
 
 function is_debugging($app)
@@ -178,9 +178,9 @@ function is_valid_access($app)
             $access_token = $app->request->getHeader('token');
         }
 
-        if (!$access_token) {
+        if (empty($access_token)) {
             raise_bad_request($app);
-        }
+        } 
 
         if (!$app->redis->exists($access_token)) {
             raise_unauthorized($app);
