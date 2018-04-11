@@ -14,7 +14,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->category = 1;
         $ar->sub_category = rand(2,3);
         $ar->name = $app->util->getChar();
-        $ar->price = rand(1, 100);
+        $ar->price = rand(1, 900) . '.' . rand(0, 99);
         $ar->title = $app->util->getChar();
         $ar->slogan = $app->util->getChar();
         $ar->img = "http://39.107.251.99:8080/imgs/1.png";
@@ -36,7 +36,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->category = 4;
         $ar->sub_category = rand(5,6);
         $ar->name = $app->util->getChar();
-        $ar->price = rand(1, 100);
+        $ar->price = rand(1, 900) . '.' . rand(0, 99);
         $ar->title = $app->util->getChar();
         $ar->slogan = $app->util->getChar();
         $ar->img = "http://39.107.251.99:8080/imgs/2.png";
