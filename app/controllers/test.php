@@ -16,6 +16,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->name = $app->util->getNoncestr();
         $ar->price = rand(1, 100);
         $ar->desc = $app->util->getNoncestr();
+        $ar->slogan = $app->util->getNoncestr();
         $ar->img = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
@@ -37,6 +38,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->name = $app->util->getNoncestr();
         $ar->price = rand(1, 100);
         $ar->desc = $app->util->getNoncestr();
+        $ar->slogan = $app->util->getNoncestr();
         $ar->img = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
