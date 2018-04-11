@@ -1,15 +1,13 @@
 ALTER TABLE `biaoye`.`product_list` 
-CHANGE COLUMN `desc` `title` VARCHAR(45) NOT NULL ,
-ADD COLUMN `slogan` VARCHAR(45) NULL AFTER `title`;
+CHANGE COLUMN `img` `img` VARCHAR(255) NULL DEFAULT '' ;
 
 ALTER TABLE `biaoye`.`product_list` 
-CHANGE COLUMN `slogan` `slogan` VARCHAR(45) NULL DEFAULT '' ,
-CHANGE COLUMN `unit` `unit` VARCHAR(45) NULL DEFAULT '' ;
+DROP COLUMN `deleteflag`;
 
-ALTER TABLE `biaoye`.`customer` 
-CHANGE COLUMN `nick` `nick` VARCHAR(100) NULL DEFAULT '' ,
-CHANGE COLUMN `headimgurl` `headimgurl` TINYTEXT NULL ,
-CHANGE COLUMN `invite_code` `invite_code` VARCHAR(45) NULL DEFAULT '' COMMENT '邀请码' ;
+
+ALTER TABLE `biaoye`.`agent` 
+CHANGE COLUMN `status` `status` TINYINT(1) NULL DEFAULT '0' COMMENT '0: 审核中  1: 有效  2: 审核失败  3: 禁用 ' ;
+
 
 
 

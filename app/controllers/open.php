@@ -109,9 +109,9 @@ $app->post('/open/app/login', function () use ($app) {
     $vcode = $app->redis->get($key);
 
     if (!empty($vcode) && $vcode == $code) {
-        $info = Agent::findFirst('phone=' . $phone . " and status = 1");
+        $info = Agent::findFirst('phone=' . $phone);
         if (empty($info)) {
-            throw new BusinessException(1000, '该手机号还未注册或审核中');
+            throw new BusinessException(1000, '该手机号还未注册');
         }
 
         // 阻止多台同时登陆
@@ -130,6 +130,7 @@ $app->post('/open/app/login', function () use ($app) {
             'token' => $token,
             'manager_flag' => $info->manager_flag,
             'realname' => $info->realname,
+            'status' => $info->status,
         ];
     } else {
         throw new BusinessException(1000, '验证码有误');

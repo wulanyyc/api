@@ -8,7 +8,8 @@ use Biaoye\Model\ProductTagRelation;
 
 // 获取短信验证码
 $app->get('/test/product/add', function () use ($app) {
-    for ($i = 0; $i < 10; $i++) {
+    // for ($i = 0; $i < 10; $i++) {
+    // echo $app->util->getNoncestr();exit;
         $ar = new Product();
         $ar->factory = $app->util->getNoncestr();
         $ar->category = 1;
@@ -21,36 +22,41 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
-        $ar->status = 1;
-        $ar->save();
+        
+        if ($ar->save()) {
+            return $ar->id;
+        } else {
+            return 0;
+        }
+        
 
-        $relation = new ProductTagRelation();
-        $relation->product_id = $ar->id;
-        $relation->tag_id = rand(1,3);
-        $relation->save();
-    }
+        // $relation = new ProductTagRelation();
+        // $relation->product_id = $ar->id;
+        // $relation->tag_id = rand(1,3);
+        // $relation->save();
+    // }
 
-    for ($i = 0; $i < 10; $i++) {
-        $ar = new Product();
-        $ar->factory = $app->util->getNoncestr();
-        $ar->category = 4;
-        $ar->sub_category = rand(5,6);
-        $ar->name = $app->util->getNoncestr();
-        $ar->price = rand(1, 100);
-        $ar->desc = $app->util->getNoncestr();
-        $ar->slogan = $app->util->getNoncestr();
-        $ar->img = "http://39.107.251.99:8080/imgs/2.png";
-        $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
-        $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
-        $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
-        $ar->status = 1;
-        $ar->save();
+    // for ($i = 0; $i < 10; $i++) {
+    //     $ar = new Product();
+    //     $ar->factory = $app->util->getNoncestr();
+    //     $ar->category = 4;
+    //     $ar->sub_category = rand(5,6);
+    //     $ar->name = $app->util->getNoncestr();
+    //     $ar->price = rand(1, 100);
+    //     $ar->desc = $app->util->getNoncestr();
+    //     $ar->slogan = $app->util->getNoncestr();
+    //     $ar->img = "http://39.107.251.99:8080/imgs/2.png";
+    //     $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
+    //     $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
+    //     $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
+    //     $ar->status = 1;
+    //     $ar->save();
 
-        $relation = new ProductTagRelation();
-        $relation->product_id = $ar->id;
-        $relation->tag_id = rand(1,3);
-        $relation->save();
-    }
+    //     $relation = new ProductTagRelation();
+    //     $relation->product_id = $ar->id;
+    //     $relation->tag_id = rand(1,3);
+    //     $relation->save();
+    // }
 
     return 1;
 });

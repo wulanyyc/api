@@ -35,9 +35,9 @@ class Product extends Model
             $need = $num - $currentNum;
 
             if (empty($pidArr)) {
-                $conditions = "status = 1";
+                $conditions = "status = 0";
             } else {
-                $conditions = "status = 1 and id not in (" . implode(',', $pidArr) . ")";
+                $conditions = "status = 0 and id not in (" . implode(',', $pidArr) . ")";
             }
 
             $needPids = self::find([
