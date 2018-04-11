@@ -10,18 +10,19 @@ use Biaoye\Model\ProductTagRelation;
 $app->get('/test/product/add', function () use ($app) {
     for ($i = 0; $i < 10; $i++) {
         $ar = new Product();
-        $ar->factory = $app->util->getNoncestr();
+        $ar->factory = $app->util->getChar();
         $ar->category = 1;
         $ar->sub_category = rand(2,3);
-        $ar->name = $app->util->getNoncestr();
+        $ar->name = $app->util->getChar();
         $ar->price = rand(1, 100);
-        $ar->desc = $app->util->getNoncestr();
-        $ar->slogan = $app->util->getNoncestr();
+        $ar->title = $app->util->getChar();
+        $ar->slogan = $app->util->getChar();
         $ar->img = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
         $ar->save();
+
 
         $relation = new ProductTagRelation();
         $relation->product_id = $ar->id;
@@ -31,13 +32,13 @@ $app->get('/test/product/add', function () use ($app) {
 
     for ($i = 0; $i < 10; $i++) {
         $ar = new Product();
-        $ar->factory = $app->util->getNoncestr();
+        $ar->factory = $app->util->getChar();
         $ar->category = 4;
         $ar->sub_category = rand(5,6);
-        $ar->name = $app->util->getNoncestr();
+        $ar->name = $app->util->getChar();
         $ar->price = rand(1, 100);
-        $ar->desc = $app->util->getNoncestr();
-        $ar->slogan = $app->util->getNoncestr();
+        $ar->title = $app->util->getChar();
+        $ar->slogan = $app->util->getChar();
         $ar->img = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";

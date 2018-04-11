@@ -12,18 +12,28 @@ $app->get('/v1/h5/home/page', function () use ($app) {
     $info = Customer::findFirst('id=' . $customerId);
     $schoolInfo = School::findFirst('id=' . $info->school_id);
 
-    $list = School::find([
-        'columns' => 'id, name',
-        'conditions' => 'status = 0 and city=' . $schoolInfo->city
-    ])->toArray();
-
     $jinxuan = Product::getProductByTag(1, 3, true);
     $huodong = Product::getProductByTag(2, 3);
     $tejia   = Product::getProductByTag(3, 4);
 
+    $lunbo = [
+        [
+            'img'  => 'http://39.107.251.99:8080/imgs/1.png',
+            'link' => '/activity/1.html'
+        ],
+        [
+            'img'  => 'http://39.107.251.99:8080/imgs/2.png',
+            'link' => '/activity/2.html'
+        ],
+        [
+            'img'  => 'http://39.107.251.99:8080/imgs/3.png',
+            'link' => '/activity/3.html'
+        ],
+    ];
+
     return [
-        'school_id' => $info->school_id,
-        'school_list' => $list,
+        'school_name' => $schoolInfo->name,
+        'lunbo' => $lunbo,
         'jinxuan' => $jinxuan,
         'huodong' => $huodong,
         'tejia' => $tejia,
