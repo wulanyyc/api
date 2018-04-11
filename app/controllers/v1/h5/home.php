@@ -32,6 +32,7 @@ $app->get('/v1/h5/home/page', function () use ($app) {
     ];
 
     return [
+        'school_id' => $schoolInfo->id,
         'school_name' => $schoolInfo->name,
         'lunbo' => $lunbo,
         'jinxuan' => $jinxuan,
