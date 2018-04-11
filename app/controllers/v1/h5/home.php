@@ -7,7 +7,7 @@ use Biaoye\Model\Customer;
 use Biaoye\Model\School;
 use Biaoye\Model\Product;
 
-$app->get('/v1/home/page', function () use ($app) {
+$app->get('/v1/h5/home/page', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
     $info = Customer::findFirst('id=' . $customerId);
     $schoolInfo = School::findFirst('id=' . $info->school_id);
@@ -19,7 +19,7 @@ $app->get('/v1/home/page', function () use ($app) {
 
     $jinxuan = Product::getProductByTag(1, 3, true);
     $huodong = Product::getProductByTag(2, 3);
-    $tejia = Product::getProductByTag(3, 4);
+    $tejia   = Product::getProductByTag(3, 4);
 
     return [
         'school_id' => $info->school_id,
