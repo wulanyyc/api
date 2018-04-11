@@ -5,7 +5,7 @@
 
 use Biaoye\Model\Customer;
 
-$app->post('/v1/customer/reg', function () use ($app) {
+$app->post('/v1/h5/customer/reg', function () use ($app) {
     $params = $_POST;
 
     $exsit = Customer::count("phone = " . $params['phone']);
