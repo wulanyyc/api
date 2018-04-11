@@ -91,6 +91,7 @@ $app->get('/test/init/category', function () use ($app) {
             $childAr = new ProductCategory();
             $childAr->name = $v;
             $childAr->parent_id = $parent;
+            $childAr->img = "http://39.107.251.99:8080/imgs/2.png";
             $childAr->save();
         }
     }

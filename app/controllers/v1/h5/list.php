@@ -19,7 +19,7 @@ $app->get('/v1/h5/list/new', function () use ($app) {
     return $info;
 });
 
-// 标签列表
+// 标签列表：精选，活动，特价
 $app->get('/v1/h5/list/tag/{id:\d+}', function ($id) use ($app) {
     $pids = ProductTagRelation::find([
         'conditions' => 'status=0 and tag_id = ' . $id,
