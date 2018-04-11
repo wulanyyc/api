@@ -48,7 +48,12 @@ $app->post('/open/sms/app/vcode', function () use ($app) {
             throw new BusinessException(1000, '邀请码有误，请检查');
         }
 
-        return 1;
+        $token = $app->util->uuid();
+        $app->redis->setex($token, 1800, $phone);
+
+        return [
+            'temp_token' => $token,
+        ];
     } else {
         throw new BusinessException(1000, '验证码有误');
     }
@@ -67,7 +72,12 @@ $app->post('/open/sms/h5/vcode', function () use ($app) {
     $vcode = $app->redis->get($key);
 
     if (!empty($vcode) && $vcode == $code) {
-        return 1;
+        $token = $app->util->uuid();
+        $app->redis->setex($token, 1800, $phone);
+        
+        return [
+            'temp_token' => $token,
+        ];
     } else {
         throw new BusinessException(1000, '验证码有误');
     }
@@ -155,7 +165,11 @@ $app->post('/open/h5/login', function () use ($app) {
 
 $app->get('/open/school/list', function () use ($app) {
     // TODO cache
-    
+    $token = $app->request->getQuery('temp_token');
+    if (!$app->redis->get($token)) {
+        throw new BusinessException(1000, '超时，请重新注册');
+    }
+
     $list = School::find([
         'columns' => 'id, name',
         'conditions' => 'status = 0'
@@ -167,6 +181,10 @@ $app->get('/open/school/list', function () use ($app) {
 
 $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
     // TODO cache
+    $token = $app->request->getQuery('temp_token');
+    if (!$app->redis->get($token)) {
+        throw new BusinessException(1000, '超时，请重新注册');
+    }
 
     $list = Room::find([
         'columns' => 'id, name',
@@ -179,9 +197,15 @@ $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
 
 $app->post('/open/agent/reg', function () use ($app) {
     $params = $_POST;
-
     $phone = $params['phone'];
     $inviteCode = $params['invite_code'];
+
+    $token = $params['temp_token'];
+    $tokenPhone = $app->redis->get($token);
+
+    if (empty($tokenPhone) || $tokenPhone != $phone) {
+        throw new BusinessException(1000, '超时，请重新注册');
+    }
 
     $exsit = Agent::count("phone = " . $phone);
 
@@ -221,6 +245,14 @@ $app->post('/open/agent/reg', function () use ($app) {
 
 $app->post('/open/customer/reg', function () use ($app) {
     $params = $_POST;
+    $phone = $params['phone'];
+
+    $token = $params['temp_token'];
+    $tokenPhone = $app->redis->get($token);
+
+    if (empty($tokenPhone) || $tokenPhone != $phone) {
+        throw new BusinessException(1000, '超时，请重新注册');
+    }
 
     $exsit = Customer::count("phone = " . $params['phone']);
 
@@ -229,13 +261,13 @@ $app->post('/open/customer/reg', function () use ($app) {
     }
 
     $ar = new Customer();
-    $ar->phone = $params['phone'];
+    $ar->phone = $phone;
     $ar->school_id = $params['school_id'];
     $ar->invite_code = $params['invite_code'];
 
     if ($ar->save()) {
         $token = $app->util->uuid();
-        $app->redis->setex($params['phone'] . '_customer_token', $app->config->login_cache_time, $token);
+        $app->redis->setex($phone . '_customer_token', $app->config->login_cache_time, $token);
 
         $app->redis->hmset($token, ['customer_id' => $ar->id]);
         $app->redis->expire($token, $app->config->login_cache_time);
