@@ -235,7 +235,7 @@ $app->post('/open/customer/reg', function () use ($app) {
 
     if ($ar->save()) {
         $token = $app->util->uuid();
-        $app->redis->setex($phone . '_customer_token', $app->config->login_cache_time, $token);
+        $app->redis->setex($params['phone'] . '_customer_token', $app->config->login_cache_time, $token);
 
         $app->redis->hmset($token, ['customer_id' => $ar->id]);
         $app->redis->expire($token, $app->config->login_cache_time);
