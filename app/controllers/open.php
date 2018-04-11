@@ -42,9 +42,8 @@ $app->post('/open/sms/app/vcode', function () use ($app) {
     if (!empty($vcode) && $vcode == $code) {
         // TODO 验证邀请码是否合法
         $exsit = Agent::count("phone = " . $inviteCode . " and manager_flag = 1 and status = 1");
-
         if ($exsit == 0) {
-            throw new Exception(1000, '邀请码有误，请检查');
+            throw new BusinessException(1000, '邀请码有误，请检查');
         }
 
         $token = $app->util->uuid();

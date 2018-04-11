@@ -12,5 +12,5 @@ return [
     ],
     'env' => 'env',
     'params' => require(__DIR__ . "/params.php"),
-    'login_cache_time' => 86400,
+    'login_cache_time' => 259200,
 ];
