@@ -24,7 +24,6 @@ class Product extends Model
         $currentNum = count($pids);
 
         $pidArr = [];
-
         if ($currentNum > 0) {
             foreach($pids as $value) {
                 $pidArr[] = $value['product_id'];
@@ -35,9 +34,9 @@ class Product extends Model
             $need = $num - $currentNum;
 
             if (empty($pidArr)) {
-                $conditions = "status = 0";
+                $conditions = "status = 1";
             } else {
-                $conditions = "status = 0 and id not in (" . implode(',', $pidArr) . ")";
+                $conditions = "status = 1 and id not in (" . implode(',', $pidArr) . ")";
             }
 
             $needPids = self::find([
@@ -47,8 +46,10 @@ class Product extends Model
                 'columns' => 'id',
             ])->toArray();
 
-            foreach($needPids as $value) {
-                $pidArr[] = $value['id'];
+            if (!empty($needPids)) {
+                foreach($needPids as $value) {
+                    $pidArr[] = $value['id'];
+                }
             }
         }
 

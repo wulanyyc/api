@@ -263,7 +263,9 @@ $app->post('/open/customer/reg', function () use ($app) {
     $ar = new Customer();
     $ar->phone = $phone;
     $ar->school_id = $params['school_id'];
-    $ar->invite_code = $params['invite_code'];
+    if (!empty($params['invite_code'])) {
+        $ar->invite_code = $params['invite_code'];
+    }
 
     if ($ar->save()) {
         $token = $app->util->uuid();

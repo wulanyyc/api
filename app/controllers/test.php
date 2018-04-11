@@ -21,6 +21,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
+        $ar->status = 1;
         $ar->save();
 
 
@@ -43,7 +44,7 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
-        $ar->status = 0;
+        $ar->status = 1;
         $ar->save();
 
         $relation = new ProductTagRelation();

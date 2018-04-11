@@ -4,67 +4,66 @@
  */
 
 use Biaoye\Model\Product;
+use Biaoye\Model\ProductTagRelation;
 
 $app->get('/v1/h5/list/new', function () use ($app) {
     $num = 6;
 
     $info = Product::find([
-        'conditions' => 'status=0',
+        'conditions' => 'status = 1',
         'columns' => 'id,name,title,price,img',
         'limit' => $num,
         'order' => 'id desc'
-    ]);
+    ])->toArray();
 
-    if (!empty($info)) {
-        return $info->toArray();
-    } else {
-        return [];
-    }
+    return $info;
 });
 
-$app->get('/v1/h5/list/new', function () use ($app) {
-    $num = 6;
+// 标签列表
+$app->get('/v1/h5/list/tag/{id:\d+}', function ($id) use ($app) {
+    $pids = ProductTagRelation::find([
+        'conditions' => 'status=0 and tag_id = ' . $id,
+        'columns' => 'product_id',
+    ])->toArray();
+
+    if (empty($pids)) return [];
+
+    $pidList = [];
+    foreach($pids as $value) {
+        $pidList[] = $value['product_id'];
+    }
 
     $info = Product::find([
-        'conditions' => 'status=0',
+        'conditions' => 'status = 1 and id in (' . implode(',', $pidList) . ')',
         'columns' => 'id,name,title,price,img',
-        'limit' => $num,
         'order' => 'id desc'
-    ]);
+    ])->toArray();
 
-    if (!empty($info)) {
-        return $info->toArray();
-    } else {
-        return [];
-    }
+    return $info;
 });
 
+
+// 大类列表
 $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}', function ($id, $num) use ($app) {
     $info = Product::find([
-        'conditions' => 'status=0 and category=' . $id,
+        'conditions' => 'status=1 and category=' . $id,
         'columns' => 'id,name,title,price,img',
         'limit' => $num,
         'order' => 'id desc'
-    ]);
+    ])->toArray();
 
-    if (!empty($info)) {
-        return $info->toArray();
-    } else {
-        return [];
-    }
+    return $info;
 });
 
+
+// 二级分类列表
 $app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}', function ($id, $num) use ($app) {
     $info = Product::find([
-        'conditions' => 'status=0 and sub_category=' . $id,
+        'conditions' => 'status=1 and sub_category=' . $id,
         'columns' => 'id,name,title,price,img',
         'limit' => $num,
         'order' => 'id desc'
-    ]);
+    ])->toArray();
 
-    if (!empty($info)) {
-        return $info->toArray();
-    } else {
-        return [];
-    }
+    return $info;
 });
