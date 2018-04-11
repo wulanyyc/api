@@ -50,6 +50,11 @@ class Util
         return $app->redis->hget($token, 'customer_id');
     }
 
+    public static function getAgentId($app) {
+        $token = $app->util->getToken($app);
+        return $app->redis->hget($token, 'agent_id');
+    }
+
     public static function getNoncestr() {
         $str = "";
         $str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
