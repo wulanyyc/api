@@ -199,8 +199,11 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->rec_sex = $sex;
         $ar->product_price = $productPrice;
         $ar->pay_money = $productPrice;
-        $ar->express_fee = $app->config->params->deliver_fee;
+        $ar->express_fee = $app->config->params->express_fee;
         $ar->express_time = date('Y-m-d H:i:s', time() + 1800);
+        $ar->deliver_fee = $app->config->params->deliver_fee_rate * $app->config->params->express_fee;
+        $ar->product_salary = $productPrice * $app->config->params->order_salary_rate;
+        $ar->total_salary = $ar->product_salary + $ar->deliver_fee;
         $ar->date = date('Ymd', time());
         $ar->save();
     }
