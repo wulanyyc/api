@@ -44,11 +44,12 @@ $app->get('/v1/h5/list/tag/{id:\d+}', function ($id) use ($app) {
 
 
 // 大类列表
-$app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}', function ($id, $num) use ($app) {
+$app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
     $info = Product::find([
         'conditions' => 'status=1 and category=' . $id,
         'columns' => 'id,name,title,price,img',
         'limit' => $num,
+        'offset' => ($page - 1) * $num,
         'order' => 'id desc'
     ])->toArray();
 
@@ -57,11 +58,12 @@ $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}', function ($id, $num) us
 
 
 // 二级分类列表
-$app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}', function ($id, $num) use ($app) {
+$app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
     $info = Product::find([
         'conditions' => 'status=1 and sub_category=' . $id,
         'columns' => 'id,name,title,price,img',
         'limit' => $num,
+        'offset' => ($page - 1) * $num,
         'order' => 'id desc'
     ])->toArray();
 

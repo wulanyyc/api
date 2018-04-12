@@ -1,5 +1,8 @@
 <?php
 use Phalcon\Security\Random;
+use Biaoye\Model\CustomerAddress;
+use Biaoye\Model\School;
+use Biaoye\Model\Room;
 
 class Util
 {
@@ -78,5 +81,22 @@ class Util
             $b .= iconv('GB2312', 'UTF-8', $a);
         }
         return $b;
+    }
+
+    public function getAddressInfo($app, $id) {
+        $key = "address_" . $id;
+        $cacheAddress = $app->redis->get($key);
+        if ($cacheAddress) {
+            return $cacheAddress;
+        } else {
+            $info = CustomerAddress::findFirst($id);
+            $school = School::findFirst($info->rec_school)->name;
+            $room = Room::findFirst($info->rec_room)->name;
+
+            $address = $school . $room . $info->rec_detail;
+
+            $app->redis->setex($key, 86400, $address);
+            return $address;
+        }
     }
 }

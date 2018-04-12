@@ -205,6 +205,7 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->product_salary = $productPrice * $app->config->params->order_salary_rate;
         $ar->total_salary = $ar->product_salary + $ar->deliver_fee;
         $ar->date = date('Ymd', time());
+        $ar->status = 1;
         $ar->save();
     }
 

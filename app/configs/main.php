@@ -4,7 +4,9 @@ return [
     'db' => require(__DIR__ . "/db.php"),
     'logger' => ['path' => __DIR__ . '/../logs/app.log'],
     'redis' => [
-        'tcp://127.0.0.1',
+        'host' => '127.0.0.1',
+        'port' => 6379,
+        'database' => 1,
     ],
     'mapper' => [],
     'file' => [
