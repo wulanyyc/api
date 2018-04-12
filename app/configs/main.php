@@ -3,11 +3,7 @@
 return [
     'db' => require(__DIR__ . "/db.php"),
     'logger' => ['path' => __DIR__ . '/../logs/app.log'],
-    'redis' => [
-        'host' => '127.0.0.1',
-        'port' => 6379,
-        'database' => 1,
-    ],
+    'redis' => require(__DIR__ . "/redis.php"),
     'mapper' => [],
     'file' => [
         'path' => __DIR__ . "/../../public/files/",
