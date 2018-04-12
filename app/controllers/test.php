@@ -1,6 +1,9 @@
 <?php
 use Biaoye\Model\Agent;
 use Biaoye\Model\Customer;
+use Biaoye\Model\CustomerOrder;
+use Biaoye\Model\CustomerCart;
+use Biaoye\Model\CustomerAddress;
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTag;
@@ -121,6 +124,84 @@ $app->get('/test/agent/add', function () use ($app) {
         $ar->manager_id = 9;
         $ar->status = 1;
         $ar->realname = 'test' . rand(0, 100);
+        $ar->save();
+    }
+
+    return 1;
+});
+
+
+$app->get('/test/init/cart', function () use ($app) {
+    $cid = 1;
+    $num = 20;
+
+    $temp = [];
+    for($m = 0; $m < 10; $m++) {
+        $cart = [];
+        for($i = 0; $i < 5; $i++) {
+            $item = [
+                'id' => rand(1, 20),
+                'num' => rand(1, 5),
+            ];
+            $cart[$item['id']] = $item;
+        }
+
+        $temp[] = $cart;
+    }
+
+    $tempNum = count($temp) - 1;
+
+    for($j=0; $j < $num; $j++) {
+        $rand = rand(0, $tempNum);
+        $ar = new CustomerCart();
+        $ar->customer_id = $cid;
+        $ar->cart = json_encode($temp[$rand]);
+        $ar->save();
+    }
+
+    return 1;
+});
+
+
+$app->get('/test/init/address', function () use ($app) {
+    $cid = 1;
+    $num = 10;
+
+    for($j=0; $j < $num; $j++) {
+        $ar = new CustomerAddress();
+        $ar->customer_id = $cid;
+        $ar->rec_name = $app->util->getChar(3);
+        $ar->rec_phone = 1 . rand(1000000000, 9999999999);
+        $ar->rec_school = 1;
+        $ar->rec_room = 1;
+        $ar->sex = rand(0, 1);
+        $ar->rec_detail = $app->util->getChar();
+        $ar->save();
+    }
+
+    return 1;
+});
+
+
+$app->get('/test/init/order', function () use ($app) {
+    $cid = 1;
+    $num = 100;
+
+    for($i = 0; $i < $num; $i++) {
+        $addressId = rand(1, 10);
+        $sex = CustomerAddress::findFirst($addressId)->sex;
+        $productPrice = rand(10, 1000);
+
+        $ar = new CustomerOrder();
+        $ar->customer_id = $cid;
+        $ar->cart_id = rand(1, 20);
+        $ar->address_id = $addressId;
+        $ar->rec_sex = $sex;
+        $ar->product_price = $productPrice;
+        $ar->pay_money = $productPrice;
+        $ar->express_fee = $app->config->params->deliver_fee;
+        $ar->express_time = date('Y-m-d H:i:s', time() + 1800);
+        $ar->date = date('Ymd', time());
         $ar->save();
     }
 
