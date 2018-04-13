@@ -142,6 +142,7 @@ $app->get('/test/init/cart', function () use ($app) {
             $item = [
                 'id' => rand(1, 20),
                 'num' => rand(1, 5),
+                'price' => rand(1, 100),
             ];
             $cart[$item['id']] = $item;
         }

@@ -7,6 +7,8 @@ use Biaoye\Model\Agent;
 use Biaoye\Model\AgentOrderSuc;
 use Biaoye\Model\AgentOrderList;
 use Biaoye\Model\CustomerOrder;
+use Biaoye\Model\CustomerCart;
+use Biaoye\Model\Product;
 
 $app->get('/v1/app/agent/realname', function () use ($app) {
     $id = $app->util->getAgentId($app);
@@ -70,17 +72,14 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
                 return $ar->id;
             } else {
                 AgentOrderList::addRecord($id, $oid);
-
                 throw new BusinessException(1000, '该单已被抢');
             }
         } else {
             AgentOrderList::addRecord($id, $oid);
-
             throw new BusinessException(1000, '抢单失败');
         }
     } else {
         AgentOrderList::addRecord($id, $oid);
-
         throw new BusinessException(1000, '该单已被抢');
     }
 });
@@ -90,15 +89,18 @@ $app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
     $sex = Agent::findFirst($id)->sex;
 
-    $data = CustomerOrder::findFirst($oid)->toArray();
+    $data = CustomerOrder::findFirst([
+        'conditions' => 'id = ' . $oid,
+        'columns' => 'id as order_id,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,cart_id,address_id'
+    ])->toArray();
 
     if (empty($data)) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
-    foreach($data as $key => $value) {
-        $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
-    }
+    $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
+    $data['order_num'] = date('Ymd') . $data['order_id'];
+    $data['products'] = CustomerCart::getCart($data['cart_id']);
 
     return $data;
 });
