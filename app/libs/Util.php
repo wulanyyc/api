@@ -50,7 +50,13 @@ class Util
 
     public static function getCustomerId($app) {
         $token = $app->util->getToken($app);
-        return $app->redis->hget($token, 'customer_id');
+        $customerId = $app->redis->hget($token, 'customer_id');
+
+        if (empty($customerId)) {
+            throw new BusinessException(400, 'bad request');
+        }
+
+        return $customerId;
     }
 
     public static function getAgentId($app) {
@@ -58,7 +64,7 @@ class Util
         $agentId = $app->redis->hget($token, 'agent_id');
 
         if (empty($agentId)) {
-            throw new BusinessException(1000, 'bad request');
+            throw new BusinessException(400, 'bad request');
         }
 
         return $agentId;
