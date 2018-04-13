@@ -4,7 +4,8 @@
  */
 
 use Biaoye\Model\Agent;
-use Biaoye\Model\AgentOrder;
+use Biaoye\Model\AgentOrderSuc;
+use Biaoye\Model\AgentOrderList;
 use Biaoye\Model\CustomerOrder;
 
 $app->get('/v1/app/agent/realname', function () use ($app) {
@@ -41,20 +42,49 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 $app->get('/v1/app/agent/get/job/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
-    $exsit = AgentOrder::find("order_id=" . $oid)->toArray();
-    if ($exsit) {
-        throw new BusinessException(1000, '该单已被抢');
+    $key = $app->config->params->get_order_prefix . $oid;
+
+    if (!$app->redis->exsits($key)) {
+        throw new BusinessException(1000, '该单已过期');
     }
 
-    $ar = new AgentOrder();
-    $ar->agent_id = $id;
-    $ar->order_id = $oid;
+    $getNum = $app->redis->get($key);
+    if ($getNum == 1) {
+        $app->redis->incr($key);
+        $exsit = AgentOrderSuc::count("order_id=" . $oid);
+        if ($exsit > 0) {
+            $list = new AgentOrderList();
+            $list->agent_id = $id;
+            $list->order_id = $oid;
+            $list->save();
+            throw new BusinessException(1000, '该单已被抢');
+        }
 
-    if ($ar->save()) {
-        return $ar->id;
+        $ar = new AgentOrderSuc();
+        $ar->agent_id = $id;
+        $ar->order_id = $oid;
+
+        if ($ar->save()) {
+            $list = new AgentOrderList();
+            $list->agent_id = $id;
+            $list->order_id = $oid;
+            $list->status = 1;
+            $list->save();
+
+            return $ar->id;
+        } else {
+            $list = new AgentOrderList();
+            $list->agent_id = $id;
+            $list->order_id = $oid;
+            $list->save();
+            throw new BusinessException(1000, '该单已被抢');
+        }
     } else {
+        $app->redis->incr($key);
+        $list = new AgentOrderList();
+        $list->agent_id = $id;
+        $list->order_id = $oid;
+        $list->save();
         throw new BusinessException(1000, '该单已被抢');
     }
-
-    return $data;
 });

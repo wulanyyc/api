@@ -211,3 +211,11 @@ $app->get('/test/init/order', function () use ($app) {
 
     return 1;
 });
+
+
+$app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
+    $app->redis->setex($app->config->params->get_order_prefix . $id, 86400, 1);
+    return 1;
+});
+
+
