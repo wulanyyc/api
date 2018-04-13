@@ -22,7 +22,7 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 
     $data = CustomerOrder::find([
         "conditons" => "sex=" . $sex . " and status=1",
-        "columns" => 'id as order_id, address_id',
+        "columns" => 'id as order_id, address_id, total_salary as salary',
         "order" => 'id asc',
         "limit" => 50,
     ])->toArray();
@@ -83,4 +83,22 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 
         throw new BusinessException(1000, '该单已被抢');
     }
+});
+
+
+$app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
+    $id = $app->util->getAgentId($app);
+    $sex = Agent::findFirst($id)->sex;
+
+    $data = CustomerOrder::findFirst($oid)->toArray();
+
+    if (empty($data)) {
+        throw new BusinessException(1000, '未查到该订单号信息');
+    }
+
+    foreach($data as $key => $value) {
+        $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+    }
+
+    return $data;
 });
