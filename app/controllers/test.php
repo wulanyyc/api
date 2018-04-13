@@ -207,6 +207,8 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->date = date('Ymd', time());
         $ar->status = 1;
         $ar->save();
+
+        $app->redis->setex('order_' . $ar->id, 86400, 0);
     }
 
     return 1;
