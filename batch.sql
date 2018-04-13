@@ -1,13 +1,10 @@
-
-
-ALTER TABLE `biaoye`.`customer_order` 
-CHANGE COLUMN `product_price` `product_price` FLOAT UNSIGNED NOT NULL DEFAULT '0' ,
-CHANGE COLUMN `pay_money` `pay_money` FLOAT UNSIGNED NOT NULL ,
-CHANGE COLUMN `express_time` `express_time` TIMESTAMP NOT NULL ,
-ADD COLUMN `salary` FLOAT UNSIGNED NOT NULL DEFAULT 0 AFTER `express_time`;
-
-
-ALTER TABLE `biaoye`.`customer_order` 
-CHANGE COLUMN `express_time` `express_time` DATETIME NOT NULL ;
-
-
+ALTER TABLE `biaoye`.`product_list` 
+CHANGE COLUMN `slogan` `slogan` VARCHAR(45) NOT NULL DEFAULT '' ,
+CHANGE COLUMN `unit` `weight` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '规格' ,
+CHANGE COLUMN `img` `img` VARCHAR(255) NOT NULL DEFAULT '' ,
+ADD COLUMN `market_price` FLOAT NOT NULL AFTER `price`,
+ADD COLUMN `brand` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '品牌' AFTER `slogan`,
+ADD COLUMN `valid_date` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '保质期' AFTER `brand`,
+ADD COLUMN `place` VARCHAR(45) NOT NULL DEFAULT '' COMMENT '产地' AFTER `valid_date`,
+ADD COLUMN `province` VARCHAR(45) NOT NULL COMMENT '省份' AFTER `place`,
+ADD COLUMN `package` VARCHAR(45) NOT NULL COMMENT '包装方式' AFTER `province`;

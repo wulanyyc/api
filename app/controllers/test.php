@@ -10,7 +10,7 @@ use Biaoye\Model\ProductTag;
 use Biaoye\Model\ProductTagRelation;
 
 // 获取短信验证码
-$app->get('/test/product/add', function () use ($app) {
+$app->get('/test/init/product', function () use ($app) {
     for ($i = 0; $i < 10; $i++) {
         $ar = new Product();
         $ar->factory = $app->util->getChar();
@@ -20,13 +20,18 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->price = rand(1, 900) . '.' . rand(0, 99);
         $ar->title = $app->util->getChar();
         $ar->slogan = $app->util->getChar();
+        $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
+        $ar->brand = '麦当劳';
+        $ar->valid_date = rand(1, 365);
+        $ar->province = '广东';
+        $ar->package = '袋装';
+        $ar->weight = '500g';
         $ar->img = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
         $ar->status = 1;
         $ar->save();
-
 
         $relation = new ProductTagRelation();
         $relation->product_id = $ar->id;
@@ -43,6 +48,12 @@ $app->get('/test/product/add', function () use ($app) {
         $ar->price = rand(1, 900) . '.' . rand(0, 99);
         $ar->title = $app->util->getChar();
         $ar->slogan = $app->util->getChar();
+        $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
+        $ar->brand = '麦当劳';
+        $ar->valid_date = rand(1, 365);
+        $ar->province = '广东';
+        $ar->package = '袋装';
+        $ar->weight = '500g';
         $ar->img = "http://39.107.251.99:8080/imgs/2.png";
         $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
         $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
