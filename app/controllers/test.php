@@ -199,7 +199,7 @@ $app->get('/test/init/address', function () use ($app) {
 
 $app->get('/test/init/order', function () use ($app) {
     $cid = 1;
-    $num = 100;
+    $num = 500;
 
     for($i = 0; $i < $num; $i++) {
         $addressId = rand(1, 10);
