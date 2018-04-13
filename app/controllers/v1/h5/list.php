@@ -4,6 +4,8 @@
  */
 
 use Biaoye\Model\Product;
+use Biaoye\Model\ProductTag;
+use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTagRelation;
 
 $app->get('/v1/h5/list/new', function () use ($app) {
@@ -16,7 +18,10 @@ $app->get('/v1/h5/list/new', function () use ($app) {
         'order' => 'id desc'
     ])->toArray();
 
-    return $info;
+    return [
+        'title' => '新品',
+        'products' => $info
+    ];
 });
 
 // 标签列表：精选，活动，特价
@@ -39,7 +44,10 @@ $app->get('/v1/h5/list/tag/{id:\d+}', function ($id) use ($app) {
         'order' => 'id desc'
     ])->toArray();
 
-    return $info;
+    return [
+        'title' => ProductTag::findFirst($id)->name,
+        'products' => $info
+    ];
 });
 
 
@@ -53,7 +61,10 @@ $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}/page/{page:\d+}', functio
         'order' => 'id desc'
     ])->toArray();
 
-    return $info;
+    return [
+        'title' => ProductCategory::findFirst($id)->name,
+        'products' => $info
+    ];
 });
 
 
@@ -67,5 +78,8 @@ $app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}/page/{page:\d+}', func
         'order' => 'id desc'
     ])->toArray();
 
-    return $info;
+    return [
+        'title' => ProductCategory::findFirst($id)->name,
+        'products' => $info
+    ];
 });
