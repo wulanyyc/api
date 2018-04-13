@@ -24,6 +24,7 @@ $app->get('/test/init/product', function () use ($app) {
         $ar->brand = '麦当劳';
         $ar->valid_date = rand(1, 365);
         $ar->province = '广东';
+        $ar->place = '中国四川';
         $ar->package = '袋装';
         $ar->weight = '500g';
         $ar->img = "http://39.107.251.99:8080/imgs/1.png";
@@ -52,6 +53,7 @@ $app->get('/test/init/product', function () use ($app) {
         $ar->brand = '麦当劳';
         $ar->valid_date = rand(1, 365);
         $ar->province = '广东';
+        $ar->place = '中国四川';
         $ar->package = '袋装';
         $ar->weight = '500g';
         $ar->img = "http://39.107.251.99:8080/imgs/2.png";
