@@ -91,13 +91,14 @@ $app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
 
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,
-        'columns' => 'id as order_id,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,cart_id,address_id'
+        'columns' => 'id as order_id,express_fee,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,cart_id,address_id'
     ])->toArray();
 
     if (empty($data)) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
+    $data['express_time'] = date("Y:m", strtotime($data['express_time']));
     $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
     $data['order_num'] = date('Ymd') . $data['order_id'];
     $data['products'] = CustomerCart::getCart($data['cart_id']);
