@@ -55,7 +55,13 @@ class Util
 
     public static function getAgentId($app) {
         $token = $app->util->getToken($app);
-        return $app->redis->hget($token, 'agent_id');
+        $agentId = $app->redis->hget($token, 'agent_id');
+
+        if (empty($agentId)) {
+            throw new BusinessException(1000, 'bad request');
+        }
+
+        return $agentId;
     }
 
     public static function getNoncestr() {

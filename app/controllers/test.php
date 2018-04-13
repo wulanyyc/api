@@ -222,7 +222,7 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->status = 1;
         $ar->save();
 
-        $app->redis->setex($app->config->params->get_order_prefix . $ar->id, 86400, 0);
+        $app->redis->setex($app->config->params['get_order_prefix'] . $ar->id, 86400, 0);
     }
 
     return 1;
