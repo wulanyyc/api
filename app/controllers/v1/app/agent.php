@@ -98,7 +98,7 @@ $app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
-    $data['express_time'] = date("Y:m", strtotime($data['express_time']));
+    $data['express_time'] = date("H:m", strtotime($data['express_time']));
     $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
     $data['order_num'] = date('Ymd') . $data['order_id'];
     $data['products'] = CustomerCart::getCart($data['cart_id']);
