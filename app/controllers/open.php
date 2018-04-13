@@ -166,7 +166,7 @@ $app->post('/open/h5/login', function () use ($app) {
 $app->get('/open/school/list', function () use ($app) {
     // TODO cache
     $token = $app->request->getQuery('temp_token');
-    if (!$app->redis->exsits($token)) {
+    if (!$app->redis->exists($token)) {
         throw new BusinessException(1000, '超时，请重新注册');
     }
 
@@ -182,7 +182,7 @@ $app->get('/open/school/list', function () use ($app) {
 $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
     // TODO cache
     $token = $app->request->getQuery('temp_token');
-    if (!$app->redis->exsits($token)) {
+    if (!$app->redis->exists($token)) {
         throw new BusinessException(1000, '超时，请重新注册');
     }
 
