@@ -83,11 +83,12 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
                 }
 
                 $transaction->commit();
-            } catch(Phalcon\Mvc\Model\Transaction\Failed $e) {
+            } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
                 AgentOrderList::addRecord($id, $oid);
 
                 $msg = $e->getMessage();
-                $app->logger->error("rob job db save fail_" . $id . '_' . $oid . ':' . $msg)
+                $app->logger->error("rob job db save fail_" . $id . '_' . $oid . ':' . $msg);
+                
                 throw new BusinessException(1000, '抢单失败了');
             }
 
