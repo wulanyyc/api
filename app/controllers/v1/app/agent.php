@@ -9,6 +9,7 @@ use Biaoye\Model\AgentOrderList;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\Product;
+use Phalcon\Mvc\Model\Transaction\Manager;
 
 $app->get('/v1/app/agent/realname', function () use ($app) {
     $id = $app->util->getAgentId($app);
@@ -59,21 +60,40 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
         $robStatus = $app->redis->exec();
 
         if ($robStatus) {
-            $ar = new AgentOrderSuc();
-            $ar->agent_id = $id;
-            $ar->order_id = $oid;
+            try {
+                $manager = new Manager();
+                $transaction = $manager->get();
 
-            if ($ar->save()) {
-                AgentOrderList::addRecord($id, $oid, 1);
+                $ar = new AgentOrderSuc();
+                $ar->setTransaction($transaction);
+
+                $ar->agent_id = $id;
+                $ar->order_id = $oid;
+
+                if (!$ar->save()) {
+                    $transaction->rollback("save agent_order_suc fail");
+                }
+
                 $co = CustomerOrder::findFirst($oid);
+                $co->setTransaction($transaction);
                 $co->status = 2;
-                $co->save();
 
-                return $ar->id;
-            } else {
+                if (!$co->save()) {
+                    $transaction->rollback("save customer_order fail");
+                }
+
+                $transaction->commit();
+            } catch(Phalcon\Mvc\Model\Transaction\Failed $e) {
                 AgentOrderList::addRecord($id, $oid);
-                throw new BusinessException(1000, '该单已被抢');
+
+                $msg = $e->getMessage();
+                $app->logger->error("rob job db save fail_" . $id . '_' . $oid . ':' . $msg)
+                throw new BusinessException(1000, '抢单失败了');
             }
+
+            AgentOrderList::addRecord($id, $oid, 1);
+
+            return 1;
         } else {
             AgentOrderList::addRecord($id, $oid);
             throw new BusinessException(1000, '抢单失败');
@@ -98,7 +118,7 @@ $app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
-    $data['express_time'] = date("H:m", strtotime($data['express_time']));
+    $data['express_time_tiny'] = date("H:m", strtotime($data['express_time']));
     $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
     $data['order_num'] = date('Ymd') . $data['order_id'];
     $data['products'] = CustomerCart::getCart($data['cart_id']);
