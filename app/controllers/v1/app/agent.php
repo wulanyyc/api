@@ -178,7 +178,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         $manager = new Manager();
         $transaction = $manager->get();
 
-        $ar = new AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
+        $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
         $ar->setTransaction($transaction);
         $ar->status = 1;
 
