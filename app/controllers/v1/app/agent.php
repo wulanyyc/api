@@ -11,6 +11,7 @@ use Biaoye\Model\CustomerCart;
 use Biaoye\Model\Product;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
+// 实名状态
 $app->get('/v1/app/agent/realname', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $info = Agent::findFirst('id='. $id);
@@ -18,11 +19,12 @@ $app->get('/v1/app/agent/realname', function () use ($app) {
     return ['status' => $info->status];
 });
 
-
+// 抢单列表
 $app->get('/v1/app/agent/job', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $sex = Agent::findFirst($id)->sex;
 
+    //TODO 细化
     $data = CustomerOrder::find([
         "conditions" => "sex=" . $sex . " and status=1",
         "columns" => 'id as order_id, address_id, total_salary as salary',
@@ -41,7 +43,7 @@ $app->get('/v1/app/agent/job', function () use ($app) {
     return $data;
 });
 
-
+// 抢单
 $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
@@ -105,8 +107,8 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     }
 });
 
-
-$app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
+// 抢单详情
+$app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
     $sex = Agent::findFirst($id)->sex;
 
@@ -119,10 +121,89 @@ $app->get('/v1/app/agent/job/detail/{oid}', function ($oid) use ($app) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
-    $data['express_time_tiny'] = date("H:m", strtotime($data['express_time']));
+    $data['express_time_tiny'] = date("H:i", strtotime($data['express_time']));
     $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
     $data['order_num'] = date('Ymd') . $data['order_id'];
     $data['products'] = CustomerCart::getCart($data['cart_id']);
 
     return $data;
+});
+
+// 抢单成功后，处理列表
+$app->get('/v1/app/agent/job/process', function () use ($app) {
+    $id = $app->util->getAgentId($app);
+
+    $orderList = AgentOrderSuc::find([
+        "conditions" => "agent_id=" . $id . " and status=0",
+        "columns" => 'order_id',
+    ])->toArray();
+
+    if (empty($orderList)) {
+        return [];
+    }
+
+    $orderIds = [];
+    foreach($orderList as $item) {
+        $orderIds[] = $item['order_id'];
+    }
+
+    $data = CustomerOrder::find([
+        "conditions" => "status=2 and id in (" . implode(',', $orderIds) . ")" ,
+        "columns" => 'id as order_id, address_id, total_salary as salary,express_time',
+        "order" => 'id asc',
+        "limit" => 50,
+    ])->toArray();
+
+    if (empty($data)) {
+        return [];
+    }
+
+    foreach($data as $key => $value) {
+        $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+        $data[$key]['express_time'] = date("H:i", strtotime($data[$key]['express_time']));
+    }
+
+    return $data;
+});
+
+// 订单处理完成
+$app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
+    $id = $app->util->getAgentId($app);
+
+    // TODO 更新库存
+
+    // TODO 收入调整
+
+    try {
+        $manager = new Manager();
+        $transaction = $manager->get();
+
+        $ar = new AgentOrderSuc();
+        $ar->setTransaction($transaction);
+
+        $ar->agent_id = $id;
+        $ar->order_id = $oid;
+        $ar->status = 1;
+
+        if (!$ar->save()) {
+            $transaction->rollback("save agent_order_suc complete fail");
+        }
+
+        $co = CustomerOrder::findFirst($oid);
+        $co->setTransaction($transaction);
+        $co->status = 3;
+
+        if (!$co->save()) {
+            $transaction->rollback("save customer_order complete fail");
+        }
+
+        $transaction->commit();
+    } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+        $msg = $e->getMessage();
+        $app->logger->error("complete job db save fail_" . $id . '_' . $oid . ':' . $msg);
+        
+        throw new BusinessException(1000, '设置失败');
+    }
+
+    return 1;
 });

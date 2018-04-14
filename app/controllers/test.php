@@ -1,5 +1,7 @@
 <?php
 use Biaoye\Model\Agent;
+use Biaoye\Model\AgentInventory;
+use Biaoye\Model\AgentInventoryRecords;
 use Biaoye\Model\Customer;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerCart;
@@ -233,5 +235,42 @@ $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
     $app->redis->setex($app->config->params->get_order_prefix . $id, 86400, 1);
     return 1;
 });
+
+
+$app->get('/test/init/agent/inventory', function () use ($app) {
+    for($i=0; $i < 30; $i++) {
+        $agentNum = Agent::count();
+        $agentId = rand(1, $agentNum);
+        $batch = $app->util->uuid();
+
+        $air = new AgentInventoryRecords();
+        $air->operator = 1;
+        $air->product_id = rand(1, 20);
+        $air->status = 1;
+        $air->num = rand(1, 100);
+        $air->agent_id = $agentId;
+        $air->batch_id = $batch;
+        $air->save();
+
+        $school = Agent::findFirst($agentId)->school_id;
+
+        $ai = AgentInventory::findFirst("product_id = " . $air->product_id . " and agent_id=" . $agentId);
+        if (empty($ai)) {
+            $ai = new AgentInventory();
+            $ai->product_id = $air->product_id;
+            $ai->agent_id = $agentId;
+            $ai->num = $air->num;
+            $ai->school_id = $school;
+            $ai->save();
+        } else {
+            $ai->product_id = $air->product_id;
+            $ai->agent_id = $agentId;
+            $ai->num = $ai->num + $air->num;
+            $ai->school_id = $school;
+            $ai->save();
+        }
+    }
+});
+
 
 

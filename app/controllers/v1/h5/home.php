@@ -19,15 +19,15 @@ $app->get('/v1/h5/home/page', function () use ($app) {
     $lunbo = [
         [
             'img'  => 'http://39.107.251.99:8080/imgs/1.png',
-            'link' => '/activity/1.html'
+            'link' => '/activity/1.html',
         ],
         [
             'img'  => 'http://39.107.251.99:8080/imgs/2.png',
-            'link' => '/activity/2.html'
+            'link' => '/activity/2.html',
         ],
         [
             'img'  => 'http://39.107.251.99:8080/imgs/3.png',
-            'link' => '/activity/3.html'
+            'link' => '/activity/3.html',
         ],
     ];
 
