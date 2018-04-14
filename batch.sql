@@ -17,6 +17,9 @@ CREATE TABLE `school_product_list` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
-  KEY `category` (`category`),
-  KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8
+  KEY `category` (`category`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `biaoye`.`product_list` 
+DROP INDEX `status` ;

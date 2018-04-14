@@ -275,4 +275,14 @@ $app->get('/test/init/agent/inventory', function () use ($app) {
 });
 
 
+$app->get('/test/init/school/inventory', function () use ($app) {
+    $stats = AgentInventory::find([
+        "conditions" => "status=0",
+        "columns" => 'school_id, product_id, sum(num) as total',
+        "group" => 'school_id,product_id',
+    ])->toArray();
+
+    // return $stats;
+});
+
 

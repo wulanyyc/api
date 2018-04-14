@@ -118,6 +118,7 @@ $app->post('/open/app/login', function () use ($app) {
             'manager_flag' => $info->manager_flag,
             'realname' => $info->realname,
             'status' => $info->status,
+            'sex' => $info->sex,
         ];
     } else {
         throw new BusinessException(1000, '验证码有误');
@@ -236,6 +237,7 @@ $app->post('/open/agent/reg', function () use ($app) {
             'manager_flag' => 0,
             'realname' => $phone,
             'status' => 0,
+            'sex' => $params['sex'],
         ];
     } else {
         throw new BusinessException(1000, '注册失败，请联系客服');
