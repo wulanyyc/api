@@ -238,7 +238,7 @@ $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
 
 
 $app->get('/test/init/agent/inventory', function () use ($app) {
-    for($i=0; $i < 30; $i++) {
+    for($i=0; $i < 300; $i++) {
         $agentNum = Agent::count();
         $agentId = rand(1, $agentNum);
         $batch = $app->util->uuid();
@@ -270,6 +270,8 @@ $app->get('/test/init/agent/inventory', function () use ($app) {
             $ai->save();
         }
     }
+
+    return 1;
 });
 
 

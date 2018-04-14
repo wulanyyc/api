@@ -13,7 +13,7 @@ class Product extends Model
     /**
      * need 是否补充不足商品
      */
-    public static function getProductByTag($tagId, $num, $need = false) {
+    public static function getProductByTag($customerId, $tagId, $num, $need = false) {
         $pids = ProductTagRelation::find([
             'conditions' => 'status=0 and tag_id=' . $tagId,
             'columns' => 'product_id',

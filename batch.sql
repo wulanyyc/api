@@ -1,19 +1,22 @@
-ALTER TABLE `biaoye`.`agent_inventory_records` 
-CHANGE COLUMN `memo` `memo` VARCHAR(100) NULL DEFAULT '' AFTER `agent_id`,
-CHANGE COLUMN `product_list` `product_id` INT UNSIGNED NOT NULL ,
-CHANGE COLUMN `operator_flag` `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '0: 进行中  1: 已完成  2: 撤销' ,
-CHANGE COLUMN `operator_id` `agent_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '操作人' ;
 
 
-ALTER TABLE `biaoye`.`agent_inventory_records` 
-ADD COLUMN `batch_id` INT UNSIGNED NOT NULL AFTER `agent_id`;
 
-
-ALTER TABLE `biaoye`.`company_inventory_records` 
-CHANGE COLUMN `operator_id` `agent_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '操作人' AFTER `product_id`,
-CHANGE COLUMN `operator_flag` `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '0: 进行中  1: 已完成  2: 撤销' AFTER `agent_id`,
-CHANGE COLUMN `product_list` `product_id` INT UNSIGNED NOT NULL ;
-
-
-ALTER TABLE `biaoye`.`company_inventory_records` 
-ADD COLUMN `batch_id` INT UNSIGNED NOT NULL AFTER `status`;
+CREATE TABLE `school_product_list` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `category` int(11) unsigned NOT NULL,
+  `sub_category` int(11) unsigned NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `price` float NOT NULL,
+  `market_price` float unsigned NOT NULL,
+  `title` varchar(45) NOT NULL,
+  `slogan` varchar(45) NOT NULL DEFAULT '',
+  `brand` varchar(45) NOT NULL DEFAULT '' COMMENT '品牌',
+  `img` varchar(255) NOT NULL DEFAULT '',
+  `status` tinyint(1) DEFAULT '0' COMMENT '1: 上线  2: 下线  3: 删除 ',
+  `sale_num` int(11) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  KEY `category` (`category`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8
