@@ -7,13 +7,14 @@ use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\CustomerAddress;
 use Biaoye\Model\Product;
+use Biaoye\Model\ProductListSchool;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTag;
 use Biaoye\Model\ProductTagRelation;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 50; $i++) {
         $ar = new Product();
         $ar->factory = $app->util->getChar();
         $ar->category = 1;
@@ -42,7 +43,7 @@ $app->get('/test/init/product', function () use ($app) {
         $relation->save();
     }
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 0; $i < 50; $i++) {
         $ar = new Product();
         $ar->factory = $app->util->getChar();
         $ar->category = 4;
@@ -282,7 +283,50 @@ $app->get('/test/init/school/inventory', function () use ($app) {
         "group" => 'school_id,product_id',
     ])->toArray();
 
-    // return $stats;
+    foreach($stats as $item) {
+        $info = Product::findFirst($item['product_id']);
+
+        $ar = new ProductListSchool();
+        $ar->school_id = $item['school_id'];
+        $ar->product_id = $item['product_id'];
+        $ar->category = $info->category;
+        $ar->sub_category = $info->sub_category;
+        $ar->name = $info->name;
+        $ar->price = $info->price;
+        $ar->market_price = $info->market_price;
+        $ar->num = $item['total'];
+        $ar->title = $info->title;
+        $ar->slogan = $info->slogan;
+        $ar->brand = $info->brand;
+        $ar->img = $info->img;
+        $ar->tags = $info->tags;
+        $ar->status = 1;
+        $ar->save();
+    }
+
+    return 1;
+});
+
+$app->get('/test/init/product/tag', function () use ($app) {
+    $tags = ProductTagRelation::find("status=0")->toArray();
+
+    $data = [];
+    foreach($tags as $tag) {
+        $data[$tag['product_id']][] = $tag['tag_id'];
+    }
+
+    foreach($data as $key => $item) {
+        $data[$key] = array_unique($item);
+        $data[$key] = implode(',', $data[$key]);
+
+        $up = Product::findFirst($key);
+        if ($up) {
+            $up->tags = $data[$key];
+            $up->save();
+        }
+    }
+
+    return 1;
 });
 
 

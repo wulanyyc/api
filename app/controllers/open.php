@@ -265,6 +265,7 @@ $app->post('/open/customer/reg', function () use ($app) {
     $ar = new Customer();
     $ar->phone = $phone;
     $ar->school_id = $params['school_id'];
+    $ar->room_id = $params['room_id'];
     if (!empty($params['invite_code'])) {
         $ar->invite_code = $params['invite_code'];
     }
