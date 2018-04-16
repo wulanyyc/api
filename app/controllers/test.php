@@ -25,6 +25,7 @@ $app->get('/test/init/product', function () use ($app) {
         $ar->slogan = $app->util->getChar();
         $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
         $ar->brand = '麦当劳';
+        $ar->birth_date = date('Ymd', time());
         $ar->valid_date = rand(1, 365);
         $ar->province = '广东';
         $ar->place = '中国四川';
@@ -54,6 +55,7 @@ $app->get('/test/init/product', function () use ($app) {
         $ar->slogan = $app->util->getChar();
         $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
         $ar->brand = '麦当劳';
+        $ar->birth_date = date('Ymd', time());
         $ar->valid_date = rand(1, 365);
         $ar->province = '广东';
         $ar->place = '中国四川';
