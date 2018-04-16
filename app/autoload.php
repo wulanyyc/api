@@ -82,5 +82,9 @@ function init_dependency_injection($config, $isCLI = false)
         return new Curl();
     }, true);
 
+    $di->set('producthelper', function () {
+        return new ProductHelper();
+    }, true);
+
     return $di;
 }

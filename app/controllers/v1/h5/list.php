@@ -9,77 +9,44 @@ use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTagRelation;
 
 $app->get('/v1/h5/list/new', function () use ($app) {
-    $num = 6;
+    $num = 10;
 
-    $info = Product::find([
-        'conditions' => 'status = 1',
-        'columns' => 'id,name,title,price,img',
-        'limit' => $num,
-        'order' => 'id desc'
-    ])->toArray();
+    $products = $app->producthelper->getNewProduct($app, $num);
 
     return [
         'title' => '新品',
-        'products' => $info
+        'products' => $products
     ];
 });
 
 // 标签列表：精选，活动，特价
-$app->get('/v1/h5/list/tag/{id:\d+}', function ($id) use ($app) {
-    $pids = ProductTagRelation::find([
-        'conditions' => 'status=0 and tag_id = ' . $id,
-        'columns' => 'product_id',
-    ])->toArray();
-
-    if (empty($pids)) return [];
-
-    $pidList = [];
-    foreach($pids as $value) {
-        $pidList[] = $value['product_id'];
-    }
-
-    $info = Product::find([
-        'conditions' => 'status = 1 and id in (' . implode(',', $pidList) . ')',
-        'columns' => 'id,name,title,price,img',
-        'order' => 'id desc'
-    ])->toArray();
+$app->get('/v1/h5/list/tag/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
+    $products = $app->producthelper->getProductByTag($app, $id, $num, $page);
 
     return [
         'title' => ProductTag::findFirst($id)->name,
-        'products' => $info
+        'products' => $products
     ];
 });
 
 
 // 大类列表
 $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
-    $info = Product::find([
-        'conditions' => 'status=1 and category=' . $id,
-        'columns' => 'id,name,title,price,img',
-        'limit' => $num,
-        'offset' => ($page - 1) * $num,
-        'order' => 'id desc'
-    ])->toArray();
+    $products = $app->producthelper->getProductByCategory($app, $id, $num, $page);
 
     return [
         'title' => ProductCategory::findFirst($id)->name,
-        'products' => $info
+        'products' => $products
     ];
 });
 
 
 // 二级分类列表
 $app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
-    $info = Product::find([
-        'conditions' => 'status=1 and sub_category=' . $id,
-        'columns' => 'id,name,title,price,img',
-        'limit' => $num,
-        'offset' => ($page - 1) * $num,
-        'order' => 'id desc'
-    ])->toArray();
+    $products = $app->producthelper->getProductByCategory($app, $id, $num, $page, 2);
 
     return [
         'title' => ProductCategory::findFirst($id)->name,
-        'products' => $info
+        'products' => $products
     ];
 });

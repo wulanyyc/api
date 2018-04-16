@@ -243,7 +243,7 @@ $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
 $app->get('/test/init/agent/inventory', function () use ($app) {
     for($i=0; $i < 300; $i++) {
         $agentNum = Agent::count();
-        $agentId = rand(9, 11);
+        $agentId = rand(1, 5);
         $batch = $app->util->uuid();
 
         $air = new AgentInventoryRecords();
@@ -255,7 +255,7 @@ $app->get('/test/init/agent/inventory', function () use ($app) {
         $air->batch_id = $batch;
         $air->save();
 
-        $school = Agent::findFirst($agentId)->school_id;
+        $agentInfo = Agent::findFirst($agentId);
 
         $ai = AgentInventory::findFirst("product_id = " . $air->product_id . " and agent_id=" . $agentId);
         if (empty($ai)) {
@@ -263,13 +263,15 @@ $app->get('/test/init/agent/inventory', function () use ($app) {
             $ai->product_id = $air->product_id;
             $ai->agent_id = $agentId;
             $ai->num = $air->num;
-            $ai->school_id = $school;
+            $ai->school_id = $agentInfo->school_id;
+            $ai->room_id = $agentInfo->room_id;
             $ai->save();
         } else {
             $ai->product_id = $air->product_id;
             $ai->agent_id = $agentId;
-            $ai->num = $ai->num + $air->num;
-            $ai->school_id = $school;
+            $ai->num = $ai->num;
+            $ai->school_id = $agentInfo->school_id;
+            $ai->room_id = $agentInfo->room_id;
             $ai->save();
         }
     }

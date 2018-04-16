@@ -3,6 +3,7 @@ namespace Biaoye\Model;
 
 use Phalcon\Mvc\Model;
 use Biaoye\Model\ProductTagRelation;
+use Biaoye\Model\Customer;
 
 class Product extends Model
 {
@@ -14,6 +15,7 @@ class Product extends Model
      * need 是否补充不足商品
      */
     public static function getProductByTag($customerId, $tagId, $num, $need = false) {
+        $school = Customer::findFirst($customerId)->school_id;
         $pids = ProductTagRelation::find([
             'conditions' => 'status=0 and tag_id=' . $tagId,
             'columns' => 'product_id',

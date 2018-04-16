@@ -12,9 +12,9 @@ $app->get('/v1/h5/home/page', function () use ($app) {
     $info = Customer::findFirst('id=' . $customerId);
     $schoolInfo = School::findFirst('id=' . $info->school_id);
 
-    $jinxuan = Product::getProductByTag($customerId, 1, 3, true);
-    $huodong = Product::getProductByTag($customerId, 2, 3);
-    $tejia   = Product::getProductByTag($customerId, 3, 4);
+    $jinxuan = $app->producthelper->getHomeProductByTag($app, $customerId, 1, 3);
+    $huodong = $app->producthelper->getHomeProductByTag($app, $customerId, 2, 3);
+    $tejia   = $app->producthelper->getHomeProductByTag($app, $customerId, 3, 4);
 
     $lunbo = [
         [

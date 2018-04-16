@@ -1,5 +1,6 @@
 <?php
 use Phalcon\Security\Random;
+use Biaoye\Model\Customer;
 use Biaoye\Model\CustomerAddress;
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
@@ -57,6 +58,11 @@ class Util
         }
 
         return $customerId;
+    }
+
+    public static function getCustomerInfo($app) {
+        $customerId = self::getCustomerId($app);
+        return Customer::findFirst($customerId);
     }
 
     public static function getAgentId($app) {
