@@ -224,6 +224,7 @@ $app->post('/open/agent/reg', function () use ($app) {
     $ar->room_id = $params['room_id'];
     $ar->invite_code = $inviteCode;
     $ar->manager_id = $managerId;
+    $ar->realname = $phone;
 
     if ($ar->save()) {
         $token = $app->util->uuid();

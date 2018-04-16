@@ -16,7 +16,7 @@ $app->get('/v1/app/agent/realname', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $info = Agent::findFirst('id='. $id);
 
-    return ['status' => $info->status, 'name' => $info->realname];
+    return ['status' => $info->status, 'realname' => $info->realname];
 });
 
 $app->get('/v1/app/agent/work/start', function () use ($app) {
