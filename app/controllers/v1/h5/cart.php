@@ -68,7 +68,7 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     }
 });
 
-// 删除
+// 删除单品
 $app->get('/v1/h5/cart/del/{cid:\d+}/product/{pid:\d+}', function ($cid, $pid) use ($app) {
     $cartInfo = CustomerCart::findFirst($cid);
     if (!$cartInfo) {
