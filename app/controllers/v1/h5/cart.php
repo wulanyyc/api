@@ -19,31 +19,23 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
         return [];
     }
 
-    $status = CustomerOrder::findFirst([
-        'conditions' => "cart_id=" . $cart->id,
-        'order' => 'id desc'
-    ])->status;
+    $data = json_decode($cart->cart, true);
 
-    if ($status > 0) {
+    if (empty($data)){
         return [];
-    } else {
-        $data = json_decode($cart->cart, true);
-        if (empty($data)){
-            return [];
-        }
-
-        foreach($data as $key => $item) {
-            $productInfo = Product::findFirst($item['id']);
-            $data[$key]['name']  = $productInfo->name;
-            $data[$key]['img']   = $productInfo->img;
-            $data[$key]['price'] = $app->producthelper->getProductPrice($item['id']);
-        }
-
-        return [
-            'cart_id'  => $cart->id,
-            'products' => $data,
-        ];
     }
+
+    foreach($data as $key => $item) {
+        $productInfo = Product::findFirst($item['id']);
+        $data[$key]['name']  = $productInfo->name;
+        $data[$key]['img']   = $productInfo->img;
+        $data[$key]['price'] = $app->producthelper->getProductPrice($item['id']);
+    }
+
+    return [
+        'cart_id'  => $cart->id,
+        'products' => $data,
+    ];
 });
 
 
