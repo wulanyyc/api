@@ -176,7 +176,11 @@ $app->get('/open/school/list', function () use ($app) {
         'conditions' => 'status = 0'
     ]);
 
-    return $list->toArray();
+    if ($list) {
+        return $list->toArray();
+    } else {
+        return [];
+    }
 });
 
 
@@ -192,7 +196,11 @@ $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
         'conditions' => 'status = 0 and school_id = ' . $id
     ]);
 
-    return $list->toArray();
+    if ($list) {
+        return $list->toArray();
+    } else {
+        return [];
+    }
 });
 
 

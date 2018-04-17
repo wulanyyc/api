@@ -6,6 +6,10 @@ use Biaoye\Model\ProductListSchool;
 
 class ProductHelper
 {   
+    public function getProductPrice($id) {
+        return Product::findFirst($id)->price;
+    }
+
     // 首页标签商品
     public function getHomeProductByTag($app, $customerId, $tagId, $num) {
         $hour = intval(date("H", time()));
@@ -28,16 +32,19 @@ class ProductHelper
             'columns' => 'product_id, name, price, title, slogan, img',
             'limit' => $num,
             'order' => 'product_id desc'
-        ])->toArray();
+        ]);
 
-        if (!empty($products)) {
-            foreach($products as $key => $item) {
-                $products[$key]['id'] = $item['product_id'];
-                unset($products[$key]['product_id']);
-            }
+        if (!$products) {
+            return [];
         }
 
-        return $products;
+        $data = $products->toArray();
+        foreach($data as $key => $item) {
+            $data[$key]['id'] = $item['product_id'];
+            unset($data[$key]['product_id']);
+        }
+
+        return $data;
     }
 
     public function getNightHomeProductByTag($app, $customerInfo, $tagId, $num)
@@ -70,16 +77,22 @@ class ProductHelper
             'columns' => 'product_id, name, title, price, img',
             'limit' => $num,
             'order' => 'product_id desc'
-        ])->toArray();
+        ]);
 
-        if (!empty($products)) {
-            foreach($products as $key => $item) {
-                $products[$key]['id'] = $item['product_id'];
-                unset($products[$key]['product_id']);
+        if (!$products) {
+            return [];
+        }
+
+        $data = $products->toArray();
+
+        if (!empty($data)) {
+            foreach($data as $key => $item) {
+                $data[$key]['id'] = $item['product_id'];
+                unset($data[$key]['product_id']);
             }
         }
 
-        return $products;
+        return $data;
     }
 
     public function getNightNewProduct($app, $info, $num) {
@@ -114,16 +127,20 @@ class ProductHelper
             'limit' => $num,
             'order' => 'product_id desc',
             'offset' => $offset,
-        ])->toArray();
+        ]);
 
-        if (!empty($products)) {
-            foreach($products as $key => $item) {
-                $products[$key]['id'] = $item['product_id'];
-                unset($products[$key]['product_id']);
-            }
+        if (!$products) {
+            return [];
         }
 
-        return $products;
+        $data = $products->toArray();
+
+        foreach($data as $key => $item) {
+            $data[$key]['id'] = $item['product_id'];
+            unset($data[$key]['product_id']);
+        }
+
+        return $data;
     }
 
     public function getNightProductByTag($app, $customerInfo, $tagId, $num, $page)
@@ -162,7 +179,7 @@ class ProductHelper
                 'limit' => $num,
                 'order' => 'product_id desc',
                 'offset' => $offset,
-            ])->toArray();
+            ]);
         } else {
             $products = ProductListSchool::find([
                 'conditions' => 'status=1 and school_id= ' . $customerInfo->school_id . ' and num > 0 and sub_category=' . $categoryId,
@@ -170,17 +187,20 @@ class ProductHelper
                 'limit' => $num,
                 'order' => 'product_id desc',
                 'offset' => $offset,
-            ])->toArray();
+            ]);
         }
 
-        if (!empty($products)) {
-            foreach($products as $key => $item) {
-                $products[$key]['id'] = $item['product_id'];
-                unset($products[$key]['product_id']);
-            }
+        if (!$products) {
+            return [];
         }
 
-        return $products;
+        $data = $products->toArray();
+        foreach($data as $key => $item) {
+            $data[$key]['id'] = $item['product_id'];
+            unset($data[$key]['product_id']);
+        }
+
+        return $data;
     }
 
     public function getNightProductByCategory($app, $customerInfo, $categoryId, $num, $page, $level)

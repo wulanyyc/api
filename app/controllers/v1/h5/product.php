@@ -1,6 +1,6 @@
 <?php
 /**
- * 商城首页数据
+ * 商品详情数据
  */
 
 use Biaoye\Model\Product;

@@ -48,17 +48,18 @@ $app->get('/v1/app/agent/job', function () use ($app) {
         "columns" => 'id as order_id, address_id, total_salary as salary',
         "order" => 'id asc',
         "limit" => 50,
-    ])->toArray();
+    ]);
 
-    if (empty($data)) {
+    if (!$data) {
         return [];
     }
 
-    foreach($data as $key => $value) {
-        $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+    $ret = $data->toArray();
+    foreach($ret as $key => $value) {
+        $ret[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
     }
 
-    return $data;
+    return $ret;
 });
 
 // 抢单
@@ -133,18 +134,20 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,
         'columns' => 'id as order_id,express_fee,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,cart_id,address_id'
-    ])->toArray();
+    ]);
 
-    if (empty($data)) {
+    if (!$data) {
         throw new BusinessException(1000, '未查到该订单号信息');
     }
 
-    $data['express_time_tiny'] = date("H:i", strtotime($data['express_time']));
-    $data['address'] = $app->util->getAddressInfo($app, $data['address_id']);
-    $data['order_num'] = date('Ymd') . $data['order_id'];
-    $data['products'] = CustomerCart::getCart($data['cart_id']);
+    $ret = $data->toArray();
 
-    return $data;
+    $ret['express_time_tiny'] = date("H:i", strtotime($ret['express_time']));
+    $ret['address'] = $app->util->getAddressInfo($app, $ret['address_id']);
+    $ret['order_num'] = date('Ymd') . $ret['order_id'];
+    $ret['products'] = CustomerCart::getCart($ret['cart_id']);
+
+    return $ret;
 });
 
 // 抢单成功后，处理列表
@@ -154,11 +157,13 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
     $orderList = AgentOrderSuc::find([
         "conditions" => "agent_id=" . $id . " and status=0",
         "columns" => 'order_id',
-    ])->toArray();
+    ]);
 
-    if (empty($orderList)) {
+    if (!$orderList) {
         return [];
     }
+
+    $orderList = $orderList->toArray();
 
     $orderIds = [];
     foreach($orderList as $item) {
@@ -170,12 +175,13 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
         "columns" => 'id as order_id, address_id, total_salary as salary,express_time',
         "order" => 'id asc',
         "limit" => 50,
-    ])->toArray();
+    ]);
 
-    if (empty($data)) {
+    if (!$data) {
         return [];
     }
 
+    $data = $data->toArray();
     foreach($data as $key => $value) {
         $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
         $data[$key]['express_time'] = date("H:i", strtotime($data[$key]['express_time']));
