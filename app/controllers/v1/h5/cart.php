@@ -19,7 +19,10 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
         return [];
     }
 
-    $status = CustomerOrder::findFirst("cart_id=" . $cart->id)->status;
+    $status = CustomerOrder::findFirst([
+        'conditions' => "cart_id=" . $cart->id,
+        'order' => 'id desc'
+    ])->status;
 
     if ($status > 0) {
         return [];
