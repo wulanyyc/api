@@ -14,6 +14,7 @@ class AgentOrderList extends Model
         $ar->agent_id = $agentId;
         $ar->order_id = $orderId;
         $ar->status = $status;
+        $ar->date = date("Ymd", time());
         $ar->save();
     }
 }

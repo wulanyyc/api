@@ -92,6 +92,7 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 
                 $ar->agent_id = $id;
                 $ar->order_id = $oid;
+                $ar->date = date('Ymd', time());
 
                 if (!$ar->save()) {
                     $transaction->rollback("save agent_order_suc fail");
