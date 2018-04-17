@@ -54,7 +54,7 @@ class Util
         $customerId = $app->redis->hget($token, 'customer_id');
 
         if (empty($customerId)) {
-            throw new BusinessException(400, 'bad request');
+            throw new BusinessException(401, 'bad request');
         }
 
         return $customerId;
@@ -70,7 +70,7 @@ class Util
         $agentId = $app->redis->hget($token, 'agent_id');
 
         if (empty($agentId)) {
-            throw new BusinessException(400, 'bad request');
+            throw new BusinessException(401, 'bad request');
         }
 
         return $agentId;

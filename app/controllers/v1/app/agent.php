@@ -50,13 +50,14 @@ $app->get('/v1/app/agent/job', function () use ($app) {
         "columns" => 'id as order_id, address_id, total_salary as salary',
         "order" => 'id asc',
         "limit" => 50,
-    ]);
+    ])->toArray();
 
-    if (!$data) {
+    if (empty($data)) {
         return [];
+    } else {
+        $ret = $data;
     }
 
-    $ret = $data->toArray();
     foreach($ret as $key => $value) {
         $ret[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
     }
@@ -160,13 +161,11 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
     $orderList = AgentOrderSuc::find([
         "conditions" => "agent_id=" . $id . " and status=0",
         "columns" => 'order_id',
-    ]);
+    ])->toArray();
 
-    if (!$orderList) {
+    if (empty($orderList)) {
         return [];
     }
-
-    $orderList = $orderList->toArray();
 
     $orderIds = [];
     foreach($orderList as $item) {
@@ -178,13 +177,12 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
         "columns" => 'id as order_id, address_id, total_salary as salary,express_time',
         "order" => 'id asc',
         "limit" => 50,
-    ]);
+    ])->toArray();
 
-    if (!$data) {
+    if (empty($data)) {
         return [];
     }
 
-    $data = $data->toArray();
     foreach($data as $key => $value) {
         $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
         $data[$key]['express_time'] = date("H:i", strtotime($data[$key]['express_time']));
@@ -207,6 +205,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
         $ar->setTransaction($transaction);
+        $ar->complete_time = date("Y-m-d H:i:s");
         $ar->status = 1;
 
         if (!$ar->save()) {
@@ -215,6 +214,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         $co = CustomerOrder::findFirst($oid);
         $co->setTransaction($transaction);
+        $co->complete_time = date("Y-m-d H:i:s");
         $co->status = 3;
 
         if (!$co->save()) {
@@ -233,19 +233,23 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 });
 
 // 历史记录
-$app->get('/v1/app/agent/job/history', function ($oid) use ($app) {
+$app->get('/v1/app/agent/job/history', function () use ($app) {
     $id = $app->util->getAgentId($app);
+    $date = $app->request->getQuery("date");
 
-    $orderList = AgentOrderSuc::find([
-        "conditions" => "agent_id=" . $id . " and status=0",
-        "columns" => 'order_id',
-    ]);
-
-    if (!$orderList) {
-        return [];
+    if (empty($date)) {
+        throw new BusinessException(1000, '参数有误');
     }
 
-    $orderList = $orderList->toArray();
+    $orderList = AgentOrderSuc::find([
+        "conditions" => "status=1 and agent_id=" . $id . " and date=" . $date,
+        "columns" => 'order_id',
+        "order" => 'id desc',
+    ])->toArray();
+
+    if (empty($orderList)) {
+        return [];
+    }
 
     $orderIds = [];
     foreach($orderList as $item) {
@@ -253,21 +257,21 @@ $app->get('/v1/app/agent/job/history', function ($oid) use ($app) {
     }
 
     $data = CustomerOrder::find([
-        "conditions" => "status=2 and id in (" . implode(',', $orderIds) . ")" ,
-        "columns" => 'id as order_id, address_id, total_salary as salary,express_time',
+        "conditions" => "id in (" . implode(',', $orderIds) . ")" ,
+        "columns" => 'id as order_id, address_id, total_salary as salary, complete_time',
         "order" => 'id asc',
-        "limit" => 50,
-    ]);
+    ])->toArray();
 
-    if (!$data) {
+    if (empty($data)) {
         return [];
     }
 
-    $data = $data->toArray();
     foreach($data as $key => $value) {
         $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
-        $data[$key]['express_time'] = date("H:i", strtotime($data[$key]['express_time']));
     }
 
-    return $data;
+    return [
+        "total" => count($data),
+        "jobs" => $data
+    ];
 });

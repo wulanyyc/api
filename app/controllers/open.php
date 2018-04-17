@@ -174,13 +174,9 @@ $app->get('/open/school/list', function () use ($app) {
     $list = School::find([
         'columns' => 'id, name',
         'conditions' => 'status = 0'
-    ]);
+    ])->toArray();
 
-    if ($list) {
-        return $list->toArray();
-    } else {
-        return [];
-    }
+    return $list;
 });
 
 
@@ -194,13 +190,9 @@ $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
     $list = Room::find([
         'columns' => 'id, name',
         'conditions' => 'status = 0 and school_id = ' . $id
-    ]);
+    ])->toArray();
 
-    if ($list) {
-        return $list->toArray();
-    } else {
-        return [];
-    }
+    return $list;
 });
 
 

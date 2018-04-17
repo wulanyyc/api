@@ -333,4 +333,17 @@ $app->get('/test/init/product/tag', function () use ($app) {
     return 1;
 });
 
+$app->get('/test/cart', function () use ($app) {
+    $data = [
+        [
+            'id' => 1,
+            'num' => 3,
+        ],
+        [
+            'id' => 2,
+            'num' => 1,
+        ],
+    ];
 
+    echo json_encode($data);
+});
