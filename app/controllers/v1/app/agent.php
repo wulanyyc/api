@@ -19,6 +19,7 @@ $app->get('/v1/app/agent/realname', function () use ($app) {
     return ['status' => $info->status, 'realname' => $info->realname];
 });
 
+// 开工
 $app->get('/v1/app/agent/work/start', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $up = Agent::findFirst($id);
@@ -28,6 +29,7 @@ $app->get('/v1/app/agent/work/start', function () use ($app) {
     return 1;
 });
 
+// 停工
 $app->get('/v1/app/agent/work/stop', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $up = Agent::findFirst($id);
@@ -227,4 +229,44 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
     }
 
     return 1;
+});
+
+// 历史记录
+$app->get('/v1/app/agent/job/history', function ($oid) use ($app) {
+    $id = $app->util->getAgentId($app);
+
+    $orderList = AgentOrderSuc::find([
+        "conditions" => "agent_id=" . $id . " and status=0",
+        "columns" => 'order_id',
+    ]);
+
+    if (!$orderList) {
+        return [];
+    }
+
+    $orderList = $orderList->toArray();
+
+    $orderIds = [];
+    foreach($orderList as $item) {
+        $orderIds[] = $item['order_id'];
+    }
+
+    $data = CustomerOrder::find([
+        "conditions" => "status=2 and id in (" . implode(',', $orderIds) . ")" ,
+        "columns" => 'id as order_id, address_id, total_salary as salary,express_time',
+        "order" => 'id asc',
+        "limit" => 50,
+    ]);
+
+    if (!$data) {
+        return [];
+    }
+
+    $data = $data->toArray();
+    foreach($data as $key => $value) {
+        $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+        $data[$key]['express_time'] = date("H:i", strtotime($data[$key]['express_time']));
+    }
+
+    return $data;
 });

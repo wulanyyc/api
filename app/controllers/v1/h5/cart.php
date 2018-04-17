@@ -38,10 +38,11 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
 
         return [
             'cart_id'  => $cart->id,
-            'products' => $data
+            'products' => $data,
         ];
     }
 });
+
 
 // 新增
 $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
@@ -51,6 +52,7 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
         throw new BusinessException(1000, '参数有误');
     }
 
+    $cart = [];
     $cart[$pid] = [
         'id' => $pid,
         'num' => $num,
@@ -62,7 +64,20 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     $ar->cart = json_encode($cart);
 
     if ($ar->save()) {
-        return 1;
+        $data = [];
+        $productInfo = Product::findFirst($pid);
+        $data[$pid] = [
+            'id' => $pid,
+            'num' => $num,
+            'name' => $productInfo->name,
+            'img'  => $productInfo->img,
+            'price' => $app->producthelper->getProductPrice($pid),
+        ];
+
+        return [
+            'cart_id'  => $ar->id,
+            'products' => $data,
+        ];
     } else {
         throw new BusinessException(1000, '添加失败');
     }
