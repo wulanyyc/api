@@ -205,7 +205,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
         $ar->setTransaction($transaction);
-        $ar->complete_time = date("Y-m-d H:i:s");
+        $ar->complete_time = date("Y-m-d H:i:s", time());
         $ar->status = 1;
 
         if (!$ar->save()) {
@@ -214,7 +214,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         $co = CustomerOrder::findFirst($oid);
         $co->setTransaction($transaction);
-        $co->complete_time = date("Y-m-d H:i:s");
+        $co->complete_time = date("Y-m-d H:i:s", time());
         $co->status = 3;
 
         if (!$co->save()) {
