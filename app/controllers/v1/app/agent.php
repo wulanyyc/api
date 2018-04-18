@@ -203,14 +203,14 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
     //     $manager = new Manager();
     //     $transaction = $manager->get();
 
-        $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
+        // $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
         // $ar->setTransaction($transaction);
-        $ar->complete_time = date("Y-m-d H:i:s", time());
-        $ar->status = 1;
+        // $ar->complete_time = date("Y-m-d H:i:s", time());
+        // $ar->status = 1;
 
-        if (!$ar->save()) {
+        // if (!$ar->save()) {
             // $transaction->rollback("save agent_order_suc complete fail");
-        }
+        // }
 
         $co = CustomerOrder::findFirst($oid);
         // $co->setTransaction($transaction);
