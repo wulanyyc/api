@@ -12,6 +12,7 @@ use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTag;
 use Biaoye\Model\ProductTagRelation;
 use Biaoye\Model\Company;
+use Biaoye\Model\CompanyInventory;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
@@ -254,39 +255,12 @@ $app->get('/test/init/company', function () use ($app) {
 
 
 $app->get('/test/init/company/inventory', function () use ($app) {
-    for ($i=0; $i < 100; $i++) {
-        $agentNum = Agent::count();
-        $agentId = rand(1, 5);
-        $batch = $app->util->uuid();
-
-        $air = new AgentInventoryRecords();
-        $air->operator = 1;
-        $air->product_id = rand(1, 20);
-        $air->status = 1;
-        $air->num = rand(1, 100);
-        $air->agent_id = $agentId;
-        $air->batch_id = $batch;
-        $air->save();
-
-        $agentInfo = Agent::findFirst($agentId);
-
-        $ai = AgentInventory::findFirst("product_id = " . $air->product_id . " and agent_id=" . $agentId);
-        if (empty($ai)) {
-            $ai = new AgentInventory();
-            $ai->product_id = $air->product_id;
-            $ai->agent_id = $agentId;
-            $ai->num = $air->num;
-            $ai->school_id = $agentInfo->school_id;
-            $ai->room_id = $agentInfo->room_id;
-            $ai->save();
-        } else {
-            $ai->product_id = $air->product_id;
-            $ai->agent_id = $agentId;
-            $ai->num = $ai->num;
-            $ai->school_id = $agentInfo->school_id;
-            $ai->room_id = $agentInfo->room_id;
-            $ai->save();
-        }
+    for ($i=0; $i < 20; $i++) {
+        $ar = new CompanyInventory();
+        $ar->product_id = $i + 1;
+        $ar->company_id = 1;
+        $ar->num = rand(1, 100);
+        $ar->save();
     }
 
     return 1;

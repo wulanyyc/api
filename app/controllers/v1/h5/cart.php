@@ -109,6 +109,7 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
     }
 
     $cart = [];
+    $app->logger->error($updateCart);
     foreach($cartInfo as $item) {
         if (is_int($item['id']) && is_int($item['num']) && $item['id'] > 0 && $item['num'] > 0) {
             $cart[$item['id']] = [

@@ -119,10 +119,26 @@ class Util
     }
 
     public function getDefaultAddress($app) {
-        // $customerId = self::getCustomerId($app);
-        // CustomerAddress::findFirst([
-        //     'conditions' => 'default_flag=1 and status=0',
-        //     'columns' => 'rec_name, rec_phone, rec_school, rec_room, rec_detail',
-        // ])
+        $customerId = self::getCustomerId($app);
+        $data = CustomerAddress::findFirst([
+            'conditions' => 'default_flag=1 and status=0',
+            'columns' => 'id, rec_name, rec_phone, rec_school, rec_room, rec_detail',
+        ]);
+
+        if (!$data) {
+            $data = CustomerAddress::findFirst([
+                'conditions' => 'status=0',
+                'columns' => 'id, rec_name, rec_phone, rec_school, rec_room, rec_detail',
+                'order' => 'id desc'
+            ]);
+        }
+
+        if (!$data) {
+            return [];
+        } else {
+            return [
+
+            ];
+        }
     }
 }
