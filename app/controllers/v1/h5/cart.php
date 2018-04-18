@@ -201,7 +201,7 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
     if (isset($cart[$pid])) {
         $cart[$pid]['num'] = intval($cart[$pid]['num']) - intval($num);
 
-        if ($cart[$pid]['num'] == 0) {
+        if ($cart[$pid]['num'] <= 0) {
             unset($cart[$pid]);
         } else {
             $cart[$pid]['price'] = $app->producthelper->getProductPrice($pid);
