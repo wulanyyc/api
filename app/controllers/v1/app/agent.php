@@ -199,35 +199,35 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
     // TODO 收入调整
 
-    // try {
-    //     $manager = new Manager();
-    //     $transaction = $manager->get();
+    try {
+        $manager = new Manager();
+        $transaction = $manager->get();
 
-        // $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
-        // $ar->setTransaction($transaction);
-        // $ar->complete_time = date("Y-m-d H:i:s", time());
-        // $ar->status = 1;
+        $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
+        $ar->setTransaction($transaction);
+        $ar->complete_time = date("Y-m-d H:i:s", time());
+        $ar->status = 1;
 
-        // if (!$ar->save()) {
-            // $transaction->rollback("save agent_order_suc complete fail");
-        // }
+        if (!$ar->save()) {
+            $transaction->rollback("save agent_order_suc complete fail");
+        }
 
         $co = CustomerOrder::findFirst($oid);
-        // $co->setTransaction($transaction);
+        $co->setTransaction($transaction);
         $co->complete_time = date("Y-m-d H:i:s", time());
         $co->status = 3;
 
         if (!$co->save()) {
-            // $transaction->rollback("save customer_order complete fail");
+            $transaction->rollback("save customer_order complete fail");
         }
 
-        // $transaction->commit();
-    // } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
-    //     $msg = $e->getMessage();
-    //     $app->logger->error("complete job db save fail_" . $id . '_' . $oid . ':' . $msg);
+        $transaction->commit();
+    } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+        $msg = $e->getMessage();
+        $app->logger->error("complete job db save fail_" . $id . '_' . $oid . ':' . $msg);
         
-    //     throw new BusinessException(1000, '设置失败');
-    // }
+        throw new BusinessException(1000, '设置失败');
+    }
 
     return 1;
 });
