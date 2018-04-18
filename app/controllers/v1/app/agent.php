@@ -248,7 +248,10 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
     ])->toArray();
 
     if (empty($orderList)) {
-        return [];
+        return [
+            'total' => 0,
+            'jobs' => [],
+        ];
     }
 
     $orderIds = [];
@@ -263,7 +266,10 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
     ])->toArray();
 
     if (empty($data)) {
-        return [];
+        return [
+            'total' => 0,
+            'jobs' => [],
+        ];
     }
 
     foreach($data as $key => $value) {

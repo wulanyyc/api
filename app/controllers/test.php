@@ -243,7 +243,7 @@ $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
 
 
 $app->get('/test/init/company', function () use ($app) {
-    for ($i=0; $i < 10; $i++) {
+    for ($i=0; $i < 5; $i++) {
         $ar = new Company();
         $ar->name = $app->util->getChar(5);
         $ar->parent_id = 0;

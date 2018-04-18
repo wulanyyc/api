@@ -86,5 +86,9 @@ function init_dependency_injection($config, $isCLI = false)
         return new ProductHelper();
     }, true);
 
+    $di->set('datahelper', function () {
+        return new DataHelper();
+    }, true);
+
     return $di;
 }
