@@ -165,7 +165,7 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
             'price' => $app->producthelper->getProductPrice($pid),
         ];
     } else {
-        $cart[$pid]['num'] = $cart[$pid]['num'] + $num;
+        $cart[$pid]['num'] = intval($cart[$pid]['num']) + intval($num);
         $cart[$pid]['price'] = $app->producthelper->getProductPrice($pid);
     }
 
@@ -199,7 +199,7 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
     $cart = json_decode($cartInfo->cart, true);
     
     if (isset($cart[$pid])) {
-        $cart[$pid]['num'] = $cart[$pid]['num'] - $num;
+        $cart[$pid]['num'] = intval($cart[$pid]['num']) - intval($num);
 
         if ($cart[$pid]['num'] == 0) {
             unset($cart[$pid]);
