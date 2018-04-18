@@ -39,7 +39,7 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
 });
 
 
-// 新增
+// 新增购物车
 $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
     $customerId = $app->util->getCustomerId($app);
 
@@ -173,6 +173,7 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
         throw new BusinessException(1000, '更新购物车失败');
     }
 });
+
 
 // 减少
 $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($cid, $pid, $num) use ($app) {

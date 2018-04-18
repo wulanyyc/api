@@ -148,7 +148,7 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
 
     $ret['express_time_tiny'] = date("H:i", strtotime($ret['express_time']));
     $ret['address'] = $app->util->getAddressInfo($app, $ret['address_id']);
-    $ret['order_num'] = date('Ymd') . $ret['order_id'];
+    $ret['order_num'] = date('Ymd', strtotime($ret['express_time'])) . $ret['order_id'];
     $ret['products'] = CustomerCart::getCart($ret['cart_id']);
 
     return $ret;
@@ -258,7 +258,7 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
 
     $data = CustomerOrder::find([
         "conditions" => "id in (" . implode(',', $orderIds) . ")" ,
-        "columns" => 'id as order_id, address_id, total_salary as salary, complete_time',
+        "columns" => 'id as order_id, address_id, total_salary as salary, complete_time, express_time',
         "order" => 'id asc',
     ])->toArray();
 
@@ -268,6 +268,8 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
 
     foreach($data as $key => $value) {
         $data[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+        $data[$key]['order_num'] = date('Ymd', strtotime($value['express_time'])) . $value['order_id'];
+        unset($data[$key]['express_time']);
     }
 
     return [

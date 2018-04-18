@@ -117,4 +117,12 @@ class Util
             return $address;
         }
     }
+
+    public function getDefaultAddress($app) {
+        // $customerId = self::getCustomerId($app);
+        // CustomerAddress::findFirst([
+        //     'conditions' => 'default_flag=1 and status=0',
+        //     'columns' => 'rec_name, rec_phone, rec_school, rec_room, rec_detail',
+        // ])
+    }
 }
