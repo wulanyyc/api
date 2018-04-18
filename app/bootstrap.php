@@ -168,10 +168,6 @@ function is_valid_access($app)
 {
     $method = $app->request->getMethod();
     if ($method != 'OPTIONS' && $method != 'HEAD') {
-        if (is_debugging($app)) {
-            return true;
-        }
-
         if (isset($_REQUEST['token'])) {
             $access_token = $_REQUEST['token'];
         } else {

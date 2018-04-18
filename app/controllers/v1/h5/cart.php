@@ -109,8 +109,6 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
     }
 
     $cart = [];
-    // $app->logger->error($updateCart);
-    // $app->logger->error(json_encode($cartInfo));
     foreach($cartInfo as $item) {
         $item['id'] = intval($item['id']);
         $item['num'] = intval($item['num']);
