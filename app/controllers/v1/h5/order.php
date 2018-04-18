@@ -31,6 +31,7 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
     foreach($products as $item) {
         if (isset($item['id']) && isset($item['num']) && $item['id'] > 0 && $item['num'] > 0) {
             $info = Product::findFirst($item['id']);
+            $ret[$item['id']]['id']    = $item['id'];
             $ret[$item['id']]['name']  = $info->name;
             $ret[$item['id']]['title'] = $info->title;
             $ret[$item['id']]['price'] = $app->producthelper->getProductPrice($item['id']);
