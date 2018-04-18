@@ -14,7 +14,7 @@ $app->get('/v1/h5/address/list', function () use ($app) {
     $data = CustomerAddress::find([
         'conditions' => "status = 0 and customer_id=" . $customerId,
         'order' => 'id desc',
-        'columns' => 'id, rec_name, rec_school, rec_room, rec_phone, rec_detail',
+        'columns' => 'id, rec_name, rec_school, rec_room, rec_phone, rec_detail, default_flag',
     ])->toArray();
 
     if (empty($data)) {
