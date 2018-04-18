@@ -34,7 +34,7 @@ $app->get('/v1/app/product/buy/list', function () use ($app) {
         }
 
         $ret[] = [
-            'id' => $item['product_id'],
+            'product_id' => $item['product_id'],
             'name' => $name,
             'num' => $num,
         ];
