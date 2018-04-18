@@ -59,19 +59,19 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     $ar->cart = json_encode($cart);
 
     if ($ar->save()) {
-        $data = [];
-        $productInfo = Product::findFirst($pid);
-        $data[$pid] = [
-            'id' => $pid,
-            'num' => $num,
-            'name' => $productInfo->name,
-            'img'  => $productInfo->img,
-            'price' => $app->producthelper->getProductPrice($pid),
-        ];
+        // $data = [];
+        // $productInfo = Product::findFirst($pid);
+        // $data[$pid] = [
+        //     'id' => $pid,
+        //     'num' => $num,
+        //     'name' => $productInfo->name,
+        //     'img'  => $productInfo->img,
+        //     'price' => $app->producthelper->getProductPrice($pid),
+        // ];
 
         return [
             'cart_id'  => $ar->id,
-            'products' => $data,
+            // 'products' => $data,
         ];
     } else {
         throw new BusinessException(1000, '添加失败');
