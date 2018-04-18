@@ -26,7 +26,8 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
     }
 
     $ret = [];
-    $diff = 0
+    $diff = 0;
+
     foreach($products as $item) {
         if (isset($item['id']) && isset($item['num']) && $item['id'] > 0 && $item['num'] > 0) {
             $info = Product::findFirst($item['id']);
@@ -40,6 +41,9 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
     }
 
     return [
-        
+        'products' => $ret,
+        'diff' => $diff,
+        'express_fee' => $app->config->params->express_fee,
+        'address' => $app->util->getDefaultAddress($app),
     ];
 });
