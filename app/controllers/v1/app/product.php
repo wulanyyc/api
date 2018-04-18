@@ -33,8 +33,10 @@ $app->get('/v1/app/product/buy/list', function () use ($app) {
             $num = 0;
         }
 
-        $ret[$item['product_id']]['name'] = $name;
-        $ret[$item['product_id']]['num'] = $num;
+        $ret[] = [
+            'name' => $name,
+            'num' => $num,
+        ];
     }
 
     return $ret;
