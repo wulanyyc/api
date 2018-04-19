@@ -60,6 +60,7 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 
     foreach($ret as $key => $value) {
         $ret[$key]['address'] = $app->util->getAddressInfo($app, $value['address_id']);
+        $ret[$key]['expect_delivery_minitue'] = $app->config->params->expect_delivery_minitue;
     }
 
     return $ret;
