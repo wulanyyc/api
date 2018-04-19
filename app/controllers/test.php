@@ -236,6 +236,15 @@ $app->get('/test/init/order', function () use ($app) {
 });
 
 
+$app->get('/test/init/order/rob', function () use ($app) {
+    for($i = 60; $i < 100; $i++) {
+        $app->redis->setex($app->config->params['get_order_prefix'] . $i, 86400 * 3, 0);
+    }
+
+    return 1;
+});
+
+
 $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
     $app->redis->setex($app->config->params->get_order_prefix . $id, 86400, 1);
     return 1;
