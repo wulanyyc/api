@@ -35,6 +35,7 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
             $ret[$item['id']]['name']  = $info->name;
             $ret[$item['id']]['title'] = $info->title;
             $ret[$item['id']]['slogan'] = $info->slogan;
+            $ret[$item['id']]['num'] = $item['num'];
             $ret[$item['id']]['img']   = $info->img;
             $ret[$item['id']]['price'] = $app->producthelper->getProductPrice($item['id']);
             $diff += $info->market_price - $ret[$item['id']]['price'];
