@@ -22,8 +22,6 @@ ALTER TABLE `biaoye`.`product_list`
 DROP INDEX `status` ;
 
 
-
-
  CREATE TABLE `coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
@@ -37,4 +35,16 @@ DROP INDEX `status` ;
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8
+
+
+CREATE TABLE `customer_coupon_use` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `cid` varchar(45) NOT NULL,
+  `use_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: 未使用  2: 已使用',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `customer` (`customer_id`),
+  KEY `coupon_id` (`cid`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

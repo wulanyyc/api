@@ -108,10 +108,22 @@ class Util
             return $cacheAddress;
         } else {
             $info = CustomerAddress::findFirst($id);
-            $school = School::findFirst($info->rec_school)->name;
-            $room = Room::findFirst($info->rec_room)->name;
+            $school = School::findFirst($info->rec_school);
+            $room = Room::findFirst($info->rec_room);
 
-            $address = $school . $room . $info->rec_detail;
+            if ($school) {
+                $schoolName = $school->name;
+            } else {
+                $schoolName = '';
+            }
+
+            if ($room) {
+                $roomName = $room->name;
+            } else {
+                $roomName = '';
+            }
+
+            $address = $schoolName . $roomName . $info->rec_detail;
 
             $app->redis->setex($key, 86400, $address);
             return $address;
