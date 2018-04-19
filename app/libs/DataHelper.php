@@ -3,6 +3,7 @@ use Biaoye\Model\School;
 use Biaoye\Model\Room;
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductCategory;
+use Biaoye\Model\CustomerCoupon;
 
 class DataHelper
 {
@@ -40,24 +41,44 @@ class DataHelper
         return '';
     }
 
-    public function checkCouponStatus($app, $config, $products) {
-        $data = [];
-        $total = 0;
-        foreach($products as $product) {
-            $info = Product::findFirst($product['id']);
-            $data[$product['category']]['total'] = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+    public function checkCouponStatus($app, $couponId, $products) {
+        $couponInfo = CustomerCoupon::findFirst($couponId);
+        $config = json_decode($couponInfo->config, true);
 
-            $data[$product['sub_category']]['total'] = $product['num'] * $app->producthelper->getProductPrice($product['id']);
-
-            $total += $data[$product['category']]['total'];
+        if ($couponInfo->type == 1) {
+            return 1;
         }
 
-        if (empty($config['category'])) {
-            if ($total <= $config['limit_money']) {
-                return 1;
-            }
-        } else {
+        if ($couponInfo->type == 2) {
+            $data = [];
+            $total = 0;
 
+            foreach($products as $product) {
+                $info = Product::findFirst($product['id']);
+
+                $money = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+
+                $data['category'][$info->category]['total'] = $money;
+
+                $data['category'][$info->sub_category]['total'] = $money;
+
+                $total += $money;
+            }
+
+            if (empty($config['category'])) {
+                if ($total >= $config['limit_money']) {
+                    return 1;
+                }
+            } else {
+                $categoryTotal = 0;
+                foreach($config['category'] as $item) {
+                    $categoryTotal += $data['category'][$item]['total'];
+                }
+
+                if ($categoryTotal >= $config['limit_money']) {
+                    return 1;
+                }
+            }
         }
 
         return 0;

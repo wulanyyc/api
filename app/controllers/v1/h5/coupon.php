@@ -8,10 +8,9 @@ use Biaoye\Model\CustomerCouponUse;
 
 $app->post('/v1/h5/coupon/list', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
-    $money = $app->request->getPost("money");
     $products = $app->request->getPost("products");
 
-    if ($money == 0) {
+    if (empty($products)) {
          return [];
     }
 
@@ -25,6 +24,7 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
     }
 
     $ret = [];
+    $products = json_decode($products, true);
     foreach($coupons as $item) {
         $info = CustomerCoupon::findFirst($item['coupon_id']);
         if ($info && $info->status == 0) {
@@ -35,19 +35,38 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
             $item['start_date'] = date('Y.m.d', strtotime($item['start_date']));
             $item['end_date'] = date('Y.m.d', strtotime($item['end_date']));
 
-            if ($info->type == 2) {
-                $config = json_decode($info->config, true);
-                $item['status'] = $app->datahelper->checkCouponStatus($app, $config, $products);
-            }
-
-            $item['status'] = 0;
+            $item['status'] = $app->datahelper->checkCouponStatus($app, $item['coupon_id'], $products);
             $ret[] = $item;
         }
     }
 
-
-
     return $ret;
+});
+
+
+$app->post('/v1/h5/coupon/result', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+    $coupons = $app->request->getPost("coupons");
+
+    if (!empty($coupons)) {
+        $coupons = CustomerCouponUse::find([
+            'conditions' => "customer_id=" . $customerId . " and use_status = 0 and coupon_id in (" . $coupons . ")and end_date >= " . date('Ymd', time()) ,
+            "columns" => 'coupon_id',
+        ])->toArray();
+
+        if (empty($coupons)) {
+            return 0;
+        } else {
+            $total = 0;
+            foreach($coupons as $item) {
+                $total += CustomerCoupon::findFirst($item['coupon_id'])->money;
+            }
+
+            return $total;
+        }
+    } else {
+        return 0;
+    }
 });
 
 
