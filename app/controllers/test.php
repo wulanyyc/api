@@ -437,7 +437,6 @@ $app->get('/test/init/coupon', function () use ($app) {
 $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use ($app) {
     $info = CustomerCoupon::findFirst($cid);
 
-    return $info->toArray();
     if ($info->type == 1) {
         $valid = $info->valid_day;
         $startDate = date('Ymd', time());
