@@ -129,3 +129,20 @@ $app->get('/v1/h5/address/set/default/{id:\d+}', function ($id) use ($app) {
         throw new BusinessException(1000, '设置失败');
     }
 });
+
+
+$app->get('/v1/h5/address/cancel/default/{id:\d+}', function ($id) use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $up = CustomerAddress::findFirst($id);
+    if (!$up) {
+        throw new BusinessException(1000, '参数有误');
+    }
+    $up->default_flag = 0;
+
+    if ($up->save()) {
+        return 1;
+    } else {
+        throw new BusinessException(1000, '设置失败');
+    }
+});
