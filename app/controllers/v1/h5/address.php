@@ -103,7 +103,8 @@ $app->get('/v1/h5/address/del/{id:\d+}', function ($id) use ($app) {
         throw new BusinessException(1000, '没有操作权限');
     }
 
-    if ($ar->delete()) {
+    $ar->status = 1;
+    if ($ar->save()) {
         return 1;
     } else {
         throw new BusinessException(1000, '删除失败');

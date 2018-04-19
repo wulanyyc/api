@@ -108,6 +108,7 @@ class Util
             return $cacheAddress;
         } else {
             $info = CustomerAddress::findFirst($id);
+            
             $school = School::findFirst($info->rec_school);
             $room = Room::findFirst($info->rec_room);
 
