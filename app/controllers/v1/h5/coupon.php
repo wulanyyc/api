@@ -11,6 +11,10 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
     $money = $app->request->getPost("money");
     $products = $app->request->getPost("products");
 
+    if ($money == 0) {
+         return [];
+    }
+
     $coupons = CustomerCouponUse::find([
         'conditions' => "customer_id=" . $customerId . " and use_status = 0 and end_date >= " . date('Ymd', time()) ,
         "columns" => 'coupon_id, start_date, end_date',
