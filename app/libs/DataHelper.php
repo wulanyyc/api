@@ -47,9 +47,19 @@ class DataHelper
             $info = Product::findFirst($product['id']);
             $data[$product['category']]['total'] = $product['num'] * $app->producthelper->getProductPrice($product['id']);
 
+            $data[$product['sub_category']]['total'] = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+
             $total += $data[$product['category']]['total'];
         }
 
-        
+        if (empty($config['category'])) {
+            if ($total <= $config['limit_money']) {
+                return 1;
+            }
+        } else {
+
+        }
+
+        return 0;
     }
 }

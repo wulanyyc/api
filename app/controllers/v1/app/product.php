@@ -109,6 +109,25 @@ $app->get('/v1/app/product/buy/process/list', function () use ($app) {
 });
 
 
+$app->get('/v1/app/product/buy/complete/list', function () use ($app) {
+    $agentId = $app->util->getAgentId($app);
+
+    $ret = AgentInventoryRecords::find([
+        "conditions" => "status=1 and operator=1 and agent_id = " . $agentId,
+        "columns" => 'product_id, need_num, num, id as operator_id',
+        "order" => 'id desc',
+    ])->toArray();
+
+    if (!empty($ret)) {
+        foreach($ret as $key => $item) {
+            $ret[$key]['name'] = Product::findFirst($item['product_id'])->name;
+        }
+    }
+
+    return $ret;
+});
+
+
 $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num) use ($app) {
     $agentId = $app->util->getAgentId($app);
 
