@@ -13,6 +13,8 @@ use Biaoye\Model\ProductTag;
 use Biaoye\Model\ProductTagRelation;
 use Biaoye\Model\Company;
 use Biaoye\Model\CompanyInventory;
+use Biaoye\Model\CustomerCoupon;
+use Biaoye\Model\CustomerCouponUse;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
@@ -382,4 +384,84 @@ $app->get('/test/cart', function () use ($app) {
     ];
 
     echo json_encode($data);
+});
+
+
+$app->get('/test/init/coupon', function () use ($app) {
+    for ($i=0; $i < 10; $i++) {
+        $type = rand(1, 3);
+
+        if ($type == 1) {
+            $ar = new CustomerCoupon();
+            $ar->type = $type;
+            $ar->name = $app->util->getChar(5);
+            $ar->money = rand(1, 100);
+            $ar->desc = $app->util->getChar(10);
+            $ar->valid_day = rand(3, 50);
+            $ar->save();
+        }
+
+        if ($type == 2) {
+            $ar = new CustomerCoupon();
+            $ar->type = $type;
+            $ar->name = $app->util->getChar(5);
+            $ar->money = rand(1, 10);
+            $ar->desc = $app->util->getChar(10);
+            $ar->valid_day = rand(3, 50);
+            $ar->config = json_encode([
+                'limit_money' => rand(50, 100)
+            ]);
+            $ar->save();
+        }
+
+        if ($type == 3) {
+            $ar = new CustomerCoupon();
+            $ar->type = $type;
+            $ar->name = $app->util->getChar(5);
+            $ar->money = rand(1, 10);
+            $ar->desc = $app->util->getChar(10);
+            $ar->valid_day = rand(3, 50);
+            $ar->config = json_encode([
+                'start_date' => 20180414,
+                'end_date' => 20180430,
+                'category' => 1,
+            ]);
+            $ar->save();
+        }
+    }
+
+    return 1;
+});
+
+
+$app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use ($app) {
+    $info = CustomerCoupon::findFirst($cid);
+
+    if ($cid == 1) {
+        $valid = $info->valid_day;
+        $startDate = date('Ymd', time());
+        $endDate = date('Ymd', time() + $valid * 86400);
+    }
+
+    if ($cid == 2) {
+        $valid = $info->valid_day;
+        $startDate = date('Ymd', time());
+        $endDate = date('Ymd', time() + $valid * 86400);
+    }
+
+    if ($cid == 3) {
+        $config = json_decode($info->config, true);
+
+        $startDate = $config['start_date'];
+        $endDate   = $config['end_date'];
+    }
+
+    $ar = new CustomerCouponUse();
+    $ar->customer_id = $uid;
+    $ar->coupon_id = $cid;
+    $ar->start_date = $startDate;
+    $ar->end_date = $endDate;
+    $ar->save();
+
+    return 1;
 });
