@@ -48,3 +48,4 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
         'address' => $app->util->getDefaultAddress($app),
     ];
 });
+

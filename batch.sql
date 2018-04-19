@@ -1,6 +1,3 @@
-
-
-
 CREATE TABLE `school_product_list` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `category` int(11) unsigned NOT NULL,
@@ -23,3 +20,21 @@ CREATE TABLE `school_product_list` (
 
 ALTER TABLE `biaoye`.`product_list` 
 DROP INDEX `status` ;
+
+
+
+
+ CREATE TABLE `coupon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1: 系统券  2: 用户券 3: 私人券 4: 活动券',
+  `money` float NOT NULL DEFAULT '0',
+  `day` int(11) NOT NULL DEFAULT '0' COMMENT '有效期',
+  `desc` varchar(45) DEFAULT NULL,
+  `money_limit` varchar(45) DEFAULT '0',
+  `start_date` int(11) NOT NULL,
+  `end_date` int(11) NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8

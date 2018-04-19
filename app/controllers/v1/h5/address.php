@@ -43,6 +43,8 @@ $app->get('/v1/h5/address/detail/{id:\d+}', function ($id) use ($app) {
     $ret['id'] = $id;
     $ret['school'] = School::findFirst($data->rec_school)->name;
     $ret['room']   = Room::findFirst($data->rec_room)->name;
+    $ret['rec_school'] = $data->rec_school;
+    $ret['rec_room'] = $data->rec_room;
     $ret['rec_name'] = $data->rec_name;
     $ret['rec_phone'] = $data->rec_phone;
     $ret['rec_detail'] = $data->rec_detail;
