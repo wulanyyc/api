@@ -389,7 +389,7 @@ $app->get('/test/cart', function () use ($app) {
 
 $app->get('/test/init/coupon', function () use ($app) {
     for ($i=0; $i < 10; $i++) {
-        $type = rand(1, 3);
+        $type = rand(1, 2);
 
         if ($type == 1) {
             $ar = new CustomerCoupon();
@@ -397,7 +397,9 @@ $app->get('/test/init/coupon', function () use ($app) {
             $ar->name = $app->util->getChar(5);
             $ar->money = rand(1, 100);
             $ar->desc = $app->util->getChar(10);
-            $ar->valid_day = rand(3, 50);
+            $ar->config = json_encode([
+                'days' => rand(3, 50)
+            ]);
             $ar->save();
         }
 
@@ -407,24 +409,11 @@ $app->get('/test/init/coupon', function () use ($app) {
             $ar->name = $app->util->getChar(5);
             $ar->money = rand(1, 10);
             $ar->desc = $app->util->getChar(10);
-            $ar->valid_day = rand(3, 50);
             $ar->config = json_encode([
-                'limit_money' => rand(50, 100)
-            ]);
-            $ar->save();
-        }
-
-        if ($type == 3) {
-            $ar = new CustomerCoupon();
-            $ar->type = $type;
-            $ar->name = $app->util->getChar(5);
-            $ar->money = rand(1, 10);
-            $ar->desc = $app->util->getChar(10);
-            $ar->valid_day = rand(3, 50);
-            $ar->config = json_encode([
+                'limit_money' => rand(50, 100),
                 'start_date' => 20180414,
                 'end_date' => 20180430,
-                'category' => 1,
+                'category' => [1],
             ]);
             $ar->save();
         }
@@ -438,18 +427,12 @@ $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use
     $info = CustomerCoupon::findFirst($cid);
 
     if ($info->type == 1) {
-        $valid = $info->valid_day;
+        $config = json_decode($info->config, true);
         $startDate = date('Ymd', time());
-        $endDate = date('Ymd', time() + $valid * 86400);
+        $endDate = date('Ymd', time() + $config['days'] * 86400);
     }
 
     if ($info->type == 2) {
-        $valid = $info->valid_day;
-        $startDate = date('Ymd', time());
-        $endDate = date('Ymd', time() + $valid * 86400);
-    }
-
-    if ($info->type == 3) {
         $config = json_decode($info->config, true);
 
         $startDate = $config['start_date'];
