@@ -1,6 +1,8 @@
 <?php
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
+use Biaoye\Model\Product;
+use Biaoye\Model\ProductCategory;
 
 class DataHelper
 {
@@ -36,5 +38,18 @@ class DataHelper
         }
 
         return '';
+    }
+
+    public function checkCouponStatus($app, $config, $products) {
+        $data = [];
+        $total = 0;
+        foreach($products as $product) {
+            $info = Product::findFirst($product['id']);
+            $data[$product['category']]['total'] = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+
+            $total += $data[$product['category']]['total'];
+        }
+
+        
     }
 }

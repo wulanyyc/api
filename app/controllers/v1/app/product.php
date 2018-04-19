@@ -99,6 +99,12 @@ $app->get('/v1/app/product/buy/process/list', function () use ($app) {
         "order" => 'id desc',
     ])->toArray();
 
+    if (!empty($ret)) {
+        foreach($ret as $key => $item) {
+            $ret[$key]['name'] = Product::findFirst($item['product_id'])->name;
+        }
+    }
+
     return $ret;
 });
 

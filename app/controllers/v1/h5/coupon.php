@@ -37,12 +37,15 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
 
             if ($info->type == 2) {
                 $config = json_decode($info->config, true);
-                if ($money)
+                $item['status'] = $app->datahelper->checkCouponStatus($app, $config, $products);
             }
 
+            $item['status'] = 0;
             $ret[] = $item;
         }
     }
+
+
 
     return $ret;
 });
