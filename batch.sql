@@ -48,3 +48,33 @@ CREATE TABLE `customer_coupon_use` (
   KEY `customer` (`customer_id`),
   KEY `coupon_id` (`cid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `customer_coupon` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT '1: 系统赠送券  2: 满减券  3: 品类券',
+  `name` varchar(45) NOT NULL,
+  `money` float NOT NULL DEFAULT '0',
+  `desc` varchar(45) DEFAULT '',
+  `config` tinytext COMMENT '券配置参数',
+  `valid_day` int(10) unsigned DEFAULT '0' COMMENT '有效期',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `customer_coupon_use` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) unsigned NOT NULL,
+  `coupon_id` int(10) unsigned NOT NULL,
+  `use_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0: 未使用  1: 已使用',
+  `start_date` int(10) unsigned NOT NULL,
+  `end_date` int(10) unsigned NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `customer` (`customer_id`),
+  KEY `coupon_id` (`coupon_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

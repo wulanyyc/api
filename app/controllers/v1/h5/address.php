@@ -49,6 +49,7 @@ $app->get('/v1/h5/address/detail/{id:\d+}', function ($id) use ($app) {
     $ret['rec_phone'] = $data->rec_phone;
     $ret['rec_detail'] = $data->rec_detail;
     $ret['default_flag'] = $data->default_flag;
+    $ret['sex'] = $data->sex;
 
     return $ret;
 });
