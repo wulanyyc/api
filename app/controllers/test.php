@@ -437,19 +437,19 @@ $app->get('/test/init/coupon', function () use ($app) {
 $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use ($app) {
     $info = CustomerCoupon::findFirst($cid);
 
-    if ($cid == 1) {
+    if ($info->type == 1) {
         $valid = $info->valid_day;
         $startDate = date('Ymd', time());
         $endDate = date('Ymd', time() + $valid * 86400);
     }
 
-    if ($cid == 2) {
+    if ($info->type == 2) {
         $valid = $info->valid_day;
         $startDate = date('Ymd', time());
         $endDate = date('Ymd', time() + $valid * 86400);
     }
 
-    if ($cid == 3) {
+    if ($info->type == 3) {
         $config = json_decode($info->config, true);
 
         $startDate = $config['start_date'];
