@@ -54,7 +54,7 @@ $app->post('/v1/app/product/buy/submit', function () use ($app) {
 
     $info = json_decode($list, true);
     if (empty($info)) {
-        throw new BusinessException(1000, '进货列表不能为空');
+        throw new BusinessException(1000, '进货列表格式有误');
     }
 
     $buy = [];
