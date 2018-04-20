@@ -410,7 +410,7 @@ $app->get('/test/init/coupon', function () use ($app) {
             $ar->money = rand(1, 10);
             $ar->desc = $app->util->getChar(10);
             $ar->config = json_encode([
-                'limit_money' => rand(50, 100),
+                'limit_money' => rand(30, 50),
                 'start_date' => 20180414,
                 'end_date' => 20180430,
                 'category' => [1],
@@ -425,7 +425,7 @@ $app->get('/test/init/coupon', function () use ($app) {
             $ar->money = rand(1, 10);
             $ar->desc = $app->util->getChar(10);
             $ar->config = json_encode([
-                'limit_money' => rand(50, 100),
+                'limit_money' => rand(30, 50),
                 'start_date' => 20180414,
                 'end_date' => 20180430,
                 'factory' => [$app->util->getChar()],
