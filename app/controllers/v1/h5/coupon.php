@@ -11,7 +11,7 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
     $products = $app->request->getPost("products");
 
     if (empty($products)) {
-         return [];
+         throw new BusinessException(1000, '非法访问');
     }
 
     $coupons = CustomerCouponUse::find([
