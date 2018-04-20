@@ -2,3 +2,5 @@
 */.DS_Store
 app/configs/params.php
 app/configs/redis.php
+app/configs/alipay.php
+app/configs/wxpay.php

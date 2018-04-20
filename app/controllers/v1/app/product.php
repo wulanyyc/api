@@ -8,6 +8,7 @@ use Biaoye\Model\Product;
 use Biaoye\Model\CompanyInventory;
 use Biaoye\Model\AgentInventory;
 use Biaoye\Model\AgentInventoryRecords;
+use Phalcon\Mvc\Model\Transaction\Manager;
 
 // 进货
 $app->get('/v1/app/product/buy/list', function () use ($app) {
@@ -131,17 +132,55 @@ $app->get('/v1/app/product/buy/complete/list', function () use ($app) {
 $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num) use ($app) {
     $agentId = $app->util->getAgentId($app);
 
-    $up = AgentInventoryRecords::findFirst($id);
-    if ($num > $up->need_num) {
-        throw new BusinessException(1000, '数量不能超过进货单数量');
-    }
+    try {
+        $manager = new Manager();
+        $transaction = $manager->get();
 
-    $up->num = $num;
-    $up->status = 1;
+        $up = AgentInventoryRecords::findFirst($id);
+        $up->setTransaction($transaction);
 
-    if ($up->save()) {
+        $up->num = $num;
+        $up->status = 1;
+
+        if (!$up->save()) {
+            $transaction->rollback("add invertory_record fail");
+        }
+
+        $exsit = AgentInventory::count("agent_id=" . $up->agent_id . " and product_id=" . $up->product_id);
+
+        if ($exsit > 0) {
+            $ai = AgentInventory::findFirst("agent_id=" . $up->agent_id . " and product_id=" . $up->product_id);
+            $ai->setTransaction($transaction);
+
+            $ai->num = $ai->num + $num;
+            if (!$ai->save()) {
+                $transaction->rollback("update agent_inventory fail");
+            }
+
+            $transaction->commit();
+        } else {
+            $agentInfo = Agent::findFirst($up->agent_id);
+            $add = new AgentInventory();
+            $add->setTransaction($transaction);
+
+            $add->num = $num;
+            $add->product_id = $up->product_id;
+            $add->agent_id = $up->agent_id;
+            $add->school_id = $agentInfo->school_id;
+            $add->room_id = $agentInfo->room_id;
+
+            if (!$add->save()) {
+                $transaction->rollback("add agent_inventory fail");
+            }
+
+            $transaction->commit();
+        }
+
         return 1;
-    } else {
-        throw new BusinessException(1000, '设置失败');
+    } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+        $msg = $e->getMessage();
+        $app->logger->error("add product save fail_" . $id . '_' . $oid . ':' . $msg);
+        
+        throw new BusinessException(1000, '进货失败');
     }
 });

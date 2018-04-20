@@ -4,6 +4,7 @@ use Biaoye\Model\Room;
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\CustomerCoupon;
+use Biaoye\Model\CustomerCouponUse;
 
 class DataHelper
 {
@@ -56,7 +57,7 @@ class DataHelper
             foreach($products as $product) {
                 $info = Product::findFirst($product['id']);
 
-                $money = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+                $money = $product['num'] * $app->product->getProductPrice($product['id']);
 
                 if (!isset($data['category'][$info->category]['total'])) {
                     $data['category'][$info->category]['total'] = $money;
@@ -98,7 +99,7 @@ class DataHelper
             foreach($products as $product) {
                 $info = Product::findFirst($product['id']);
 
-                $money = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+                $money = $product['num'] * $app->product->getProductPrice($product['id']);
 
                 if (!isset($data['factory'][$info->factory]['total'])) {
                     $data['factory'][$info->factory]['total'] = $money;
@@ -122,5 +123,71 @@ class DataHelper
         }
 
         return 0;
+    }
+
+    public function checkInventory($app, $products) {
+        $ret = [
+            'status' => true;
+        ];
+
+        foreach($products as $product) {
+            $info = Product::findFirst($product['id']);
+            $inventoryNum = $info->num;
+
+            if ($inventoryNum < $product['num']) {
+                $ret['product'] = $info->name;
+                $ret['num'] = $info->num;
+                $ret['status'] = false;
+                break;
+            }
+        }
+
+        return $ret;
+    }
+
+    public function calculateOrderPrice($app, $data) {
+        $products = json_decode($data['products', true]);
+        $coupons = explode(',', $data['coupon_ids']);
+        $productPrice = 0;
+
+        foreach($products as $product) {
+            $productPrice += $product['num'] * $app->product->getProductPrice;
+        }
+
+        $couponFee = 0;
+        if (!empty($coupons)) {
+            $customerId = $app->util->getCustomerId($app);
+            foreach($coupons as $coupon) {
+                $cnt = CustomerCouponUse::count("customer_id=" . $customerId . " and coupon_id=" . $coupon . " and use_status=0");
+
+                if ($cnt > 0) {
+                    $status = $app->data->checkCouponStatus($app, $coupon, $products);
+                    if ($status == 1) {
+                        $couponFee += CustomerCoupon::findFirst($coupon)->money;
+                    }
+                }
+            }
+        }
+
+        $expressFee = $app->config->params->express_fee;
+
+        $payMoney = $productPrice + $expressFee - $couponFee;
+        if ($payMoney < 0) {
+            $payMoney = 0;
+        }
+
+        $deliverFee = round($expressFee * $app->config->params->deliver_fee_rate, 2);
+        $productSalary = round(($productPrice - $couponFee) * $app->config->params->order_salary_rate, 2);
+        $totalSalary = $productSalary + $deliverFee;
+
+        return [
+            'product_price' => $productPrice,
+            'express_fee' => $expressFee,
+            'pay_money' => $payMoney,
+            'deliver_fee' => $deliverFee,
+            'product_salary' => $productSalary,
+            'total_salary' => $totalSalary,
+            'coupon_fee' => $couponFee,
+        ];
     }
 }

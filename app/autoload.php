@@ -82,12 +82,16 @@ function init_dependency_injection($config, $isCLI = false)
         return new Curl();
     }, true);
 
-    $di->set('producthelper', function () {
+    $di->set('product', function () {
         return new ProductHelper();
     }, true);
 
-    $di->set('datahelper', function () {
+    $di->set('data', function () {
         return new DataHelper();
+    }, true);
+
+    $di->set('pay', function () {
+        return new PayHelper();
     }, true);
 
     return $di;

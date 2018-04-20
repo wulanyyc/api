@@ -29,7 +29,7 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
         $productInfo = Product::findFirst($item['id']);
         $data[$key]['name']  = $productInfo->name;
         $data[$key]['img']   = $productInfo->img;
-        $data[$key]['price'] = $app->producthelper->getProductPrice($item['id']);
+        $data[$key]['price'] = $app->product->getProductPrice($item['id']);
     }
 
     return [
@@ -51,7 +51,7 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     $cart[$pid] = [
         'id' => $pid,
         'num' => $num,
-        'price' => $app->producthelper->getProductPrice($pid),
+        'price' => $app->product->getProductPrice($pid),
     ];
 
     $ar = new CustomerCart();
@@ -66,7 +66,7 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
         //     'num' => $num,
         //     'name' => $productInfo->name,
         //     'img'  => $productInfo->img,
-        //     'price' => $app->producthelper->getProductPrice($pid),
+        //     'price' => $app->product->getProductPrice($pid),
         // ];
 
         return [
@@ -116,7 +116,7 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
             $cart[$item['id']] = [
                 'id' => $item['id'],
                 'num' => $item['num'],
-                'price' => $app->producthelper->getProductPrice($item['id']),
+                'price' => $app->product->getProductPrice($item['id']),
             ];
         } else {
             throw new BusinessException(1000, '参数有误');
@@ -160,11 +160,11 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
         $cart[$pid] = [
             'id' => $pid,
             'num' => $num,
-            'price' => $app->producthelper->getProductPrice($pid),
+            'price' => $app->product->getProductPrice($pid),
         ];
     } else {
         $cart[$pid]['num'] = intval($cart[$pid]['num']) + intval($num);
-        $cart[$pid]['price'] = $app->producthelper->getProductPrice($pid);
+        $cart[$pid]['price'] = $app->product->getProductPrice($pid);
     }
 
     $cartInfo->cart = json_encode($cart);
@@ -202,7 +202,7 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
         if ($cart[$pid]['num'] <= 0) {
             unset($cart[$pid]);
         } else {
-            $cart[$pid]['price'] = $app->producthelper->getProductPrice($pid);
+            $cart[$pid]['price'] = $app->product->getProductPrice($pid);
         }
     }
 

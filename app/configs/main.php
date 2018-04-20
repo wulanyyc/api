@@ -1,14 +1,15 @@
 <?php
 
 return [
-    'db' => require(__DIR__ . "/db.php"),
-    'logger' => ['path' => __DIR__ . '/../logs/app.log'],
-    'redis' => require(__DIR__ . "/redis.php"),
-    'mapper' => [],
-    'file' => [
-        'path' => __DIR__ . "/../../public/files/",
-    ],
     'env' => 'env',
-    'params' => require(__DIR__ . "/params.php"),
+    'mapper' => [],
     'login_cache_time' => 259200,
+    'db' => require(__DIR__ . "/db.php"),
+    'logger' => [
+        'path' => __DIR__ . '/../logs/app.log'
+    ],
+    'redis'  => require(__DIR__ . "/redis.php"),
+    'params' => require(__DIR__ . "/params.php"),
+    'wxpay'  => require(__DIR__ . "/alipay.php"),
+    'alipay' => require(__DIR__ . "/wxpay.php"),
 ];

@@ -37,7 +37,7 @@ $app->post('/v1/h5/coupon/list', function () use ($app) {
             $item['start_date'] = date('Y.m.d', strtotime($item['start_date']));
             $item['end_date'] = date('Y.m.d', strtotime($item['end_date']));
 
-            $item['status'] = $app->datahelper->checkCouponStatus($app, $item['coupon_id'], $products);
+            $item['status'] = $app->data->checkCouponStatus($app, $item['coupon_id'], $products);
             $ret[] = $item;
         }
     }

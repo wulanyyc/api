@@ -154,8 +154,8 @@ class Util
                 'rec_name' => $data->rec_name,
                 'rec_phone' => $data->rec_phone,
                 'rec_detail' => $data->rec_detail,
-                'school' => $app->datahelper->getSchoolName($app, $data->rec_school),
-                'room' => $app->datahelper->getRoomName($app, $data->rec_school),
+                'school' => $app->data->getSchoolName($app, $data->rec_school),
+                'room' => $app->data->getRoomName($app, $data->rec_school),
             ];
         }
     }
