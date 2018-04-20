@@ -46,3 +46,10 @@ $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
 
     return $data;
 });
+
+
+$app->get('/v1/h5/product/recom', function () use ($app) {
+    $data = $app->product->getProductRecom($app, 4);
+
+    return $data;
+});

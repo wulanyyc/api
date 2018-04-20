@@ -79,7 +79,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         throw new BusinessException(1000, '参数不足');
     }
 
-    // pay_style: 0, 1   terminal: wap, pc, wechat
+    // pay_style: 0, 1   terminal: wap, wechat
     if (empty($params['pay_style']) || empty($params['terminal'])) {
         throw new BusinessException(1000, '支付方式或终端不能为空');
     }
@@ -145,13 +145,93 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             $transaction->rollback("save customer_pay fail");
         }
 
-        $ret = $app->pay->handle($app, $pay->id);
-
-        return $ret;
+        $transaction->commit();
+        // $ret = $app->pay->handle($app, $pay->id);
+        return 1;
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
         $msg = $e->getMessage();
         $app->logger->error("order_fail:" . $msg);
 
         throw new BusinessException(1000, '下单失败');
     }
+});
+
+
+$app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
+    $info = CustomerOrder::findFirst($id);
+    if (!$info) {
+        throw new BusinessException(1000, '单号有误');
+    }
+
+    $orderId = $info->id;
+
+    $payInfo = CustomerPay::findFirst("order_id=" . $orderId);
+
+    if ($payInfo) {
+        return $payInfo->pay_result;
+    } else {
+        return 0;
+    }
+});
+
+
+$app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+    $orders = CustomerOrder::find("customer_id=" . $customerId . " and status=" . $status)->toArray();
+
+    if (empty($orders)) {
+        return [];
+    }
+
+    $ret = [];
+    foreach($orders as $key => $order) {
+        $productJson = $order['products'];
+        $products = json_decode($productJson, true);
+
+        $ret[$order['id']]['order_num'] = count($products);
+        $product  = array_pop($products);
+        $productInfo = Product::findFirst($product['id']);
+
+        $ret[$order['id']]['product'] = [
+            'name' => $productInfo->name,
+            'title' => $productInfo->title,
+            'slogan' => $productInfo->slogan,
+            'price' => $productInfo->price,
+            'num' => $product['num'],
+        ];
+
+        $ret[$order['id']]['total_price'] = $order['product_price'] + $order['express_fee'];
+        $ret[$order['id']]['express_fee'] = $order['express_fee'];
+    }
+
+    return $ret;
+});
+
+
+$app->get('/v1/h5/order/detail/{id:\d+}', function ($id) use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+    $order = CustomerOrder::findFirst($id)->toArray();
+
+    $products = json_decode($order['products'], true);
+
+    foreach($products as $item) {
+        $info = Product::findFirst($item['id']);
+        $ret[$item['id']]['id']    = $item['id'];
+        $ret[$item['id']]['name']  = $info->name;
+        $ret[$item['id']]['title'] = $info->title;
+        $ret[$item['id']]['slogan'] = $info->slogan;
+        $ret[$item['id']]['num'] = $item['num'];
+        $ret[$item['id']]['img']   = $info->img;
+        $ret[$item['id']]['price'] = $app->product->getProductPrice($item['id']);
+    }
+
+    return [
+        'products' => $ret,
+        'express_fee' => $order['express_fee'],
+        'address' => $app->util->getDefaultAddress($app),
+        'coupon_fee' => $order['coupon_fee'],
+        'total_price' => $order['product_price'] + $order['express_fee'],
+        'pay_money' => $order['pay_money'],
+        'order_status' => $order['status'], // 0: 待支付  1: 已支付  2: 已抢单 3: 已完成
+    ];
 });

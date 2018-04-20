@@ -217,4 +217,50 @@ class ProductHelper
 
         return $products;
     }
+
+    // 首页标签商品
+    public function getProductRecom($app, $num) {
+        $hour = intval(date("H", time()));
+        $switchHour = intval($app->config->params->switch_day_night);
+        $customerId = $app->util->getCustomerId($app);
+        $customerInfo = Customer::findFirst($customerId);
+
+        if ($hour < $switchHour) {
+            // 白天
+            return $this->getDayProductRecom($app, $num, $customerInfo);
+        } else {
+            // 晚上
+            return $this->getNightProductRecom($app, $num, $customerInfo);
+        }
+    }
+
+    public function getDayProductRecom($app, $num, $customerInfo) {
+        $products = ProductListSchool::find([
+            'conditions' => 'status=1 and school_id= ' . $customerInfo->school_id . ' and num > 0',
+            'columns' => 'product_id, name, price, title, slogan, img',
+            'limit' => $num,
+            'order' => 'sale_num desc',
+        ]);
+
+        if (!$products) {
+            return [];
+        }
+
+        $data = $products->toArray();
+
+        foreach($data as $key => $item) {
+            $data[$key]['id'] = $item['product_id'];
+            unset($data[$key]['product_id']);
+        }
+
+        return $data;
+    }
+
+    public function getNightProductRecom($app, $num, $customerInfo) {
+        $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 group by pl.id order by pl.sale_num desc limit " . $num;
+
+        $products = $app->db->query($sql)->fetchAll();
+
+        return $products;
+    }
 }

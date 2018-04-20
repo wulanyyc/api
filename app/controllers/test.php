@@ -207,8 +207,7 @@ $app->get('/test/init/address', function () use ($app) {
 
 
 $app->get('/test/init/order', function () use ($app) {
-    $cid = 1;
-    $num = 500;
+    $num = 300;
 
     for($i = 0; $i < $num; $i++) {
         $addressId = rand(1, 10);
@@ -216,8 +215,9 @@ $app->get('/test/init/order', function () use ($app) {
         $productPrice = rand(10, 1000);
 
         $ar = new CustomerOrder();
-        $ar->customer_id = $cid;
-        $ar->cart_id = rand(1, 20);
+        $ar->customer_id = rand(2, 6);
+        $ar->cart_id = 1;
+        $ar->products = CustomerCart::findFirst($ar->cart_id)->cart;
         $ar->address_id = $addressId;
         $ar->rec_sex = $sex;
         $ar->product_price = $productPrice;
@@ -228,7 +228,7 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->product_salary = $productPrice * $app->config->params->order_salary_rate;
         $ar->total_salary = $ar->product_salary + $ar->deliver_fee;
         $ar->date = date('Ymd', time());
-        $ar->status = 1;
+        $ar->status = rand(0, 4);
         $ar->save();
 
         $app->redis->setex($app->config->params['get_order_prefix'] . $ar->id, 86400, 0);
@@ -398,7 +398,8 @@ $app->get('/test/init/coupon', function () use ($app) {
             $ar->money = rand(1, 100);
             $ar->desc = $app->util->getChar(10);
             $ar->config = json_encode([
-                'days' => rand(3, 50)
+                'days' => rand(3, 50),
+                'limit_money' => rand(10, 30),
             ]);
             $ar->save();
         }

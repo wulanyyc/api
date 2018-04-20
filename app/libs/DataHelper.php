@@ -47,6 +47,20 @@ class DataHelper
         $config = json_decode($couponInfo->config, true);
 
         if ($couponInfo->type == 1) {
+            if (isset($config['limit_money'])) {
+                $total = 0;
+                foreach($products as $product) {
+                    $money = $product['num'] * $app->product->getProductPrice($product['id']);
+                    $total += $money;
+                }
+
+                if ($total > $config['limit_money']) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+
             return 1;
         }
 
@@ -127,7 +141,7 @@ class DataHelper
 
     public function checkInventory($app, $products) {
         $ret = [
-            'status' => true;
+            'status' => true,
         ];
 
         foreach($products as $product) {
@@ -146,7 +160,7 @@ class DataHelper
     }
 
     public function calculateOrderPrice($app, $data) {
-        $products = json_decode($data['products', true]);
+        $products = json_decode($data['products'], true);
         $coupons = explode(',', $data['coupon_ids']);
         $productPrice = 0;
 
