@@ -80,7 +80,9 @@ class DataHelper
             } else {
                 $categoryTotal = 0;
                 foreach($config['category'] as $item) {
-                    $categoryTotal += $data['category'][$item]['total'];
+                    if (isset($data['category'][$item])) {
+                        $categoryTotal += $data['category'][$item]['total'];
+                    }
                 }
 
                 if ($categoryTotal >= $config['limit_money']) {
@@ -109,7 +111,9 @@ class DataHelper
 
             $factoryTotal = 0;
             foreach($config['factory'] as $item) {
-                $factoryTotal += $data['factory'][$item]['total'];
+                if (isset($data['factory'][$item])) {
+                    $factoryTotal += $data['factory'][$item]['total'];
+                }
             }
 
             if ($factoryTotal >= $config['limit_money']) {
