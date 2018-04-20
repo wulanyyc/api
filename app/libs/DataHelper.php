@@ -107,7 +107,7 @@ class DataHelper
                 $total += $money;
             }
 
-            $factoryTotal = 0
+            $factoryTotal = 0;
             foreach($config['factory'] as $item) {
                 $factoryTotal += $data['factory'][$item]['total'];
             }
