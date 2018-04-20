@@ -10,6 +10,6 @@ return [
     ],
     'redis'  => require(__DIR__ . "/redis.php"),
     'params' => require(__DIR__ . "/params.php"),
-    'wxpay'  => require(__DIR__ . "/alipay.php"),
-    'alipay' => require(__DIR__ . "/wxpay.php"),
+    'wxpay'  => require(__DIR__ . "/payali.php"),
+    'alipay' => require(__DIR__ . "/paywx.php"),
 ];
