@@ -388,7 +388,7 @@ $app->get('/test/cart', function () use ($app) {
 
 
 $app->get('/test/init/coupon', function () use ($app) {
-    for ($i=0; $i < 10; $i++) {
+    for ($i=0; $i < 20; $i++) {
         $type = rand(1, 3);
 
         if ($type == 1) {
@@ -428,7 +428,7 @@ $app->get('/test/init/coupon', function () use ($app) {
                 'limit_money' => rand(50, 100),
                 'start_date' => 20180414,
                 'end_date' => 20180430,
-                'factory' => $app->util->getChar(),
+                'factory' => [$app->util->getChar()],
             ]);
             $ar->save();
         }
