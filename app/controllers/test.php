@@ -389,7 +389,7 @@ $app->get('/test/cart', function () use ($app) {
 
 $app->get('/test/init/coupon', function () use ($app) {
     for ($i=0; $i < 10; $i++) {
-        $type = rand(1, 2);
+        $type = rand(1, 3);
 
         if ($type == 1) {
             $ar = new CustomerCoupon();
@@ -417,6 +417,21 @@ $app->get('/test/init/coupon', function () use ($app) {
             ]);
             $ar->save();
         }
+
+        if ($type == 3) {
+            $ar = new CustomerCoupon();
+            $ar->type = $type;
+            $ar->name = $app->util->getChar(5);
+            $ar->money = rand(1, 10);
+            $ar->desc = $app->util->getChar(10);
+            $ar->config = json_encode([
+                'limit_money' => rand(50, 100),
+                'start_date' => 20180414,
+                'end_date' => 20180430,
+                'factory' => $app->util->getChar(),
+            ]);
+            $ar->save();
+        }
     }
 
     return 1;
@@ -432,7 +447,7 @@ $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use
         $endDate = date('Ymd', time() + $config['days'] * 86400);
     }
 
-    if ($info->type == 2) {
+    if ($info->type == 2 || $info->type == 3) {
         $config = json_decode($info->config, true);
 
         $startDate = $config['start_date'];

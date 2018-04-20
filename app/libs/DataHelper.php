@@ -58,9 +58,17 @@ class DataHelper
 
                 $money = $product['num'] * $app->producthelper->getProductPrice($product['id']);
 
-                $data['category'][$info->category]['total'] = $money;
-
-                $data['category'][$info->sub_category]['total'] = $money;
+                if (!isset($data['category'][$info->category]['total'])) {
+                    $data['category'][$info->category]['total'] = $money;
+                } else {
+                    $data['category'][$info->category]['total'] += $money;
+                }
+                
+                if (!isset($data['category'][$info->sub_category]['total'])) {
+                    $data['category'][$info->sub_category]['total'] = $money;
+                } else {
+                    $data['category'][$info->sub_category]['total'] += $money;
+                }
 
                 $total += $money;
             }
@@ -78,6 +86,34 @@ class DataHelper
                 if ($categoryTotal >= $config['limit_money']) {
                     return 1;
                 }
+            }
+        }
+
+        if ($couponInfo->type == 3) {
+            $data = [];
+            $total = 0;
+
+            foreach($products as $product) {
+                $info = Product::findFirst($product['id']);
+
+                $money = $product['num'] * $app->producthelper->getProductPrice($product['id']);
+
+                if (!isset($data['factory'][$info->factory]['total'])) {
+                    $data['factory'][$info->factory]['total'] = $money;
+                } else {
+                    $data['factory'][$info->factory]['total'] += $money;
+                }
+                
+                $total += $money;
+            }
+
+            $factoryTotal = 0
+            foreach($config['factory'] as $item) {
+                $factoryTotal += $data['factory'][$item]['total'];
+            }
+
+            if ($factoryTotal >= $config['limit_money']) {
+                return 1;
             }
         }
 
