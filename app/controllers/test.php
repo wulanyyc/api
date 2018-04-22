@@ -207,10 +207,10 @@ $app->get('/test/init/address', function () use ($app) {
 
 
 $app->get('/test/init/order', function () use ($app) {
-    $num = 300;
+    $num = 100;
 
     for($i = 0; $i < $num; $i++) {
-        $addressId = rand(1, 10);
+        $addressId = rand(1, 4);
         $sex = CustomerAddress::findFirst($addressId)->sex;
         $productPrice = rand(10, 1000);
 
@@ -231,7 +231,7 @@ $app->get('/test/init/order', function () use ($app) {
         $ar->status = rand(0, 4);
         $ar->save();
 
-        $app->redis->setex($app->config->params['get_order_prefix'] . $ar->id, 86400, 0);
+        $app->redis->setex($app->config->params['get_order_prefix'] . $ar->id, 86400 * 7, 0);
     }
 
     return 1;
