@@ -239,8 +239,8 @@ $app->get('/test/init/order', function () use ($app) {
 
 
 $app->get('/test/init/order/rob', function () use ($app) {
-    for($i = 60; $i < 100; $i++) {
-        $app->redis->setex($app->config->params['get_order_prefix'] . $i, 86400 * 3, 0);
+    for($i = 76; $i <= 100; $i++) {
+        $app->redis->setex($app->config->params['get_order_prefix'] . $i, 86400 * 7, 0);
     }
 
     return 1;
