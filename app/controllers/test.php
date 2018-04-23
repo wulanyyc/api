@@ -240,7 +240,7 @@ $app->get('/test/init/order', function () use ($app) {
 
 
 $app->get('/test/init/order/rob', function () use ($app) {
-    for($i = 76; $i <= 100; $i++) {
+    for($i = 60; $i <= 70; $i++) {
         $app->redis->setex($app->config->params['get_order_prefix'] . $i, 86400 * 7, 0);
     }
 
@@ -469,6 +469,7 @@ $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use
 $app->get('/test/init/message', function () use ($app) {
     for ($i = 0; $i < 30; $i++) {
         $ar = new NotifyMessage();
+        $ar->title = $app->util->getChar(8);
         $ar->message = $app->util->getChar(50);
         $ar->date = date('Ymd', time());
         $ar->terminal = rand(0, 1);
