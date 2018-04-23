@@ -285,17 +285,18 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
     ];
 });
 
+
 $app->post('/v1/app/agent/message', function () use ($app) {
     $date = $app->request->getPost("date");
     $historyId = $app->request->getPost("history_id");
 
-    if (empty($data) || empty($history_id)) {
+    if (empty($date) || empty($history_id)) {
         throw new BusinessException(1000, '参数有误');
     }
 
     $result = NotifyMessage::find([
         'conditions' => 'terminal = 0 and date=' . $date . " and id > " . $historyId,
-        'columns' => 'id, title, message, create_time',
+        'columns' => 'id as message_id, title, message, create_time',
         'order' => 'id desc',
     ])->toArray();
 

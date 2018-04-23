@@ -46,6 +46,10 @@ $app->post('/v1/h5/customer/message', function () use ($app) {
     $date = $app->request->getPost("date");
     $historyId = $app->request->getPost("history_id");
 
+    if (empty($date) || empty($history_id)) {
+        throw new BusinessException(1000, '参数有误');
+    }
+
     $result = NotifyMessage::find([
         'conditions' => 'terminal = 1 and date=' . $date . " and id > " . $historyId,
         'columns' => 'id, title, message, create_time',
