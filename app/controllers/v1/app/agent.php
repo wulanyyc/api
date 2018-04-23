@@ -196,10 +196,6 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
 $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
-    // TODO 更新库存
-
-    // TODO 收入调整
-
     try {
         $manager = new Manager();
         $transaction = $manager->get();
@@ -221,6 +217,10 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         if (!$co->save()) {
             $transaction->rollback("save customer_order complete fail");
         }
+
+        // TODO 更新库存
+
+        // TODO 收入调整
 
         $transaction->commit();
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
@@ -283,4 +283,27 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
         "total" => count($data),
         "jobs" => $data
     ];
+});
+
+$app->post('/v1/app/agent/message', function () use ($app) {
+    $date = $app->request->getPost("date");
+    $historyId = $app->request->getPost("history_id");
+
+    if (empty($data) || empty($history_id)) {
+        throw new BusinessException(1000, '参数有误');
+    }
+
+    $result = NotifyMessage::find([
+        'conditions' => 'terminal = 0 and date=' . $date . " and id > " . $historyId,
+        'columns' => 'id, title, message, create_time',
+        'order' => 'id desc',
+    ])->toArray();
+
+    if (!empty($result)) {
+        foreach($result as $key => $item) {
+            $result[$key]['date'] = date('y/m/d', time());
+        }
+    }
+
+    return $result;
 });

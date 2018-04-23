@@ -49,6 +49,7 @@ $app->post('/v1/h5/customer/message', function () use ($app) {
     $result = NotifyMessage::find([
         'conditions' => 'terminal = 1 and date=' . $date . " and id > " . $historyId,
         'columns' => 'id, title, message, create_time',
+        'order' => 'id desc',
     ])->toArray();
 
     if (!empty($result)) {
