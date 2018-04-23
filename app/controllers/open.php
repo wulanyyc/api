@@ -156,7 +156,8 @@ $app->post('/open/h5/login', function () use ($app) {
         $app->redis->expire($token, $app->config->login_cache_time);
 
         return [
-            'token' => $token
+            'token' => $token,
+            'customer_id' => $info->id,
         ];
     } else {
         throw new BusinessException(1000, '验证码有误');
@@ -283,7 +284,8 @@ $app->post('/open/customer/reg', function () use ($app) {
         $app->redis->expire($token, $app->config->login_cache_time);
 
         return [
-            'token' => $token
+            'token' => $token,
+            'customer_id' => $ar->id,
         ];
     } else {
         throw new BusinessException(1000, '注册失败，请联系客服');

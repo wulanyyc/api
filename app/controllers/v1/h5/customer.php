@@ -41,4 +41,14 @@ $app->post('/v1/h5/customer/feedback', function () use ($app) {
 });
 
 
+$app->get('/v1/h5/customer/message', function () use ($app) {
+    $date = $app->request->getQuery("date");
+    $historyId = $app->request->getQuery("history_id");
 
+    $result = NotifyMessage::find([
+        'conditions' => 'terminal = 1 and date=' . $date . " and id > " . $historyId,
+        'columns' => 'id, message',
+    ])->toArray();
+
+    return $result;
+});

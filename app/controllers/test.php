@@ -15,6 +15,7 @@ use Biaoye\Model\Company;
 use Biaoye\Model\CompanyInventory;
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
+use Biaoye\Model\NotifyMessage;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
@@ -461,6 +462,18 @@ $app->get('/test/init/coupon/get/{uid:\d+}/{cid:\d+}', function ($uid, $cid) use
     $ar->start_date = $startDate;
     $ar->end_date = $endDate;
     $ar->save();
+
+    return 1;
+});
+
+$app->get('/test/init/message', function () use ($app) {
+    for ($i = 0; $i < 30; $i++) {
+        $ar = new NotifyMessage();
+        $ar->message = $app->util->getChar(50);
+        $ar->date = date('Ymd', time());
+        $ar->terminal = rand(0, 1);
+        $ar->save();
+    }
 
     return 1;
 });
