@@ -6,6 +6,7 @@
 use Biaoye\Model\Customer;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerFeedback;
+use Biaoye\Model\NotifyMessage;
 
 $app->get('/v1/h5/customer/center', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
@@ -41,14 +42,20 @@ $app->post('/v1/h5/customer/feedback', function () use ($app) {
 });
 
 
-$app->get('/v1/h5/customer/message', function () use ($app) {
-    $date = $app->request->getQuery("date");
-    $historyId = $app->request->getQuery("history_id");
+$app->post('/v1/h5/customer/message', function () use ($app) {
+    $date = $app->request->getPost("date");
+    $historyId = $app->request->getPost("history_id");
 
     $result = NotifyMessage::find([
         'conditions' => 'terminal = 1 and date=' . $date . " and id > " . $historyId,
-        'columns' => 'id, message',
+        'columns' => 'id, message, create_time',
     ])->toArray();
+
+    if (!empty($result)) {
+        foreach($result as $key => $item) {
+            $result[$key]['date'] = date('y/m/d', time());
+        }
+    }
 
     return $result;
 });
