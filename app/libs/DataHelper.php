@@ -165,7 +165,7 @@ class DataHelper
         $coupons = explode(',', $data['coupon_ids']);
         $productPrice = 0;
 
-        $app->logger->error("coupon:" + $data['coupon_ids']);
+        $app->logger->error("coupon:" + json_encode($data));
 
         foreach($products as $product) {
             $productPrice += $product['num'] * $app->product->getProductPrice($product['id']);
