@@ -24,10 +24,14 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
     }
 
     $products = json_decode($productStr, true);
-    $app->logger->error($productStr);
+    // $app->logger->error($productStr);
 
     if (empty($products)) {
         throw new BusinessException(1000, '商品数据不能为空');
+    }
+
+    if (!is_array($products)) {
+        throw new BusinessException(1000, '商品数据格式不正确');
     }
 
     $ret = [];
