@@ -79,7 +79,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         throw new BusinessException(1000, '商品数据不能为空');
     }
 
-    if (empty($params['address_id']) || empty($params['coupon_ids'])) {
+    if (empty($params['address_id'])) {
         throw new BusinessException(1000, '参数不足');
     }
 
