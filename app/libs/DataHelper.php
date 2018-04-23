@@ -161,10 +161,8 @@ class DataHelper
     }
 
     public function calculateOrderPrice($app, $data) {
-        $app->logger->error("coupon:" . json_encode($data));
-
         $products = json_decode($data['products'], true);
-        $coupons = explode(',', $data['coupon_ids']);
+        $coupons = !empty($data['coupon_ids']) ? explode(',', $data['coupon_ids']) : [];
         $productPrice = 0;
 
         foreach($products as $product) {
