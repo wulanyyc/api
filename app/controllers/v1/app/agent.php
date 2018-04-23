@@ -10,6 +10,7 @@ use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\Product;
 use Phalcon\Mvc\Model\Transaction\Manager;
+use Biaoye\Model\NotifyMessage;
 
 // 实名状态
 $app->get('/v1/app/agent/realname', function () use ($app) {
@@ -290,7 +291,7 @@ $app->post('/v1/app/agent/message', function () use ($app) {
     $date = $app->request->getPost("date");
     $historyId = $app->request->getPost("history_id");
 
-    if (empty($date) || empty($history_id)) {
+    if (empty($date) || empty($historyId)) {
         throw new BusinessException(1000, '参数有误');
     }
 
