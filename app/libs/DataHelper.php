@@ -166,7 +166,7 @@ class DataHelper
         $productPrice = 0;
 
         foreach($products as $product) {
-            $productPrice += $product['num'] * $app->product->getProductPrice;
+            $productPrice += $product['num'] * $app->product->getProductPrice();
         }
 
         $couponFee = 0;
