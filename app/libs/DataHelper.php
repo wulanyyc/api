@@ -2,6 +2,7 @@
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
 use Biaoye\Model\Product;
+use Biaoye\Model\ProductListSchool;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
@@ -145,7 +146,7 @@ class DataHelper
         ];
 
         foreach($products as $product) {
-            $info = Product::findFirst($product['id']);
+            $info = ProductListSchool::findFirst($product['id']);
             $inventoryNum = $info->num;
 
             if ($inventoryNum < $product['num']) {
