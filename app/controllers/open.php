@@ -198,10 +198,14 @@ $app->get('/open/school/room/{id:\d+}', function ($id) use ($app) {
 
 $app->post('/open/agent/reg', function () use ($app) {
     $params = $_POST;
-    $phone = $params['phone'];
-    $inviteCode = $params['invite_code'];
+    $phone = isset($params['phone']) ? $params['phone'] : '';
+    $inviteCode = isset($params['invite_code']) ? $params['invite_code'] : '';
+    $token = isset($params['temp_token']) ? $params['temp_token'] : '';
 
-    $token = $params['temp_token'];
+    if (empty($phone) || empty($inviteCode) || empty($token)) {
+        throw new BusinessException(1000, '参数不足，请检查');
+    }
+
     $tokenPhone = $app->redis->get($token);
 
     if (empty($tokenPhone) || $tokenPhone != $phone) {
