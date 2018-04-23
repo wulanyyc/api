@@ -128,7 +128,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         $ar->coupon_fee = $priceInfo['coupon_fee'];
         $ar->date = date('Ymd', time());
 
-        if ($ar->save()) {
+        if (!$ar->save()) {
             $transaction->rollback("save customer_order fail");
         }
 
@@ -145,7 +145,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             $pay->openid = $params['openid'];
         }
 
-        if ($pay->save()) {
+        if (!$pay->save()) {
             $transaction->rollback("save customer_pay fail");
         }
 
