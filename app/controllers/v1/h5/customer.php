@@ -46,7 +46,7 @@ $app->post('/v1/h5/customer/message', function () use ($app) {
     $date = $app->request->getPost("date");
     $historyId = $app->request->getPost("history_id");
 
-    if (empty($date) || empty($history_id)) {
+    if (empty($date) || empty($historyId)) {
         throw new BusinessException(1000, '参数有误');
     }
 
