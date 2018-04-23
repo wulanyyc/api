@@ -16,6 +16,7 @@ use Biaoye\Model\CompanyInventory;
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
 use Biaoye\Model\NotifyMessage;
+use Biaoye\Model\AgentMoneyList;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
@@ -473,6 +474,20 @@ $app->get('/test/init/message', function () use ($app) {
         $ar->message = $app->util->getChar(50);
         $ar->date = date('Ymd', time());
         $ar->terminal = rand(0, 1);
+        $ar->save();
+    }
+
+    return 1;
+});
+
+$app->get('/test/init/money/income/list', function () use ($app) {
+    for ($i = 0; $i < 30; $i++) {
+        $ar = new AgentMoneyList();
+        $ar->agent_id = rand(1, 5);
+        $ar->money = rand(1, 30);
+        $ar->operator = 1;
+        $ar->order_id = rand(1, 100);
+        $ar->date = date("Ymd", time());
         $ar->save();
     }
 
