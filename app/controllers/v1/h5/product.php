@@ -9,7 +9,7 @@ use Biaoye\Model\ProductCategory;
 // 商品详情
 $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
     $data = Product::findFirst([
-        "conditons" => "id=" . $id,
+        "conditions" => "id=" . $id,
         "columns" => 'name,price,market_price,title,slogan,brand,place,valid_date,province,package,weight,img,img1,img2,img3,sale_num,sub_category',
     ]);
 

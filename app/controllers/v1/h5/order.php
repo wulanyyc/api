@@ -190,7 +190,7 @@ $app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
 $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
     $customerId = $app->util->getCustomerId($app);
     $orders = CustomerOrder::find([
-        "conditons" => "customer_id=" . $customerId . " and status=" . $status,
+        "conditions" => "customer_id=" . $customerId . " and status=" . $status,
         "order" => "id desc",
     ])->toArray();
 
@@ -223,13 +223,12 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
         $ret[$order['id']]['order_id'] = $order['id'];
     }
 
-    return $ret;
-    // $output = [];
-    // foreach($ret as $item) {
-    //     $output[] = $item;
-    // }
+    $output = [];
+    foreach($ret as $item) {
+        $output[] = $item;
+    }
 
-    // return $output;
+    return $output;
 });
 
 
