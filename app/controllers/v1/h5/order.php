@@ -177,12 +177,12 @@ $app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
         return [
             'status' => $payInfo->pay_result,
             'pay_money' => $payInfo->pay_money,
-        ]
+        ];
     } else {
         return [
             'status' => 0,
             'pay_money' => 0,
-        ]
+        ];
     }
 });
 
