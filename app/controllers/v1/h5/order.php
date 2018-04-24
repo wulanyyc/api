@@ -201,8 +201,7 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
         $products = json_decode($productJson, true);
 
         $ret[$order['id']]['order_num'] = count($products);
-        // $product  = array_pop($products);
-        // $productInfo = Product::findFirst($product['id']);
+
         foreach($products as $product) {
             $productInfo = Product::findFirst($product['id']);
             $ret[$order['id']]['product'][] = [
@@ -221,7 +220,7 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
         $ret[$order['id']]['order_id'] = $order['id'];
     }
 
-    return $ret;
+    return sort($ret);
 });
 
 
