@@ -19,7 +19,7 @@ $app->get('/v1/app/stats/agent', function () use ($app) {
 
     $income = AgentMoneyList::sum([
         "conditions" => "date=" . $date . " and agent_id=" . $id . " and operator=0",
-        "columns" => "money",
+        "column" => "money",
     ]);
 
     $num = empty($num) ? 0 : $num;
@@ -34,11 +34,19 @@ $app->get('/v1/app/stats/agent', function () use ($app) {
 
     $monthIncome = AgentMoneyList::sum([
         "conditions" => "date >=" . $monthDate . " and agent_id=" . $id . " and operator=0",
-        "columns" => "money",
+        "column" => "money",
     ]);
 
     $monthNum = empty($monthNum) ? 0 : $monthNum;
     $monthIncome = empty($monthIncome) ? 0: $monthIncome;
 
     $sex = $info->sex;
+
+    return [
+        'sex' => $sex,
+        'day_num' => $num,
+        'day_income' => $income,
+        'month_num' => $monthNum,
+        'month_income' => $monthIncome,
+    ];
 });
