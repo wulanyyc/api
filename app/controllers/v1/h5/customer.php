@@ -60,6 +60,7 @@ $app->get('/v1/h5/customer/message', function () use ($app) {
     return $result;
 });
 
+
 // 搜索历史
 $app->get('/v1/h5/customer/search/history', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);

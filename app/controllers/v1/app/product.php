@@ -49,8 +49,6 @@ $app->post('/v1/app/product/buy/submit', function () use ($app) {
     $agentId = $app->util->getAgentId($app);
     $list = $app->request->getPost("list");
 
-    // $app->logger->error(file_get_contents("php://input"));
-
     if (empty($list)) {
         throw new BusinessException(1000, '进货列表不能为空');
     }

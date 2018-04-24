@@ -249,3 +249,25 @@ $app->get('/v1/h5/order/detail/{id:\d+}', function ($id) use ($app) {
         'order_status' => $order['status'], // 0: 待支付  1: 已支付  2: 已抢单 3: 已完成
     ];
 });
+
+// 取消订单
+$app->get('/v1/h5/order/cancel/{id:\d+}', function ($id) use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $info = CustomerOrder::findFirst($id);
+    if (!$info) {
+        throw new BusinessException(1000, '单号有误');
+    }
+
+    if ($info->customer_id != $customerId || $info->status != 0) {
+        throw new BusinessException(1000, '无操作权限');
+    }
+
+    $info->status = 4;
+
+    if (!$info->save()) {
+        throw new BusinessException(1000, '取消订单' . $info->id . '失败');
+    }
+
+    return 1;
+});
