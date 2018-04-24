@@ -189,7 +189,10 @@ $app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
 
 $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
     $customerId = $app->util->getCustomerId($app);
-    $orders = CustomerOrder::find("customer_id=" . $customerId . " and status=" . $status)->toArray();
+    $orders = CustomerOrder::find([
+        "conditons" => "customer_id=" . $customerId . " and status=" . $status,
+        "order" => "id desc",
+    ])->toArray();
 
     if (empty($orders)) {
         return [];
