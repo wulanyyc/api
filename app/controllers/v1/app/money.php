@@ -93,7 +93,7 @@ $app->get('/v1/app/money/income/list', function () use ($app) {
     }
 
     return [
-        'total' => $total,
+        'total' => empty($total) ? 0 : $total,
         'list' => $list,
     ];
 });
