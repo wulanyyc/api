@@ -250,6 +250,7 @@ $app->get('/v1/h5/order/detail/{id:\d+}', function ($id) use ($app) {
     ];
 });
 
+
 // 取消订单
 $app->get('/v1/h5/order/cancel/{id:\d+}', function ($id) use ($app) {
     $customerId = $app->util->getCustomerId($app);
