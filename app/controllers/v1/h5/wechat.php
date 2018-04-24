@@ -8,7 +8,7 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
     $keyRefresh = 'page_refresh_token';
 
     $config = $app->config->wxpay;
-    $url = self::$api . '/sns/oauth2/access_token?appid='. $config['appid'] .'&secret=' . $config['appsecret'] . '&code=' . $code . '&grant_type=authorization_code';
+    $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='. $config['appid'] .'&secret=' . $config['appsecret'] . '&code=' . $code . '&grant_type=authorization_code';
 
     $ret = $app->util->curlRequest($url);
     $data = json_decode($ret, true);
