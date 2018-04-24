@@ -174,9 +174,15 @@ $app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
     $payInfo = CustomerPay::findFirst("order_id=" . $orderId);
 
     if ($payInfo) {
-        return $payInfo->pay_result;
+        return [
+            'status' => $payInfo->pay_result,
+            'pay_money' => $payInfo->pay_money,
+        ]
     } else {
-        return 0;
+        return [
+            'status' => 0,
+            'pay_money' => 0,
+        ]
     }
 });
 

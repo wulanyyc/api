@@ -481,10 +481,10 @@ $app->get('/test/init/message', function () use ($app) {
 });
 
 $app->get('/test/init/money/income/list', function () use ($app) {
-    for ($i = 0; $i < 30; $i++) {
+    for ($i = 0; $i < 100; $i++) {
         $ar = new AgentMoneyList();
-        $ar->agent_id = rand(1, 5);
-        $ar->money = rand(1, 30);
+        $ar->agent_id = rand(9, 14);
+        $ar->money = rand(20, 50);
         $ar->operator = 0;
         $ar->order_id = rand(1, 100);
         $ar->date = date("Ymd", time());
@@ -495,9 +495,9 @@ $app->get('/test/init/money/income/list', function () use ($app) {
 });
 
 $app->get('/test/init/money/get/list', function () use ($app) {
-    for ($i = 0; $i < 30; $i++) {
+    for ($i = 0; $i < 100; $i++) {
         $ar = new AgentMoneyList();
-        $ar->agent_id = rand(1, 5);
+        $ar->agent_id = rand(9, 14);
         $ar->money = rand(1, 30);
         $ar->operator = 1;
         $ar->date = date("Ymd", time());
