@@ -7,6 +7,7 @@ use Biaoye\Model\Customer;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerFeedback;
 use Biaoye\Model\NotifyMessage;
+use Biaoye\Model\CustomerSearchHistory;
 
 $app->get('/v1/h5/customer/center', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
@@ -55,6 +56,20 @@ $app->get('/v1/h5/customer/message', function () use ($app) {
             $result[$key]['date'] = date('y/m/d', time());
         }
     }
+
+    return $result;
+});
+
+// 搜索历史
+$app->get('/v1/h5/customer/search/history', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $result = CustomerSearchHistory::find([
+        'conditions' => 'customer_id = ' . $customerId,
+        'columns' => 'search_text',
+        'order' => 'id desc',
+        'limit' => 6,
+    ])->toArray();
 
     return $result;
 });

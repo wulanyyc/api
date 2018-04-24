@@ -33,7 +33,7 @@ $app->get('/v1/app/money/card/info', function () use ($app) {
     ];
 });
 
-// 余额
+// 添加卡片
 $app->post('/v1/app/money/edit/card', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $name = $app->request->getPost("card_name");

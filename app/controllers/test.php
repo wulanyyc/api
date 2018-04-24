@@ -17,6 +17,7 @@ use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
 use Biaoye\Model\NotifyMessage;
 use Biaoye\Model\AgentMoneyList;
+use Biaoye\Model\CustomerSearchHistory;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
@@ -501,6 +502,17 @@ $app->get('/test/init/money/get/list', function () use ($app) {
         $ar->money = rand(1, 30);
         $ar->operator = 1;
         $ar->date = date("Ymd", time());
+        $ar->save();
+    }
+
+    return 1;
+});
+
+$app->get('/test/init/search/history', function () use ($app) {
+    for ($i = 0; $i < 50; $i++) {
+        $ar = new CustomerSearchHistory();
+        $ar->customer_id = rand(1, 3);
+        $ar->search_text = $app->util->getChar(8);
         $ar->save();
     }
 

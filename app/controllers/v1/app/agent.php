@@ -286,6 +286,7 @@ $app->get('/v1/app/agent/job/history', function () use ($app) {
     ];
 });
 
+// 消息通知
 $app->get('/v1/app/agent/message', function () use ($app) {
     $date = date('Ymd', time() - 15 * 86400);
     $result = NotifyMessage::find([

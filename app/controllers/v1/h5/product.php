@@ -6,6 +6,7 @@
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductCategory;
 
+// 商品详情
 $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
     $data = Product::findFirst([
         "conditons" => "id=" . $id,
@@ -47,9 +48,22 @@ $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
     return $data;
 });
 
-
+// 商品推荐
 $app->get('/v1/h5/product/recom', function () use ($app) {
     $data = $app->product->getProductRecom($app, 4);
 
     return $data;
 });
+
+// 商品搜索
+$app->get('/v1/h5/customer/search', function () use ($app) {
+    $text = $app->request->getQuery("text");
+    if (empty($text)) {
+        throw new BusinessException(1000, '搜索内容不能为空');
+    }
+
+    $data = $app->product->getProductSearch($app, $text);
+
+    return $data;
+});
+
