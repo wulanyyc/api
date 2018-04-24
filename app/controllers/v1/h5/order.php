@@ -243,6 +243,7 @@ $app->get('/v1/h5/order/detail/{id:\d+}', function ($id) use ($app) {
         'express_fee' => $order['express_fee'],
         'address' => $app->util->getDefaultAddress($app),
         'coupon_fee' => $order['coupon_fee'],
+        'product_price' => $order['product_price'],
         'total_price' => $order['product_price'] + $order['express_fee'],
         'pay_money' => $order['pay_money'],
         'order_status' => $order['status'], // 0: 待支付  1: 已支付  2: 已抢单 3: 已完成

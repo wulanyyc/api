@@ -56,7 +56,7 @@ $app->get('/v1/h5/product/recom', function () use ($app) {
 });
 
 // 商品搜索
-$app->get('/v1/h5/customer/search', function () use ($app) {
+$app->get('/v1/h5/product/search', function () use ($app) {
     $text = $app->request->getQuery("text");
     if (empty($text)) {
         throw new BusinessException(1000, '搜索内容不能为空');

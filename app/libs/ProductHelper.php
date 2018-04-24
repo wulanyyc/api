@@ -282,7 +282,7 @@ class ProductHelper
 
     public function getDayProductSearch($app, $text, $customerInfo) {
         $products = ProductListSchool::find([
-            'conditions' => 'status=1 and school_id= ' . $customerInfo->school_id . ' and num > 0 and name like %' . $text . '%',
+            'conditions' => 'status=1 and school_id= ' . $customerInfo->school_id . ' and num > 0 and name like "%' . $text . '%"',
             'columns' => 'product_id, name, price, title, slogan, img',
             'limit' => 10,
             'order' => 'sale_num desc',
@@ -303,7 +303,7 @@ class ProductHelper
     }
 
     public function getNightProductSearch($app, $text, $customerInfo) {
-        $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 group by pl.id order by pl.sale_num desc limit " . $num;
+        $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 and pl.name like '%" . $text . "%' group by pl.id order by pl.sale_num desc limit 10";
 
         $products = $app->db->query($sql)->fetchAll();
 
