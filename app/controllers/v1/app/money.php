@@ -98,6 +98,18 @@ $app->get('/v1/app/money/income/list', function () use ($app) {
     ];
 });
 
+// 提现
+$app->get('/v1/app/money/get/page', function () use ($app) {
+    $id = $app->util->getAgentId($app);
+    $info = Agent::findFirst($id);
+
+    return [
+        'bank' => $info->card_bank,
+        'card_suffix' => substr($info->card_num, -4),
+        'money' => $info->money,
+    ];
+});
+
 
 // 提现
 $app->post('/v1/app/money/get', function () use ($app) {
