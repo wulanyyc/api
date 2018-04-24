@@ -210,11 +210,11 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
             'slogan' => $productInfo->slogan,
             'price' => $productInfo->price,
             'num' => $product['num'],
-            'id' => $order['id'],
         ];
 
         $ret[$order['id']]['total_price'] = $order['product_price'] + $order['express_fee'];
         $ret[$order['id']]['express_fee'] = $order['express_fee'];
+        $ret[$order['id']]['order_id'] = $order['id'];
     }
 
     return $ret;
