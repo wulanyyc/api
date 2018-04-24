@@ -66,12 +66,12 @@ $app->get('/v1/app/money/income/list', function () use ($app) {
     }
 
     $total = AgentMoneyList::sum([
-        "conditions" => "agent_id=" . $id . " and operator=0",
+        "conditions" => "agent_id=" . $id . " and operator=0 and date=" . $date,
         "column" => 'money',
     ]);
 
     $list = AgentMoneyList::find([
-        "conditions" => "agent_id=" . $id . " and operator=0",
+        "conditions" => "agent_id=" . $id . " and operator=0 and date=" . $date,
         "columns" => 'money, order_id',
         "order" => 'id desc',
     ])->toArray();
