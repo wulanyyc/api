@@ -159,4 +159,52 @@ class Util
             ];
         }
     }
+
+    public static function sendSms($app, $phones, $content) {
+        $api = "http://sms.bamikeji.com:8890/mtPort/mt/normal/send";
+        $suffix = "【庆荣科技】";
+
+        $config = [
+            'uid' => $app->config->params->sms->id,
+            'passwd' => md5($app->config->params->sms->pwd),
+            'phonelist' => implode(',', $phones),
+            'content' => $content . $suffix,
+        ];
+
+        return $app->util->curlRequest($api, http_build_query($config));
+    }
+
+    /**
+     * 远程调用api
+     */
+    public static function curlRequest($url, $data = "", $header = array(), $timeout = 30) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        if (count($header) > 1) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        }
+        
+        if (!empty($data)) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
+
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+
+        $response = curl_exec($ch);
+
+        if($response){
+            curl_close($ch);
+            return $response;
+        } else { 
+            $error = curl_errno($ch);
+            curl_close($ch);
+            return false;
+        }
+    }
 }

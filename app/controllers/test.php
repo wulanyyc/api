@@ -518,3 +518,9 @@ $app->get('/test/init/search/history', function () use ($app) {
 
     return 1;
 });
+
+$app->get('/test/sms', function () use ($app) {
+    $app->util->sendSms($app, [13880494109], '你的验证码为123123，5分钟内有效');
+
+    return 1;
+});
