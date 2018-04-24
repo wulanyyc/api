@@ -201,16 +201,20 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
         $products = json_decode($productJson, true);
 
         $ret[$order['id']]['order_num'] = count($products);
-        $product  = array_pop($products);
-        $productInfo = Product::findFirst($product['id']);
-
-        $ret[$order['id']]['product'] = [
-            'name' => $productInfo->name,
-            'title' => $productInfo->title,
-            'slogan' => $productInfo->slogan,
-            'price' => $productInfo->price,
-            'num' => $product['num'],
-        ];
+        // $product  = array_pop($products);
+        // $productInfo = Product::findFirst($product['id']);
+        foreach($products as $product) {
+            $productInfo = Product::findFirst($product['id']);
+            $ret[$order['id']]['product'][] = [
+                'name' => $productInfo->name,
+                'title' => $productInfo->title,
+                'slogan' => $productInfo->slogan,
+                'price' => $app->product->getProductPrice($productInfo->id),
+                'img' => $productInfo->img,
+                'id' => $productInfo->id,
+                'num' => $product['num'],
+            ];
+        }
 
         $ret[$order['id']]['total_price'] = $order['product_price'] + $order['express_fee'];
         $ret[$order['id']]['express_fee'] = $order['express_fee'];

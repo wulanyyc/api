@@ -11,6 +11,8 @@ use Biaoye\Model\CustomerCart;
 use Biaoye\Model\Product;
 use Phalcon\Mvc\Model\Transaction\Manager;
 use Biaoye\Model\NotifyMessage;
+use Biaoye\Model\AgentInventory;
+use Biaoye\Model\AgentInventoryRecords;
 
 // 实名状态
 $app->get('/v1/app/agent/realname', function () use ($app) {
@@ -220,6 +222,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         }
 
         // TODO 更新库存
+
 
         // TODO 收入调整
 
