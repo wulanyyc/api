@@ -220,7 +220,9 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
         $ret[$order['id']]['order_id'] = $order['id'];
     }
 
-    return sort($ret);
+    sort($ret);
+    
+    return $ret;
 });
 
 
