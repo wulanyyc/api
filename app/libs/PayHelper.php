@@ -11,6 +11,7 @@ class PayHelper
             throw new BusinessException(1000, '未找到支付id' . $payId);
         }
 
+        $payInfo = $payInfo->toArray();
         if ($payInfo->pay_type == 0) {
             $this->handleAlipay($app, $payInfo);
         }
