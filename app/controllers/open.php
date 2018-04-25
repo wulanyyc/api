@@ -21,7 +21,7 @@ $app->post('/open/sms/code', function () use ($app) {
         // TODO send sms
         $app->util->sendSms($app, [$phone], '您的验证码为' . $code . '，5分钟内有效');
         
-        $app->redis->setex($key, 600, $code);
+        $app->redis->setex($key, 300, $code);
         return $code;
     }
 });
