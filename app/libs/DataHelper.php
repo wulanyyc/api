@@ -205,4 +205,8 @@ class DataHelper
             'coupon_fee' => $couponFee,
         ];
     }
+
+    public function handlePayOkOrder($app, $orderId) { 
+
+    }
 }

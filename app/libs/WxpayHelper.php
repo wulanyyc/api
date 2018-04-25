@@ -83,28 +83,28 @@ class WxpayHelper {
         return $data;
     }
 
-    public static function refund($params) {
-        $api = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+    // public static function refund($params) {
+    //     $api = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
-        $data = [];
-        $data['appid'] = $app->config->params->wxpay['appid'];
-        $data['mch_id'] = $app->config->params->wxpay['mch_id'];
-        $data['refund_desc'] = '后台退款';
-        $data['nonce_str'] = uniqid();
-        $data['out_trade_no'] = $params['out_trade_no'];
-        $data['total_fee'] = $params['pay_money'] * 100;
-        $data['refund_fee'] = $params['pay_money'] * 100;
-        $data['out_refund_no'] = $params['order_id'];
+    //     $data = [];
+    //     $data['appid'] = $app->config->params->wxpay['appid'];
+    //     $data['mch_id'] = $app->config->params->wxpay['mch_id'];
+    //     $data['refund_desc'] = '后台退款';
+    //     $data['nonce_str'] = uniqid();
+    //     $data['out_trade_no'] = $params['out_trade_no'];
+    //     $data['total_fee'] = $params['pay_money'] * 100;
+    //     $data['refund_fee'] = $params['pay_money'] * 100;
+    //     $data['out_refund_no'] = $params['order_id'];
 
-        $sign = self::buildSign($data);
-        $data['sign'] = $sign;
-        $xml = self::buildXml($data);
-        $postData = $xml->asXML();
+    //     $sign = self::buildSign($data);
+    //     $data['sign'] = $sign;
+    //     $xml = self::buildXml($data);
+    //     $postData = $xml->asXML();
 
-        $ret = self::curl($postData, $api, true);
+    //     $ret = self::curl($postData, $api, true);
 
-        return self::xmlToArray($ret);
-    }
+    //     return self::xmlToArray($ret);
+    // }
 
     public static function query($params) {
         $api = 'https://api.mch.weixin.qq.com/pay/orderquery';

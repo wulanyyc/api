@@ -37,6 +37,7 @@ class PayHelper
     }
 
     public function handleWechat($app, $info) {
+        $info['pay_money'] = 0.01;
         $wxpayParams = [
             'subject' => '商城订单',
             'out_trade_no' => $info['out_trade_no'],

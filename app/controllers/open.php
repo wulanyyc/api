@@ -306,22 +306,21 @@ $app->post('/open/notify/wx', function () use ($app) {
     $out_trade_no = $data['out_trade_no'];
     $checkData = CustomerPay::findFirst('out_trade_no = ' . $out_trade_no);
 
+    if (!$checkData) {
+        throw new BusinessException(1000, '通知参数有误');
+    }
+
     $pay_money = $data['total_fee'] / 100;
     $trade_no  = $data['transaction_id'];
 
-    if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData['pay_money']) {
-        OrderHelper::handlePayOkOrder($checkData['id'], $trade_no);
-
-        echo 'success';
-        // Yii::$app->end();
+    if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData->pay_money) {
+        // $app->data->handlePayOkOrder($app, $checkData->order_id);
+        $app->logger->error("pay_ok" . $out_trade_no);
+        return 1;
     } else {
         $time = 'wx_error_' . date('YmdHis', time());
-        // $filename = Yii::$app->basePath . '/runtime/' . $time . '.txt';
-        // file_put_contents($filename, $rawData);
-
-        // echo 'fail';
-        // Yii::$app->end();
         $app->logger->error($time . ":" . $rawData);
+        throw new BusinessException(1000, '通知失败');
     }
 });
 
