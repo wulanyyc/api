@@ -24,7 +24,7 @@ class WxpayHelper {
             $data['openid'] = $params['openid'];
         }
 
-        $sign = self::buildSign($data);
+        $sign = self::buildSign($app, $data);
         $data['sign'] = $sign;
         $xml = self::buildXml($data);
         $postData = $xml->asXML();
@@ -38,7 +38,7 @@ class WxpayHelper {
         }
     }
 
-    public static function buildSign($data) {
+    public static function buildSign($app, $data) {
         $keys = array_keys($data);
         sort($keys);
 
@@ -106,7 +106,7 @@ class WxpayHelper {
     //     return self::xmlToArray($ret);
     // }
 
-    public static function query($params) {
+    public static function query($app, $params) {
         $api = 'https://api.mch.weixin.qq.com/pay/orderquery';
 
         $data = [];
