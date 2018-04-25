@@ -251,7 +251,7 @@ class DataHelper
             $coupons = trim($uporder->coupon_ids);
             if (!empty($coupons)) {
                 $couponArr = explode(',', $coupons);
-                $couponStr = implode(',', $couponArr)
+                $couponStr = implode(',', $couponArr);
                 $couponUp = CustomerCouponUse::find([
                     "conditions" => "use_status=0 and customer_id=" . $uporder->customer_id . " and coupon_id in (" . $couponStr . ")",
                 ]);
