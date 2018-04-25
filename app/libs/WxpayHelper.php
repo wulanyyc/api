@@ -47,7 +47,7 @@ class WxpayHelper {
             $str .= $item . "=" . $data[$item] . "&";
         }
 
-        $str .= "key=" . $app->config->params->wxpay['key'];
+        $str .= "key=" . $app->config->wxpay['key'];
 
         $sign = md5($str);
 
