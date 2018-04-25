@@ -149,7 +149,7 @@ $app->post('/open/h5/login', function () use ($app) {
         // 阻止多台同时登陆
         $exsitToken = $app->redis->get($phone . '_customer_token');
         if ($exsitToken) {
-            $app->redis->del($exsitToken);
+            // $app->redis->del($exsitToken);
         }
 
         $token = $app->util->uuid();
