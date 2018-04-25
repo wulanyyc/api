@@ -111,8 +111,8 @@ $app->get('/v1/h5/coupon/customer/list', function () use ($app) {
     }
 
     return [
-        'get' => $ret,
-        'unget' => $valid,
+        'get' => sort($ret),
+        'unget' => sort($valid),
     ];
 });
 

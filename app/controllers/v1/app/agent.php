@@ -137,7 +137,7 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 // 抢单详情
 $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
-    $sex = Agent::findFirst($id)->sex;
+    // $sex = Agent::findFirst($id)->sex;
 
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,
