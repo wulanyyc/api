@@ -304,7 +304,7 @@ $app->post('/open/notify/wx', function () use ($app) {
     
     $data = WxpayHelper::xmlToArray($rawData);
     $out_trade_no = $data['out_trade_no'];
-    $checkData = CustomerPay::findFirst('out_trade_no = ' . $out_trade_no);
+    $checkData = CustomerPay::findFirst('out_trade_no = "' . $out_trade_no . '"');
 
     if (!$checkData) {
         throw new BusinessException(1000, '通知参数有误');
@@ -317,7 +317,8 @@ $app->post('/open/notify/wx', function () use ($app) {
     if ($data['result_code'] == 'SUCCESS') {
         // $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
         $app->logger->error("pay_ok" . json_encode($data));
-        return 1;
+        echo 'success';
+        exit;
     } else {
         $time = 'wx_error_' . date('YmdHis', time());
         $app->logger->error($time . ":" . $rawData);
