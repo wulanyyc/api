@@ -313,9 +313,10 @@ $app->post('/open/notify/wx', function () use ($app) {
     $pay_money = $data['total_fee'] / 100;
     $trade_no  = $data['transaction_id'];
 
-    if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData->pay_money) {
-        // $app->data->handlePayOkOrder($app, $checkData->order_id);
-        $app->logger->error("pay_ok" . $out_trade_no);
+    // if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData->pay_money) {
+    if ($data['result_code'] == 'SUCCESS') {
+        // $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
+        $app->logger->error("pay_ok" . json_encode($data));
         return 1;
     } else {
         $time = 'wx_error_' . date('YmdHis', time());

@@ -6,6 +6,9 @@ use Biaoye\Model\ProductListSchool;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
+use Biaoye\Model\CustomerOrder;
+use Biaoye\Model\CustomerPay;
+use Phalcon\Mvc\Model\Transaction\Manager;
 
 class DataHelper
 {
@@ -206,7 +209,7 @@ class DataHelper
         ];
     }
 
-    public function handlePayOkOrder($app, $orderId) { 
-
+    public function handlePayOkOrder($app, $orderId, $tradeNo) { 
+        
     }
 }

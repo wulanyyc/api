@@ -134,7 +134,7 @@ class Util
     public function getDefaultAddress($app) {
         $customerId = self::getCustomerId($app);
         $data = CustomerAddress::findFirst([
-            'conditions' => 'default_flag=1 and status=0',
+            'conditions' => 'default_flag=1 and status=0 and customer_id=' . $customerId,
             'columns' => 'id, rec_name, rec_phone, rec_school, rec_room, rec_detail',
         ]);
 
