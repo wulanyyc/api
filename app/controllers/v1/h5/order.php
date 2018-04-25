@@ -151,10 +151,11 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
         $transaction->commit();
 
-        $app->pay->handle($app, $pay->id);
+        $output = $app->pay->handle($app, $pay->id);
 
+        return $output;
         // TODO 删除购物车数据
-        return $ar->id;
+        // return $ar->id;
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
         $msg = $e->getMessage();
         $app->logger->error("order_fail:" . $msg);

@@ -12,11 +12,11 @@ class PayHelper
         }
 
         if ($payInfo->pay_type == 0) {
-            $this->handleAlipay($app, $payInfo);
+            return $this->handleAlipay($app, $payInfo);
         }
 
         if ($payInfo->pay_type == 1) {
-            $this->handleWechat($app, $payInfo);
+            return $this->handleWechat($app, $payInfo);
         }
     }
 
@@ -72,7 +72,10 @@ class PayHelper
                 $paySign = WxpayHelper::buildSign($output);
                 $output['paySign'] = $paySign;
 
-                return (['data' => $output, 'out_trade_no' => $payData['out_trade_no']]);
+                return [
+                    'data' => $output, 
+                    'out_trade_no' => $payData['out_trade_no'],
+                ];
             }
 
             // 外部支付
@@ -84,5 +87,7 @@ class PayHelper
                 return $output;
             }
         }
+
+        return [];
     }
 }
