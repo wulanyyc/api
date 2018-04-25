@@ -8,7 +8,7 @@
 class WxpayHelper {
     public static $api = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
-    public static function pay($params) {
+    public static function pay($app, $params) {
         $data = [];
         $data['appid'] = $app->config->params->wxpay['appid'];
         $data['mch_id'] = $app->config->params->wxpay['mch_id'];

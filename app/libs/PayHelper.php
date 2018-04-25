@@ -50,14 +50,14 @@ class PayHelper
         ];
 
         $terminal = $info->terminal;
-        
+
         if ($terminal == 'wechat') {
             $wxpayParams['openid'] = $openid;
         } else {
             $wxpayParams['trade_type'] = 'MWEB';
         }
 
-        $ret = WxpayHelper::pay($wxpayParams);
+        $ret = WxpayHelper::pay($app, $wxpayParams);
 
         if (isset($ret['return_code']) && $ret['return_code'] == 'SUCCESS') {
             // 微信内部浏览器支付
