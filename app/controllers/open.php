@@ -19,7 +19,7 @@ $app->post('/open/sms/code', function () use ($app) {
         $code = rand(100000, 999999);
         
         // TODO send sms
-        // $app->util->sendSms($app, [$phone], '您的验证码为' . $code . '，5分钟内有效');
+        $app->util->sendSms($app, [$phone], '您的验证码为' . $code . '，5分钟内有效');
         
         $app->redis->setex($key, 600, $code);
         return $code;

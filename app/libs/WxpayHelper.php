@@ -178,4 +178,35 @@ class WxpayHelper extends Component{
             return false;
         }
     }
+
+    public static function getPageAccessToken($app) {
+        $key = 'page_access_token';
+        $keyRefresh = 'page_refresh_token';
+
+        $cache = $app->redis->get($key);
+
+        if (empty($cache)) {
+            $refreshToken = $app->redis->get($keyRefresh);
+            if (empty($refreshToken)) {
+                return '';
+            }
+
+            $config = $app->config->wxpay;
+            $url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='. $config['appid'] .'&grant_type=refresh_token&refresh_token=' . $refreshToken;
+
+            $ret = self::curlRequest($url);
+            $data = json_decode($ret, true);
+
+            if (isset($data['access_token'])) {
+                $app->redis->setex($key, $data['expires_in'] - 60, $data['access_token']);
+                $app->redis->setex($keyRefresh, 30 * 86400 - 3600, $data['refresh_token']);
+
+                return $data['access_token'];
+            } else {
+                return '';
+            }
+        } else {
+            return $cache;
+        }
+    }
 }
