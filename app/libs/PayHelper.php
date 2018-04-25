@@ -49,6 +49,8 @@ class PayHelper
             'trade_type' => 'JSAPI'
         ];
 
+        $terminal = $info->terminal;
+        
         if ($terminal == 'wechat') {
             $wxpayParams['openid'] = $openid;
         } else {
