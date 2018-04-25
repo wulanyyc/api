@@ -1,18 +1,11 @@
 <?php
-namespace app\components;
-
-use Yii;
-use yii\base\Component;
-use app\components\WechatHelper;
-use app\components\SiteHelper;
-
 
 /**
  * 基础帮助类
  * @author yangyuncai
  *
  */
-class WxpayHelper extends Component{
+class WxpayHelper {
     public static $api = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     public static function pay($params) {

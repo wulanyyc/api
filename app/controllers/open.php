@@ -3,6 +3,7 @@ use Biaoye\Model\Agent;
 use Biaoye\Model\Customer;
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
+use Biaoye\Model\CustomerPay;
 
 // 获取短信验证码
 $app->post('/open/sms/code', function () use ($app) {
@@ -295,4 +296,32 @@ $app->post('/open/customer/reg', function () use ($app) {
 });
 
 
-// $app->post('/open/notify/wx', function())
+$app->post('/open/notify/wx', function () use ($app) {
+    $rawData = file_get_contents('php://input');
+    if (empty($rawData)) {
+        throw new BusinessException(1000, '没有取到回调数据');
+    }
+    
+    $data = WxpayHelper::xmlToArray($rawData);
+    $out_trade_no = $data['out_trade_no'];
+    $checkData = CustomerPay::findFirst('out_trade_no = ' . $out_trade_no);
+
+    $pay_money = $data['total_fee'] / 100;
+    $trade_no  = $data['transaction_id'];
+
+    if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData['pay_money']) {
+        OrderHelper::handlePayOkOrder($checkData['id'], $trade_no);
+
+        echo 'success';
+        // Yii::$app->end();
+    } else {
+        $time = 'wx_error_' . date('YmdHis', time());
+        // $filename = Yii::$app->basePath . '/runtime/' . $time . '.txt';
+        // file_put_contents($filename, $rawData);
+
+        // echo 'fail';
+        // Yii::$app->end();
+        $app->logger->error($time . ":" . $rawData);
+    }
+});
+
