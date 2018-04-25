@@ -11,7 +11,6 @@ class PayHelper
             throw new BusinessException(1000, '未找到支付id' . $payId);
         }
 
-        $payInfo = $payInfo->toArray();
         if ($payInfo->pay_type == 0) {
             $this->handleAlipay($app, $payInfo);
         }
@@ -24,13 +23,13 @@ class PayHelper
     public function handleAlipay($app, $info) {
         $alipayParams = [
             'subject' => '商城订单',
-            'out_trade_no' => $info['out_trade_no'],
+            'out_trade_no' => $info->out_trade_no,
             'timeout_express' => '30m',
-            'total_amount' => $info['pay_money'],
+            'total_amount' => $info->pay_money,
             'product_code' => 'QUICK_WAP_WAY'
         ];
 
-        $terminal = $info['terminal'];
+        $terminal = $info->terminal;
 
         $ret = [];
         // 手机支付
@@ -42,11 +41,11 @@ class PayHelper
     }
 
     public function handleWechat($app, $info) {
-        $info['pay_money'] = 0.01;
+        $info->pay_money = 0.01;
         $wxpayParams = [
             'subject' => '商城订单',
-            'out_trade_no' => $info['out_trade_no'],
-            'total_amount' => $info['pay_money'] * 100, // 微信以分位单位
+            'out_trade_no' => $info->out_trade_no,
+            'total_amount' => $info->pay_money * 100, // 微信以分位单位
             'trade_type' => 'JSAPI'
         ];
 
@@ -78,7 +77,7 @@ class PayHelper
             if ($terminal == 'wap') {
                 $output = [];
                 $output['terminal'] = 'wap';
-                $output['mweb_url'] = $ret['mweb_url'] . '&redirect_url=' . urlencode('http://qr.guoguojia.vip/home/paymentStatus.html?id=' . $info['order_id'] . '&out_trade_no=' . $payData['out_trade_no']);
+                $output['mweb_url'] = $ret['mweb_url'] . '&redirect_url=' . urlencode('http://qr.guoguojia.vip/home/paymentStatus.html?id=' . $info->order_id . '&out_trade_no=' . $info->out_trade_no);
 
                 return $output;
             }
