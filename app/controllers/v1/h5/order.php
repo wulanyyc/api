@@ -151,7 +151,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
         $transaction->commit();
 
-        $app->pay->handle($app, $pay->id);
+        // $app->pay->handle($app, $pay->id);
 
         // TODO 删除购物车数据
         return $ar->id;
@@ -280,6 +280,29 @@ $app->get('/v1/h5/order/cancel/{id:\d+}', function ($id) use ($app) {
 
     if (!$info->save()) {
         throw new BusinessException(1000, '取消订单' . $info->id . '失败');
+    }
+
+    return 1;
+});
+
+
+// 删除订单
+$app->get('/v1/h5/order/delete/{id:\d+}', function ($id) use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $info = CustomerOrder::findFirst($id);
+    if (!$info) {
+        throw new BusinessException(1000, '单号有误');
+    }
+
+    if ($info->customer_id != $customerId || $info->status != 3) {
+        throw new BusinessException(1000, '无操作权限');
+    }
+
+    $info->status = 5;
+
+    if (!$info->save()) {
+        throw new BusinessException(1000, '删除订单' . $info->id . '失败');
     }
 
     return 1;

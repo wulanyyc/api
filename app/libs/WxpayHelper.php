@@ -10,14 +10,14 @@ class WxpayHelper {
 
     public static function pay($app, $params) {
         $data = [];
-        $data['appid'] = $app->config->params->wxpay['appid'];
-        $data['mch_id'] = $app->config->params->wxpay['mch_id'];
+        $data['appid'] = $app->config->wxpay['appid'];
+        $data['mch_id'] = $app->config->wxpay['mch_id'];
         $data['body'] = $params['subject'];
         $data['nonce_str'] = uniqid();
         $data['out_trade_no'] = $params['out_trade_no'];
         $data['total_fee'] = $params['total_amount'];
         $data['spbill_create_ip'] = self::getClientIp();
-        $data['notify_url'] = $app->config->params->wxpay['notify_url'];
+        $data['notify_url'] = $app->config->wxpay['notify_url'];
         $data['trade_type'] = $params['trade_type'];
 
         if (!empty($params['openid'])) {
