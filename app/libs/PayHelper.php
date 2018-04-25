@@ -52,7 +52,7 @@ class PayHelper
         $terminal = $info->terminal;
 
         if ($terminal == 'wechat') {
-            $wxpayParams['openid'] = $openid;
+            $wxpayParams['openid'] = $info->openid;
         } else {
             $wxpayParams['trade_type'] = 'MWEB';
         }

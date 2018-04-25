@@ -251,15 +251,18 @@ class DataHelper
             $coupons = trim($uporder->coupon_ids);
             if (!empty($coupons)) {
                 $couponArr = explode(',', $coupons);
-                $couponStr = implode(',', $couponArr);
-                $couponUp = CustomerCouponUse::find([
-                    "conditions" => "use_status=0 and customer_id=" . $uporder->customer_id . " and coupon_id in (" . $couponStr . ")",
-                ]);
+                foreach($couponArr as $item) {
+                    $couponUse = CustomerCouponUse::findFirst([
+                        "conditions" => "use_status=0 and customer_id=" . $uporder->customer_id . " and coupon_id  = " . $item,
+                    ]);
 
-                $couponUp->setTransaction($transaction);
-                $couponUp->use_status = 1;
-                if (!$couponUp->save()) {
-                    $transaction->rollback("update CustomerCouponUse fail " . $uporder->customer_id . "_" . $coupons );
+                    if ($couponUse) {
+                        $couponUse->setTransaction($transaction);
+                        $couponUse->use_status = 1;
+                        if (!$couponUse->save()) {
+                            $transaction->rollback("update CustomerCouponUse fail " . $uporder->customer_id . "_" . $item );
+                        }
+                    }
                 }
             }
 
