@@ -106,7 +106,7 @@ $app->post('/open/app/login', function () use ($app) {
         // 阻止多台同时登陆
         $exsitToken = $app->redis->get($phone . '_agent_token');
         if ($exsitToken) {
-            $app->redis->del($exsitToken);
+            // $app->redis->del($exsitToken);
         }
 
         $token = $app->util->uuid();
@@ -293,3 +293,6 @@ $app->post('/open/customer/reg', function () use ($app) {
         throw new BusinessException(1000, '注册失败，请联系客服');
     }
 });
+
+
+// $app->post('/open/notify/wx', function())

@@ -72,7 +72,7 @@ class PayHelper
             if ($terminal == 'wap') {
                 $output = [];
                 $output['terminal'] = 'wap';
-                $output['mweb_url'] = $ret['mweb_url'] . '&redirect_url=' . urlencode('http://guoguojia.vip/pay/?out_trade_no=' . $payData['out_trade_no']);
+                $output['mweb_url'] = $ret['mweb_url'] . '&redirect_url=' . urlencode('http://qr.guoguojia.vip/home/paymentStatus.html?id=' . $info['order_id'] . '&out_trade_no=' . $payData['out_trade_no']);
 
                 return $output;
             }
