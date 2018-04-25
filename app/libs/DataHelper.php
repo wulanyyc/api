@@ -4,10 +4,12 @@ use Biaoye\Model\Room;
 use Biaoye\Model\Product;
 use Biaoye\Model\ProductListSchool;
 use Biaoye\Model\ProductCategory;
+use Biaoye\Model\Customer;
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerPay;
+use Biaoye\Model\CustomerCart;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 class DataHelper
@@ -210,6 +212,88 @@ class DataHelper
     }
 
     public function handlePayOkOrder($app, $orderId, $tradeNo) { 
+        try {
+            $manager = new Manager();
+            $transaction = $manager->get();
+
+            // 更新支付表状态
+            $up = CustomerPay::findFirst('order_id=' . $orderId);
+            $up->setTransaction($transaction);
+            $up->trade_no = $tradeNo;
+            $up->pay_result = 1;
+
+            if (!$up->save()) {
+                $transaction->rollback("update CustomerPay fail " . $orderId);
+            }
+
+            // 更新订单支付状态
+            $uporder = CustomerOrder::findFirst($orderId);
+            $uporder->setTransaction($transaction);
+            $uporder->status = 1;
+
+            if (!$uporder->save()) {
+                $transaction->rollback("update CustomerOrder fail " . $orderId);
+            }
+
+            // 更新余额
+            $wallet = $uporder->pay_wallet;
+            if ($wallet > 0) {
+                $customerUp = Customer::findFirst($uporder->customer_id);
+                $customerUp->setTransaction($transaction);
+                $customerUp->money = $customerUp->money - $wallet;
+
+                if (!$customerUp->save()) {
+                    $transaction->rollback("update Customer money fail " . $uporder->customer_id . "_" . $wallet);
+                }
+            }
+
+            // 更新券
+            $coupons = trim($uporder->coupon_ids);
+            if (!empty($coupons)) {
+                $couponArr = explode(',', $coupons);
+                $couponStr = implode(',', $couponArr)
+                $couponUp = CustomerCouponUse::find([
+                    "conditions" => "use_status=0 and customer_id=" . $uporder->customer_id . " and coupon_id in (" . $couponStr . ")",
+                ]);
+
+                $couponUp->setTransaction($transaction);
+                $couponUp->use_status = 1;
+                if (!$couponUp->save()) {
+                    $transaction->rollback("update CustomerCouponUse fail " . $uporder->customer_id . "_" . $coupons );
+                }
+            }
+
+            // 更新购物车
+            $cartUp = CustomerCart::findFirst($uporder->cart_id);
+            if ($cartUp) {
+                $cartProducts = json_decode($cartUp->cart, true);
+                if (!empty($cartProducts)) {
+                    $cartUp->setTransaction($transaction);
+
+                    $products = json_decode($uporder->products, true);
+                    foreach($cartProducts as $key => $item) {
+                        foreach($products as $product) {
+                            if ($item['id'] == $product['id']) {
+                                unset($cartProducts[$key]);
+                            }
+                        }
+                    }
+
+                    $cartUp->cart = json_encode($cartProducts);
+                    if (!$cartUp->save()) {
+                        $transaction->rollback("update CustomerCart fail " . $uporder->cart_id);
+                    }
+                } 
+            }
+
+            $transaction->commit();
+
+            return 1;
+        } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+            $msg = $e->getMessage();
+            $app->logger->error("handlePayOkOrder fail: " . $msg);
         
+            throw new BusinessException(1000, '更新失败');
+        }
     }
 }
