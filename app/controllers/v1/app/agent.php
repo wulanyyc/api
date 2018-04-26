@@ -73,8 +73,12 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
-    $key = $app->config->params->get_order_prefix . $oid;
+    $exsit = CustomerOrder::count($oid);
+    if ($exsit != 1) {
+        throw new BusinessException(1000, '改订单不存在');
+    }
 
+    $key = $app->config->params->get_order_prefix . $oid;
     if (!$app->redis->exists($key)) {
         $app->util->setRobCacheKey($app, $oid);
         // throw new BusinessException(1000, '该单已过期');

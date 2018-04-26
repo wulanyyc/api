@@ -185,7 +185,7 @@ class Util
 
     public static function setRobCacheKey($app, $orderId) {
         $key = $app->config->params->get_order_prefix . $orderId;
-        $app->redis->setex($key, 86400 * 7, 0);
+        $app->redis->setex($key, 86400, 0);
     }
 
     /**
