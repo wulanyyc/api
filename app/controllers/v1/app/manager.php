@@ -102,7 +102,7 @@ $app->get('/v1/app/manager/agent/buy/complete/list', function () use ($app) {
 
     foreach($list as $item) {
         $temp = [];
-        $temp['agent_id'] = $item['agent_id'];
+        // $temp['agent_id'] = $item['agent_id'];
         $temp['need_num'] = $item['need_num'];
         $temp['agent'] = $infos[$item['agent_id']]['realname'];
         $temp['prodcut'] = Product::findFirst($item['product_id'])->name;
@@ -117,7 +117,7 @@ $app->get('/v1/app/manager/agent/buy/process/list', function () use ($app) {
     $id = $app->util->getAgentId($app);
     $date = intval($app->request->getQuery("date"));
 
-    $childs = Agent::find("manager_id=" . $id . " and status = 0")->toArray();
+    $childs = Agent::find("manager_id=" . $id . " and status = 1")->toArray();
 
     if (empty($childs)) {
          return [];
@@ -131,7 +131,7 @@ $app->get('/v1/app/manager/agent/buy/process/list', function () use ($app) {
     }
 
     $list = AgentInventoryRecords::find([
-        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =1",
+        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =0",
         "columns" => 'product_id,need_num,agent_id',
         "order" => 'id desc',
     ])->toArray();
