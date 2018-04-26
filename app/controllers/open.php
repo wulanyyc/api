@@ -331,3 +331,10 @@ $app->post('/open/notify/wx', function () use ($app) {
     }
 });
 
+
+$app->post('/open/notify/ali', function () use ($app) {
+    $rawData = file_get_contents('php://input');
+    $app->logger->info("ali:" . $rawData);
+    echo 'success';
+    exit;
+});
