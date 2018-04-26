@@ -47,7 +47,7 @@ $app->get('/v1/app/manager/agent/job/list/{agentId:\d+}', function ($agentId) us
 
     $orders = [];
     foreach($jobs as $job) {
-        $data = CustomerOrder::findFirst($job->order_id);
+        $data = CustomerOrder::findFirst($job['order_id']);
         if (!$data) {
             continue;
         }
@@ -55,7 +55,7 @@ $app->get('/v1/app/manager/agent/job/list/{agentId:\d+}', function ($agentId) us
         $temp = [];
         $temp['order_num'] = $data->date . $data->id;
         $temp['order_id'] = $data->id;
-        $temp['status'] = $job->status;
+        $temp['status'] = $job['status'];
         $temp['salary'] = $data->total_salary;
 
         $orders[] = $temp;
