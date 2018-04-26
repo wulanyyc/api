@@ -167,27 +167,19 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 });
 
 
-$app->get('/v1/h5/order/status/{id:\d+}', function ($id) use ($app) {
-    $info = CustomerOrder::findFirst($id);
-    if (!$info) {
-        throw new BusinessException(1000, '单号有误');
+$app->get('/v1/h5/order/status', function ($id) use ($app) {
+    $out_trade_no = $app->request->getQuery('out_trade_no');
+
+    $payInfo = CustomerPay::findFirst('out_trade_no=' . $out_trade_no);
+
+    if (!$payInfo) {
+        throw new BusinessException(1000, '参数有误');
     }
 
-    $orderId = $info->id;
-
-    $payInfo = CustomerPay::findFirst("order_id=" . $orderId);
-
-    if ($payInfo) {
-        return [
-            'status' => $payInfo->pay_result,
-            'pay_money' => $payInfo->pay_money,
-        ];
-    } else {
-        return [
-            'status' => 0,
-            'pay_money' => 0,
-        ];
-    }
+    return [
+        'status' => $payInfo->pay_result,
+        'pay_money' => $payInfo->pay_money,
+    ];
 });
 
 

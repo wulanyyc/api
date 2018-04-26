@@ -351,16 +351,15 @@ $app->post('/open/notify/ali', function () use ($app) {
         $total_amount = $_POST['total_amount'];
 
         if($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
-            // $checkData = Pay::find()->where(['out_trade_no' => $out_trade_no])->asArray()->one();
             $checkData = CustomerPay::findFirst('out_trade_no = "' . $out_trade_no . '"');
 
             // if ($total_amount == $checkData->pay_money) {
                 $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
                 if ($ok == 1) {
                     $app->util->setRobCacheKey($app, $checkData->order_id);
-                    $app->logger->info("ali_wap_pay_ok" . json_encode($data));
+                    $app->logger->info("ali_wap_pay_ok" . json_encode($arr));
                 } else {
-                    $app->logger->info("ali_wap_pay_handle_fail" . json_encode($data));
+                    $app->logger->info("ali_wap_pay_handle_fail" . json_encode($arr));
                 }
 
                 echo 'success';
