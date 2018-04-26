@@ -166,6 +166,7 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     foreach($products as $key => $item) {
         $products[$key]['name'] = Product::findFirst($item['id'])->name;
         $products[$key]['pid'] = $item['id'];
+        $products[$key]['price'] = $app->product->getProductPrice($item['id']);
         unset($products[$key]['id']);
     }
 
