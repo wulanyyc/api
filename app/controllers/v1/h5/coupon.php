@@ -6,6 +6,7 @@
 use Biaoye\Model\CustomerCoupon;
 use Biaoye\Model\CustomerCouponUse;
 
+// 使用coupon
 $app->post('/v1/h5/coupon/list', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
     $products = $app->request->getPost("products");
@@ -71,14 +72,15 @@ $app->post('/v1/h5/coupon/result', function () use ($app) {
     }
 });
 
-
+// 个人中心
 $app->get('/v1/h5/coupon/customer/list', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
 
     $allCoupons = CustomerCoupon::find("status=0")->toArray();
 
+    $today = date('Ymd', time());
     $coupons = CustomerCouponUse::find([
-        'conditions' => "customer_id=" . $customerId,
+        'conditions' => "customer_id=" . $customerId . " and end_date >=" . $today,
         "columns" => 'coupon_id, end_date, start_date',
     ])->toArray();
 
@@ -98,6 +100,7 @@ $app->get('/v1/h5/coupon/customer/list', function () use ($app) {
     }
 
     $valid = [];
+    $date = date('Ymd', time());
     foreach($allCoupons as $coupon) {
         if (!isset($ret[$coupon['id']])) {
             $valid[$coupon['id']] = [
@@ -107,12 +110,25 @@ $app->get('/v1/h5/coupon/customer/list', function () use ($app) {
                 'type' => $coupon['type'],
                 'coupon_id' => $coupon['id'],
             ];
+
+            $config = json_decode($coupon['config'], true);
+            if (isset($config['end_date'])) {
+                $valid[$coupon['id']]['start_date'] = date('Y.m.d', strtotime($config['start_date']));
+                $valid[$coupon['id']]['end_date'] = date('Y.m.d', strtotime($config['end_date']));
+            }
+
+            if (isset($config['days'])) {
+                $valid[$coupon['id']]['days'] = $config['days'];
+            }
         }
     }
 
+    sort($ret);
+    sort($valid);
+
     return [
-        'get' => sort($ret),
-        'unget' => sort($valid),
+        'get' => $ret,
+        'unget' => $valid,
     ];
 });
 
@@ -138,7 +154,7 @@ $app->get('/v1/h5/coupon/get/{id:\d+}', function ($id) use ($app) {
     if ($info->type == 2 || $info->type == 3) {
         $config = json_decode($info->config, true);
 
-        $startDate = $config['start_date'];
+        $startDate = date('Ymd', time());
         $endDate   = $config['end_date'];
     }
 

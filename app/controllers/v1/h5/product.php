@@ -45,6 +45,33 @@ $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
 
     $data['sub_category'] = ProductCategory::findFirst($data['sub_category'])->name;
 
+    // $customerId = $app->util->getCustomerId($app);
+
+    // $allCoupons = CustomerCoupon::find("status=0")->toArray();
+
+    // $coupons = CustomerCouponUse::find([
+    //     'conditions' => "customer_id=" . $customerId,
+    //     "columns" => 'coupon_id, end_date, start_date',
+    // ])->toArray();
+
+    // $ret = [];
+    // foreach($coupons as $item) {
+    //     $ret[$item['coupon_id']] = $item;
+    // }
+
+    // $valid = [];
+    // foreach($allCoupons as $coupon) {
+    //     if (!isset($ret[$coupon['id']])) {
+    //         $valid[$coupon['id']] = [
+    //             'name' => $coupon['name'],
+    //             'desc' => $coupon['desc'],
+    //             'money' => $coupon['money'],
+    //             'type' => $coupon['type'],
+    //             'coupon_id' => $coupon['id'],
+    //         ];
+    //     }
+    // }
+
     return $data;
 });
 
