@@ -76,7 +76,8 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $key = $app->config->params->get_order_prefix . $oid;
 
     if (!$app->redis->exists($key)) {
-        throw new BusinessException(1000, '该单已过期');
+        $app->util->setRobCacheKey($app, $oid);
+        // throw new BusinessException(1000, '该单已过期');
     }
 
     $num = $app->redis->get($key);

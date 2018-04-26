@@ -183,6 +183,11 @@ class Util
         return false;
     }
 
+    public static function setRobCacheKey($app, $orderId) {
+        $key = $app->config->params->get_order_prefix . $orderId;
+        $app->redis->setex($key, 86400 * 7, 0);
+    }
+
     /**
      * 远程调用api
      */
