@@ -22,6 +22,8 @@ $app->get('/v1/h5/customer/center', function () use ($app) {
         'undeliver' => isset($order[1]) ? $order[1]['status_cnt'] : 0,
         'deliver' => isset($order[2]) ? $order[2]['status_cnt'] : 0,
         'ok' => isset($order[3]) ? $order[3]['status_cnt'] : 0,
+        'money' => $info->money,
+        'score' => $info->score,
     ];
 
     return $ret;
