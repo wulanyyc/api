@@ -336,7 +336,7 @@ $app->post('/open/notify/wx', function () use ($app) {
 
 $app->post('/open/notify/ali', function () use ($app) {
     $arr = $_POST;
-    $result = AlipayHelper::check($arr, 'wap');
+    $result = AlipayHelper::check($app, $arr);
 
     if ($result) {
         $out_trade_no = $_POST['out_trade_no'];

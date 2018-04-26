@@ -24,7 +24,7 @@ class AlipayHelper {
         return $result;
     }
 
-    public static function check($app, $data, $terminal) {
+    public static function check($app, $data) {
         $aop = new \AopClient;
         $aop->alipayrsaPublicKey = $app->config->alipay['alipay_public_key'];
 
