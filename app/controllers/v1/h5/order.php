@@ -85,6 +85,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
     // pay_style: 0, 1   terminal: wap, wechat
     if (empty($params['pay_style']) || empty($params['terminal'])) {
+        $app->logger->error("pay_fail:" . json_encode($params));
         throw new BusinessException(1000, '支付方式或终端不能为空');
     }
 
