@@ -149,7 +149,7 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
 
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,
-        'columns' => 'id as order_id,express_fee,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,cart_id,address_id'
+        'columns' => 'id as order_id,express_fee,express_time,product_price,pay_money,deliver_fee,product_salary,total_salary,products,address_id'
     ]);
 
     if (!$data) {
@@ -161,7 +161,15 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $ret['express_time_tiny'] = date("H:i", strtotime($ret['express_time']));
     $ret['address'] = $app->util->getAddressInfo($app, $ret['address_id']);
     $ret['order_num'] = date('Ymd', strtotime($ret['express_time'])) . $ret['order_id'];
-    $ret['products'] = CustomerCart::getCart($ret['cart_id']);
+
+    $products = json_decode($ret['products'], true);
+    foreach($products as $key => $item) {
+        $products[$key]['name'] = Product::findFirst($item['id'])->name;
+        $products[$key]['pid'] = $item['id'];
+        unset($products[$key]['id']);
+    }
+
+    $ret['products'] = $products;
 
     return $ret;
 });
