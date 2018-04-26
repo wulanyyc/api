@@ -257,6 +257,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         // 调整库存
         $batch = $app->util->uuid();
+        $date = date('Ymd', time());
         foreach($products as $product) {
             $in = AgentInventory::findFirst('agent_id=' . $id . " and product_id=" . $product['id']);
             $in->setTransaction($transaction);
@@ -274,6 +275,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             $air->num = $product['num'];
             $air->agent_id = $id;
             $air->batch_id = $batch;
+            $air->date = $date;
 
             if (!$air->save()) {
                 $transaction->rollback("save AgentInventoryRecords fail: " . $id . '_' . $product['id'] . '_' . $oid);
@@ -296,7 +298,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         $moneyList->money = $co->total_salary;
         $moneyList->operator = 0;
         $moneyList->order_id = $oid;
-        $moneyList->date = date('Ymd', time());
+        $moneyList->date = $date;
         
         if (!$moneyList->save()) {
             $transaction->rollback("save AgentMoneyList fail: " . $id . '_' . $oid);
