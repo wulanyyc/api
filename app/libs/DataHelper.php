@@ -241,7 +241,14 @@ class DataHelper
             if ($wallet > 0) {
                 $customerUp = Customer::findFirst($uporder->customer_id);
                 $customerUp->setTransaction($transaction);
-                $customerUp->money = $customerUp->money - $wallet;
+
+                $money = $customerUp->money - $wallet;
+                if ($money < 0) {
+                    $app->logger->error("wallet error: " . $money . "_order_" . $orderId);
+                    $money = 0;
+                }
+
+                $customerUp->money = $money;
 
                 if (!$customerUp->save()) {
                     $transaction->rollback("update Customer money fail " . $uporder->customer_id . "_" . $wallet);
@@ -270,7 +277,6 @@ class DataHelper
             // 更新购物车
             $customerId = $uporder->customer_id;
             $cartUp = CustomerCart::findFirst('customer_id=' . $customerId);
-            // $cartUp = CustomerCart::findFirst($uporder->cart_id);
             if ($cartUp) {
                 $cartProducts = json_decode($cartUp->cart, true);
                 if (!empty($cartProducts)) {

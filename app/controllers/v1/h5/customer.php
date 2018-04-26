@@ -135,3 +135,16 @@ $app->post('/v1/h5/customer/phone', function () use ($app) {
 
     return 1;
 });
+
+
+// 钱包
+$app->get('/v1/h5/customer/wallet', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $info = Customer::findFirst($customerId);
+
+    return [
+        'money' => $info->money,
+        'score' => $info->score,
+    ];
+});
