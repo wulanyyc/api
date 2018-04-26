@@ -21,6 +21,7 @@ class PayHelper
     }
 
     public function handleAlipay($app, $info) {
+        $info->pay_money = 0.01;
         $alipayParams = [
             'subject' => '商城订单',
             'out_trade_no' => $info->out_trade_no,
