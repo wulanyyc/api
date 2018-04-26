@@ -299,4 +299,49 @@ class DataHelper
             throw new BusinessException(1000, '更新失败');
         }
     }
+
+    // 获取可领取的优惠券
+    public function getValidCoupons($app) {
+        $customerId = $app->util->getCustomerId($app);
+
+        $allCoupons = CustomerCoupon::find("status=0")->toArray();
+
+        $coupons = CustomerCouponUse::find([
+            'conditions' => "customer_id=" . $customerId,
+            "columns" => 'coupon_id',
+        ])->toArray();
+
+        $ret = [];
+        foreach($coupons as $item) {
+            $ret[$item['coupon_id']] = $item;
+        }
+
+        $valid = [];
+        foreach($allCoupons as $coupon) {
+            if (!isset($ret[$coupon['id']])) {
+                $temp = [];
+                $temp = [
+                    'name' => $coupon['name'],
+                    'desc' => $coupon['desc'],
+                    'money' => $coupon['money'],
+                    'type' => $coupon['type'],
+                    'coupon_id' => $coupon['id'],
+                ];
+
+                $config = json_decode($coupon['config'], true);
+                if (isset($config['end_date'])) {
+                    $temp['start_date'] = date('Y.m.d', strtotime($config['start_date']));
+                    $temp['end_date'] = date('Y.m.d', strtotime($config['end_date']));
+                }
+
+                if (isset($config['days'])) {
+                    $temp['days'] = $config['days'];
+                }
+
+                $valid[] = $temp;
+            }
+        }
+
+        return $valid;
+    }
 }
