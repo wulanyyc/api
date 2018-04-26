@@ -13,6 +13,7 @@ use Phalcon\Mvc\Model\Transaction\Manager;
 use Biaoye\Model\NotifyMessage;
 use Biaoye\Model\AgentInventory;
 use Biaoye\Model\AgentInventoryRecords;
+use Biaoye\Model\AgentMoneyList;
 
 // 实名状态
 $app->get('/v1/app/agent/realname', function () use ($app) {
