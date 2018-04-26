@@ -49,7 +49,7 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 
     //TODO 细化
     $data = CustomerOrder::find([
-        "conditions" => "sex=" . $sex . " and status=1",
+        "conditions" => "sex=" . $sex . " and status=1 and date=" . date('Ymd', time()),
         "columns" => 'id as order_id, address_id, total_salary as salary',
         "order" => 'id asc',
         "limit" => 50,
