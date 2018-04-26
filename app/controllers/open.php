@@ -316,7 +316,7 @@ $app->post('/open/notify/wx', function () use ($app) {
     // if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData->pay_money) {
     if ($data['result_code'] == 'SUCCESS') {
         $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
-        $app->logger->error("pay_ok" . json_encode($data));
+        $app->logger->info("pay_ok" . json_encode($data));
         echo 'success';
         exit;
     } else {

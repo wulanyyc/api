@@ -212,7 +212,7 @@ class DataHelper
         ];
     }
 
-    public function handlePayOkOrder($app, $orderId, $tradeNo) { 
+    public function handlePayOkOrder($app, $orderId, $tradeNo) {
         try {
             $manager = new Manager();
             $transaction = $manager->get();
@@ -268,7 +268,9 @@ class DataHelper
             }
 
             // 更新购物车
-            $cartUp = CustomerCart::findFirst($uporder->cart_id);
+            $customerId = $uporder->customer_id;
+            $cartUp = CustomerCart::findFirst('customer_id=' . $customerId);
+            // $cartUp = CustomerCart::findFirst($uporder->cart_id);
             if ($cartUp) {
                 $cartProducts = json_decode($cartUp->cart, true);
                 if (!empty($cartProducts)) {
