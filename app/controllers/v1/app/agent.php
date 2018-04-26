@@ -256,6 +256,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         }
 
         // 调整库存
+        $batch = $app->util->uuid();
         foreach($products as $product) {
             $in = AgentInventory::findFirst('agent_id=' . $id . " and product_id=" . $product['id']);
             $in->setTransaction($transaction);
@@ -263,6 +264,19 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             
             if (!$in->save()) {
                 $transaction->rollback("save AgentInventory fail: " . $id . '_' . $product['id'] . '_' . $oid);
+            }
+
+            $air = new AgentInventoryRecords();
+            $air->setTransaction($transaction);
+            $air->operator = 2;
+            $air->product_id = $product['id'];
+            $air->status = 1;
+            $air->num = $product['num'];
+            $air->agent_id = $id;
+            $air->batch_id = $batch;
+
+            if (!$air->save()) {
+                $transaction->rollback("save AgentInventoryRecords fail: " . $id . '_' . $product['id'] . '_' . $oid);
             }
         }
 
