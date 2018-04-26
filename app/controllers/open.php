@@ -319,22 +319,57 @@ $app->post('/open/notify/wx', function () use ($app) {
 
         if ($ok == 1) {
             $app->util->setRobCacheKey($app, $checkData->order_id);
+            $app->logger->info("wx_wap_pay_ok" . json_encode($data));
+        } else {
+            $app->logger->info("wx_wap_pay_handle_fail" . json_encode($data));
         }
 
-        $app->logger->info("pay_ok" . json_encode($data));
         echo 'success';
         exit;
     } else {
         $time = 'wx_error_' . date('YmdHis', time());
         $app->logger->error($time . ":" . $rawData);
-        throw new BusinessException(1000, '通知失败');
+        throw new BusinessException(1000, '支付失败');
     }
 });
 
 
 $app->post('/open/notify/ali', function () use ($app) {
-    $rawData = file_get_contents('php://input');
-    $app->logger->info("ali:" . $rawData);
-    echo 'success';
-    exit;
+    $arr = $_POST;
+    $result = AlipayHelper::check($arr, 'wap');
+
+    if ($result) {
+        $out_trade_no = $_POST['out_trade_no'];
+
+        //支付宝交易号
+        $trade_no = $_POST['trade_no'];
+
+        //交易状态
+        $trade_status = $_POST['trade_status'];
+
+        // 交易金额
+        $total_amount = $_POST['total_amount'];
+
+        if($_POST['trade_status'] == 'TRADE_FINISHED' || $_POST['trade_status'] == 'TRADE_SUCCESS') {
+            // $checkData = Pay::find()->where(['out_trade_no' => $out_trade_no])->asArray()->one();
+            $checkData = CustomerPay::findFirst('out_trade_no = "' . $out_trade_no . '"');
+
+            // if ($total_amount == $checkData->pay_money) {
+                $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
+                if ($ok == 1) {
+                    $app->util->setRobCacheKey($app, $checkData->order_id);
+                    $app->logger->info("ali_wap_pay_ok" . json_encode($data));
+                } else {
+                    $app->logger->info("ali_wap_pay_handle_fail" . json_encode($data));
+                }
+
+                echo 'success';
+                exit;
+            // }
+        }
+    } else {
+        $time = 'ali_error_' . date('YmdHis', time());
+        $app->logger->error($time . ":" . json_encode($arr));
+        throw new BusinessException(1000, '支付失败');
+    }
 });
