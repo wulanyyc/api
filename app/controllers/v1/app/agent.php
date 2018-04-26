@@ -137,7 +137,23 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 // 抢单详情
 $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
-    // $sex = Agent::findFirst($id)->sex;
+
+    // 权限验证
+    $info = AgentOrderSuc::findFirst('order_id=' . $oid);
+    if ($info->agent_id != $id) {
+        $childs = Agent::find('manager_id=' . $id)->toArray();
+        if (!empty($childs)) {
+            $rightFlag = false;
+            foreach($childs as $child) {
+                if ($child == $id) {
+                    $rightFlag = true;
+                    break;
+                }
+            }
+        } else {
+            raise_bad_request($app);
+        }
+    }
 
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,

@@ -14,3 +14,5 @@ CHANGE COLUMN `discount_money` `wallet_money` FLOAT NOT NULL DEFAULT '0' COMMENT
 
 
 
+
+

@@ -48,5 +48,6 @@ $app->get('/v1/app/stats/agent', function () use ($app) {
         'day_income' => $income,
         'month_num' => $monthNum,
         'month_income' => $monthIncome,
+        'manager_flag' => $info->manager_flag,
     ];
 });
