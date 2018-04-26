@@ -73,9 +73,9 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
-    $exsit = CustomerOrder::count($oid);
+    $exsit = CustomerOrder::count("id=" . $oid . " and status=1");
     if ($exsit != 1) {
-        throw new BusinessException(1000, '改订单不存在');
+        throw new BusinessException(1000, '订单ID有误');
     }
 
     $key = $app->config->params->get_order_prefix . $oid;
