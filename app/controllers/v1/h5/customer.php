@@ -112,10 +112,17 @@ $app->post('/v1/h5/customer/sex', function () use ($app) {
 // 修改手机号码
 $app->post('/v1/h5/customer/phone', function () use ($app) {
     $phone = $app->request->getPost("phone");
+    $code = $app->request->getPost("code");
     $customerId = $app->util->getCustomerId($app);
 
     if (!$app->util->checkPhoneFormat($phone)) {
         throw new BusinessException(1000, '参数有误');
+    }
+
+    $key = $phone . '_smscode';
+    $vcode = $app->redis->get($key);
+    if ($vcode != $code) {
+        throw new BusinessException(1000, '验证码有误');
     }
 
     $up = Customer::findFirst($customerId);
