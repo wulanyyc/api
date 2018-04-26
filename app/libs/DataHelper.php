@@ -166,6 +166,7 @@ class DataHelper
         return $ret;
     }
 
+    // 计算订单价格
     public function calculateOrderPrice($app, $data) {
         $products = json_decode($data['products'], true);
         $coupons = !empty($data['coupon_ids']) ? explode(',', $data['coupon_ids']) : [];
@@ -212,6 +213,7 @@ class DataHelper
         ];
     }
 
+    // 支付完成
     public function handlePayOkOrder($app, $orderId, $tradeNo) {
         try {
             $manager = new Manager();

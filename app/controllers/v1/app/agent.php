@@ -202,6 +202,22 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
 $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
+    // 检查库存
+    $check = CustomerOrder::findFirst($oid);
+    $products = json_decode($check->products, true);
+    foreach($products as $product) {
+        $inventory = AgentInventory::findFirst('agent_id=' . $id . ' and product_id=' . $product['id']);
+        if (!$inventory) {
+            $product = Product::findFirst($product['id']);
+            throw new BusinessException(1000, '【' . $product->name . '】库存不足, 请补货');
+        }
+
+        if ($inventory->num < $product['num']) {
+            $product = Product::findFirst($product['id']);
+            throw new BusinessException(1000, '【' . $product->name . '】库存不足, 请补货');
+        }
+    }
+
     try {
         $manager = new Manager();
         $transaction = $manager->get();
@@ -224,10 +240,38 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             $transaction->rollback("save customer_order complete fail");
         }
 
-        // TODO 更新库存
+        // 调整库存
+        foreach($products as $product) {
+            $in = AgentInventory::findFirst('agent_id=' . $id . " and product_id=" . $product['id']);
+            $in->setTransaction($transaction);
+            $in->num = $in->num - $product['num'];
+            
+            if (!$in->save()) {
+                $transaction->rollback("save AgentInventory fail: " . $id . '_' . $product['id'] . '_' . $oid);
+            }
+        }
 
+        // 收入调整
+        $agentUp = Agent::findFirst($id);
+        $agentUp->setTransaction($transaction);
+        $agentUp->money = $agentUp->money + $co->total_salary;
 
-        // TODO 收入调整
+        if (!$agentUp->save()) {
+            $transaction->rollback("save Agent money fail: " . $id . '_' . $oid);
+        }
+
+        // 收入明细
+        $moneyList = new AgentMoneyList();
+        $moneyList->setTransaction($transaction);
+        $moneyList->agent_id = $id;
+        $moneyList->money = $co->total_salary;
+        $moneyList->operator = 0;
+        $moneyList->order_id = $oid;
+        $moneyList->date = date('Ymd', time());
+        
+        if (!$moneyList->save()) {
+            $transaction->rollback("save AgentMoneyList fail: " . $id . '_' . $oid);
+        }
 
         $transaction->commit();
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
