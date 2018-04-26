@@ -291,6 +291,7 @@ $app->get('/test/init/agent/inventory', function () use ($app) {
         $air->operator = 1;
         $air->product_id = rand(1, 20);
         $air->status = 1;
+        $air->need_num = rand(1, 100);
         $air->num = rand(1, 100);
         $air->agent_id = $agentId;
         $air->batch_id = $batch;

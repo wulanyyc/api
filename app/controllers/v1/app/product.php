@@ -80,9 +80,10 @@ $app->post('/v1/app/product/buy/submit', function () use ($app) {
         $add->product_id = $item['product_id'];
         $add->status = 0;
         $add->need_num = $item['num'];
-        $add->num = $item['num'];
+        $add->num = 0;
         $add->agent_id = $agentId;
         $add->batch_id = $batch;
+        $add->date = date('Ymd', time());
         $add->save();
     }
 
