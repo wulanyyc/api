@@ -29,7 +29,7 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
         $productInfo = Product::findFirst($item['id']);
         $data[$key]['name']  = $productInfo->name;
         $data[$key]['img']   = $productInfo->img;
-        $data[$key]['price'] = $app->product->getProductPrice($item['id']);
+        // $data[$key]['price'] = $app->product->getProductPrice($item['id']);
     }
 
     return [
@@ -48,10 +48,10 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     }
 
     $cart = [];
-    $cart[$pid] = [
+    $cart[] = [
         'id' => $pid,
         'num' => $num,
-        'price' => $app->product->getProductPrice($pid),
+        // 'price' => $app->product->getProductPrice($pid),
     ];
 
     $ar = new CustomerCart();
@@ -116,13 +116,12 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
             $cart[$item['id']] = [
                 'id' => $item['id'],
                 'num' => $item['num'],
-                'price' => $app->product->getProductPrice($item['id']),
+                // 'price' => $app->product->getProductPrice($item['id']),
             ];
-        } else {
-            throw new BusinessException(1000, '参数有误');
         }
     }
 
+    sort($cart);
     $ar->cart = json_encode($cart);
 
     if ($ar->save()) {
@@ -145,26 +144,25 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
     }
 
     $customerId = $app->util->getCustomerId($app);
-
     if ($customerId != $cartInfo->customer_id) {
         throw new BusinessException(1000, '无操作权限');
     }
 
-    if ($num == 0) {
-        throw new BusinessException(1000, '参数有误');
-    }
-
     $cart = json_decode($cartInfo->cart, true);
     
-    if (!isset($cart[$pid])) {
-        $cart[$pid] = [
+    $exsit = false;
+    foreach($cart as $key => $item) {
+        if ($item['id'] == $pid) {
+            $cart[$key]['num'] = intval($item['num']) + $num;
+            $exsit = true;
+        }
+    }
+
+    if (!$exsit) {
+        array_push($cart, [
             'id' => $pid,
             'num' => $num,
-            'price' => $app->product->getProductPrice($pid),
-        ];
-    } else {
-        $cart[$pid]['num'] = intval($cart[$pid]['num']) + intval($num);
-        $cart[$pid]['price'] = $app->product->getProductPrice($pid);
+        ]);
     }
 
     $cartInfo->cart = json_encode($cart);
@@ -196,13 +194,12 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
 
     $cart = json_decode($cartInfo->cart, true);
     
-    if (isset($cart[$pid])) {
-        $cart[$pid]['num'] = intval($cart[$pid]['num']) - intval($num);
-
-        if ($cart[$pid]['num'] <= 0) {
-            unset($cart[$pid]);
-        } else {
-            $cart[$pid]['price'] = $app->product->getProductPrice($pid);
+    foreach($cart as $key => $item) {
+        if ($item['id'] == $pid) {
+            $cart[$key]['num'] = intval($item['num']) - $num;
+            if ($cart[$key]['num'] == 0) {
+                unset($cart[$key]);
+            }
         }
     }
 
