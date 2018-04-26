@@ -7,6 +7,7 @@ use Biaoye\Model\Product;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\CustomerOrder;
 
+// 购物车列表
 $app->get('/v1/h5/cart/init', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
 
@@ -29,7 +30,7 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
         $productInfo = Product::findFirst($item['id']);
         $data[$key]['name']  = $productInfo->name;
         $data[$key]['img']   = $productInfo->img;
-        // $data[$key]['price'] = $app->product->getProductPrice($item['id']);
+        $data[$key]['price'] = $app->product->getProductPrice($item['id']);
     }
 
     return [
@@ -51,7 +52,6 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     $cart[] = [
         'id' => $pid,
         'num' => $num,
-        // 'price' => $app->product->getProductPrice($pid),
     ];
 
     $ar = new CustomerCart();
@@ -59,19 +59,8 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
     $ar->cart = json_encode($cart);
 
     if ($ar->save()) {
-        // $data = [];
-        // $productInfo = Product::findFirst($pid);
-        // $data[$pid] = [
-        //     'id' => $pid,
-        //     'num' => $num,
-        //     'name' => $productInfo->name,
-        //     'img'  => $productInfo->img,
-        //     'price' => $app->product->getProductPrice($pid),
-        // ];
-
         return [
             'cart_id'  => $ar->id,
-            // 'products' => $data,
         ];
     } else {
         throw new BusinessException(1000, '添加失败');
@@ -116,7 +105,6 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
             $cart[$item['id']] = [
                 'id' => $item['id'],
                 'num' => $item['num'],
-                // 'price' => $app->product->getProductPrice($item['id']),
             ];
         }
     }
@@ -236,8 +224,10 @@ $app->post('/v1/h5/cart/del/{cid:\d+}', function ($cid) use ($app) {
     $pids = explode(',', $ids);
 
     foreach($pids as $pid) {
-        if (isset($cart[$pid])) {
-            unset($cart[$pid]);
+        foreach($cart as $key => $item) {
+            if ($pid == $item['id']) {
+                unset($cart[$key]);
+            }
         }
     }
 
