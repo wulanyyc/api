@@ -40,6 +40,7 @@ $app->get('/v1/app/manager/agent/job/list/{agentId:\d+}', function ($agentId) us
 
     if (empty($jobs)) {
         return [
+            'name' => '',
             'total' => 0,
             'orders' => []
         ];
@@ -62,6 +63,7 @@ $app->get('/v1/app/manager/agent/job/list/{agentId:\d+}', function ($agentId) us
     }
 
     return [
+        'name' => $info->realname,
         'total' => count($orders),
         'orders' => $orders,
     ];
