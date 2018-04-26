@@ -174,6 +174,15 @@ class Util
         return $app->util->curlRequest($api, http_build_query($config));
     }
 
+    public static function checkPhoneFormat($phone) {
+        $reg ='/^1\d{10}$/';
+        if(preg_match($reg, $phone)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * 远程调用api
      */

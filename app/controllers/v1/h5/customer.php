@@ -74,3 +74,56 @@ $app->get('/v1/h5/customer/search/history', function () use ($app) {
 
     return $result;
 });
+
+// 个人信息
+$app->get('/v1/h5/customer/info', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+
+    $info = Customer::findFirst($customerId)->toArray();
+    if (!empty($info)) {
+        unset($info['create_time']);
+        unset($info['invite_code']);
+    }
+
+    return $info;
+});
+
+
+// 修改姓名
+$app->post('/v1/h5/customer/sex', function () use ($app) {
+    $sex = $app->request->getPost("sex");
+    $customerId = $app->util->getCustomerId($app);
+
+    $sex = intval($sex);
+    if ($sex > 1) {
+        throw new BusinessException(1000, '参数有误');
+    }
+
+    $up = Customer::findFirst($customerId);
+    $up->sex = $sex;
+    if (!$up->save()) {
+        throw new BusinessException(1000, '修改失败');
+    }
+
+    return 1;
+});
+
+
+// 修改手机号码
+$app->post('/v1/h5/customer/phone', function () use ($app) {
+    $phone = $app->request->getPost("phone");
+    $customerId = $app->util->getCustomerId($app);
+
+    if (!$app->util->checkPhoneFormat($phone)) {
+        throw new BusinessException(1000, '参数有误');
+    }
+
+    $up = Customer::findFirst($customerId);
+    $up->phone = $phone;
+    if (!$up->save()) {
+        throw new BusinessException(1000, '修改失败');
+    }
+
+    return 1;
+});

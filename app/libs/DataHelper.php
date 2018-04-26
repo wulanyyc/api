@@ -306,14 +306,20 @@ class DataHelper
 
         $allCoupons = CustomerCoupon::find("status=0")->toArray();
 
+        if (empty($allCoupons)) {
+            return [];
+        }
+
         $coupons = CustomerCouponUse::find([
             'conditions' => "customer_id=" . $customerId,
             "columns" => 'coupon_id',
         ])->toArray();
 
         $ret = [];
-        foreach($coupons as $item) {
-            $ret[$item['coupon_id']] = $item;
+        if (!empty($coupons)) {
+            foreach($coupons as $item) {
+                $ret[$item['coupon_id']] = $item;
+            }
         }
 
         $valid = [];
@@ -343,5 +349,27 @@ class DataHelper
         }
 
         return $valid;
+    }
+
+    // 检查job权限
+    public function checkAgentJobRight($app, $job) {
+        $id = $app->util->getAgentId($app);
+
+        // 权限验证
+        $info = AgentOrderSuc::findFirst('order_id=' . $oid);
+        if ($info->agent_id != $id) {
+            $childs = Agent::find('manager_id=' . $id)->toArray();
+            if (!empty($childs)) {
+                $rightFlag = false;
+                foreach($childs as $child) {
+                    if ($child == $id) {
+                        $rightFlag = true;
+                        break;
+                    }
+                }
+            } else {
+                raise_bad_request($app);
+            }
+        }
     }
 }
