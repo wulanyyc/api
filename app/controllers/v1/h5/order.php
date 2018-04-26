@@ -85,7 +85,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
     // pay_style: 0, 1   terminal: wap, wechat
     if (!isset($params['pay_style']) || empty($params['terminal'])) {
-        $app->logger->error("pay_fail:" . json_encode($params));
+        // $app->logger->error("pay_fail:" . json_encode($params));
         throw new BusinessException(1000, '支付方式或终端不能为空');
     }
 
@@ -153,6 +153,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         $transaction->commit();
 
         $output = $app->pay->handle($app, $pay->id);
+        $app->logger->info("order_ali:" . json_encode($output));
 
         return $output;
         // TODO 删除购物车数据
