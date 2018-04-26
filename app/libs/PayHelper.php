@@ -34,7 +34,9 @@ class PayHelper
         $ret = [];
         // 手机支付
         if ($terminal == 'wap') {
-            $ret = AlipayHelper::wappay($app, $alipayParams);
+            $script = AlipayHelper::wappay($app, $alipayParams);
+            $ret['terminal'] = 'aliwap';
+            $ret['script'] = $script;
         }
 
         return $ret;
