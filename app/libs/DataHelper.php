@@ -10,6 +10,7 @@ use Biaoye\Model\CustomerCouponUse;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerPay;
 use Biaoye\Model\CustomerCart;
+use Biaoye\Model\AgentOrderSuc;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 class DataHelper
@@ -352,24 +353,34 @@ class DataHelper
     }
 
     // 检查job权限
-    public function checkAgentJobRight($app, $job) {
+    public function checkAgentJobRight($app, $orderId) {
         $id = $app->util->getAgentId($app);
 
         // 权限验证
-        $info = AgentOrderSuc::findFirst('order_id=' . $oid);
-        if ($info->agent_id != $id) {
-            $childs = Agent::find('manager_id=' . $id)->toArray();
-            if (!empty($childs)) {
-                $rightFlag = false;
-                foreach($childs as $child) {
-                    if ($child == $id) {
-                        $rightFlag = true;
-                        break;
-                    }
-                }
-            } else {
-                raise_bad_request($app);
+        $info = AgentOrderSuc::findFirst('order_id=' . $orderId);
+        if (!$info) {
+            return false;
+        }
+        
+        if ($info->agent_id == $id) {
+            return true;
+        }
+
+        $childs = Agent::find([
+            'conditions' => 'manager_id=' . $id,
+            'columns' => 'id'
+        ])->toArray();
+
+        if (empty($childs)) {
+            return false;
+        }
+
+        foreach($childs as $child) {
+            if ($child['id'] == $id) {
+                return true;
             }
         }
+
+        return false;
     }
 }

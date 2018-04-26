@@ -79,7 +79,6 @@ $app->get('/v1/h5/customer/search/history', function () use ($app) {
 $app->get('/v1/h5/customer/info', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
 
-
     $info = Customer::findFirst($customerId)->toArray();
     if (!empty($info)) {
         unset($info['create_time']);
@@ -96,7 +95,7 @@ $app->post('/v1/h5/customer/sex', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
 
     $sex = intval($sex);
-    if ($sex > 1) {
+    if ($sex > 2) {
         throw new BusinessException(1000, '参数有误');
     }
 

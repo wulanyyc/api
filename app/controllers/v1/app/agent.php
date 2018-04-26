@@ -136,7 +136,11 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 
 // 抢单详情
 $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
-    // $app->data->checkAgentJobRight($app, $oid);
+    $rightFlag = $app->data->checkAgentJobRight($app, $oid);
+
+    if (!$rightFlag) {
+        raise_bad_request($app);
+    }
 
     $data = CustomerOrder::findFirst([
         'conditions' => 'id = ' . $oid,
