@@ -89,6 +89,10 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         throw new BusinessException(1000, '支付方式或终端不能为空');
     }
 
+    if ($params['terminal'] == 'wechat' && empty($params['openid'])) {
+        throw new BusinessException(1000, '参数不足');
+    }
+
     $inventory = $app->data->checkInventory($app, $products);
 
     if (!$inventory['status']) {
