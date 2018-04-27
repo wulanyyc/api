@@ -13,7 +13,7 @@ class JobTask extends \Phalcon\CLI\Task
         $hour = date('H', time());
         $switch = $this->di->get('config')->params->switch_day_night;
 
-        // if ($hour >= $switch) {
+        if ($hour >= $switch) {
             $data = CustomerOrder::find([
                 "conditions" => "status=1 and date=" . date('Ymd', time()),
                 "columns" => 'id, customer_id',
@@ -28,7 +28,7 @@ class JobTask extends \Phalcon\CLI\Task
             foreach($data as $item) {
                 echo $this->handleJob($item['id'], $item['customer_id']);
             }
-        // }
+        }
     }
 
     private function handleJob($oid, $cid) {

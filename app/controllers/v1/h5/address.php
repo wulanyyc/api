@@ -4,6 +4,7 @@
  */
 
 use Biaoye\Model\CustomerAddress;
+use Biaoye\Model\Customer;
 use Biaoye\Model\Room;
 use Biaoye\Model\School;
 
@@ -145,4 +146,17 @@ $app->get('/v1/h5/address/cancel/default/{id:\d+}', function ($id) use ($app) {
     } else {
         throw new BusinessException(1000, '设置失败');
     }
+});
+
+// 学校列表
+$app->get('/v1/h5/address/school/list', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+
+    $up = Customer::findFirst($customerId);
+    $schoolId = $up->school_id;
+
+    return School::find([
+        'conditions' => "id=" . $schoolId,
+        'columns' => 'id, name',
+    ])->toArray();
 });
