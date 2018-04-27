@@ -77,7 +77,7 @@ class PayHelper
                 $output['paySign'] = $paySign;
 
                 return [
-                    'data' => $output,
+                    'params' => $output,
                     'terminal' => 'wechat',
                     'out_trade_no' => $payData['out_trade_no'],
                     'order_id' => $info->order_id,
