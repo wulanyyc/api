@@ -208,7 +208,8 @@ $app->get('/v1/h5/order/list/{status:\d+}', function ($status) use ($app) {
             $ret[$order['id']]['product'][] = [
                 'name' => $productInfo->name,
                 'title' => $productInfo->title,
-                'slogan' => $productInfo->slogan,
+                // 'slogan' => $productInfo->slogan,
+                'package' => $productInfo->title,
                 'price' => $app->product->getProductPrice($productInfo->id),
                 'img' => $productInfo->img,
                 'id' => $productInfo->id,
