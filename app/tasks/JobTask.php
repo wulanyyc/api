@@ -84,11 +84,12 @@ class JobTask extends \Phalcon\CLI\Task
 
             $msg = $e->getMessage();
             $app->logger->error("assign job db save fail_" . $assignId . '_' . $oid . ':' . $msg);
-            
-            throw new BusinessException(1000, '派单失败了' . $assignId . '_' . $oid);
+
+            return 0;
         }
 
         AgentOrderList::addRecord($assignId, $oid, 1);
 
         return 1;
+    }
 }
