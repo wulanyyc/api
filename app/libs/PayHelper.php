@@ -73,7 +73,7 @@ class PayHelper
                 $output['package'] = "prepay_id=" . $ret['prepay_id'];
                 $output['timeStamp'] = time();
 
-                $paySign = WxpayHelper::buildSign($output);
+                $paySign = WxpayHelper::buildSign($app, $output);
                 $output['paySign'] = $paySign;
 
                 return [

@@ -150,13 +150,6 @@ $app->get('/v1/h5/customer/wallet', function () use ($app) {
 });
 
 // 提醒发货
-$app->get('/v1/h5/customer/notify/deliver', function () use ($app) {
-    $customerId = $app->util->getCustomerId($app);
-
-    $info = Customer::findFirst($customerId);
-
-    return [
-        'money' => $info->money,
-        'score' => $info->score,
-    ];
+$app->get('/v1/h5/customer/notify/deliver/{id:\d+}', function ($id) use ($app) {
+    return 1;
 });
