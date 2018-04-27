@@ -188,6 +188,17 @@ class Util
         $app->redis->setex($key, 86400, 0);
     }
 
+    public static function getAssignFlag($app) {
+        $hour = date('H', time());
+
+        //早6晚9点
+        if ($hour >= $app->config->params->switch_day_night || $hour < 6) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * 远程调用api
      */

@@ -12,11 +12,9 @@ class ProductHelper
 
     // 首页标签商品
     public function getHomeProductByTag($app, $customerId, $tagId, $num) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
         $customerInfo = Customer::findFirst($customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             // 白天
             return $this->getDayHomeProductByTag($app, $customerInfo, $tagId, $num);
         } else {
@@ -58,13 +56,10 @@ class ProductHelper
 
     // 获取新品
     public function getNewProduct($app, $num) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
-
         $customerId = $app->util->getCustomerId($app);
         $info = Customer::findFirst('id=' . $customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             return $this->getDayNewProduct($app, $info, $num);
         } else {
             return $this->getNightNewProduct($app, $info, $num);
@@ -105,13 +100,10 @@ class ProductHelper
 
     // 根据标签获取商品
     public function getProductByTag($app, $tagId, $num, $page) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
-
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             return $this->getDayProductByTag($app, $customerInfo, $tagId, $num, $page);
         } else {
             return $this->getNightProductByTag($app, $customerInfo, $tagId, $num, $page);
@@ -155,13 +147,10 @@ class ProductHelper
 
     // 根据分类获取商品
     public function getProductByCategory($app, $categoryId, $num, $page, $level = 1) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
-
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             return $this->getDayProductByCategory($app, $customerInfo, $categoryId, $num, $page, $level);
         } else {
             return $this->getNightProductByCategory($app, $customerInfo, $categoryId, $num, $page, $level);
@@ -220,12 +209,10 @@ class ProductHelper
 
     // 首页标签商品
     public function getProductRecom($app, $num) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             // 白天
             return $this->getDayProductRecom($app, $num, $customerInfo);
         } else {
@@ -266,12 +253,10 @@ class ProductHelper
 
     // 搜索文本
     public function getProductSearch($app, $text) {
-        $hour = intval(date("H", time()));
-        $switchHour = intval($app->config->params->switch_day_night);
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if ($hour < $switchHour) {
+        if (!$app->util->getAssignFlag($app)) {
             // 白天
             return $this->getDayProductSearch($app, $text, $customerInfo);
         } else {

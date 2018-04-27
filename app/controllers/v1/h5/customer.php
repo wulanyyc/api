@@ -55,7 +55,8 @@ $app->get('/v1/h5/customer/message', function () use ($app) {
 
     if (!empty($result)) {
         foreach($result as $key => $item) {
-            $result[$key]['date'] = date('y/m/d', time());
+            $result[$key]['date'] = date('y/m/d', strtotime($result[$key]['create_time']));
+            $result[$key]['create_time'] = date('Y/m/d H:i:s', strtotime($result[$key]['create_time']));
         }
     }
 

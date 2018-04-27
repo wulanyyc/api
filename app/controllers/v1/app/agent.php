@@ -46,6 +46,11 @@ $app->get('/v1/app/agent/work/stop', function () use ($app) {
 // 抢单列表
 $app->get('/v1/app/agent/job', function () use ($app) {
     $id = $app->util->getAgentId($app);
+
+    if ($app->util->getAssignFlag($app)) {
+        throw new BusinessException(1000, $app->config->params->switch_day_night . '点后，系统派单');
+    }
+
     $sex = Agent::findFirst($id)->sex;
 
     //TODO 细化
