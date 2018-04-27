@@ -26,7 +26,7 @@ class JobTask extends \Phalcon\CLI\Task
             }
 
             foreach($data as $item) {
-                $this->handleJob($item['id'], $item['customer_id']);
+                echo $this->handleJob($item['id'], $item['customer_id']);
             }
         // }
     }
