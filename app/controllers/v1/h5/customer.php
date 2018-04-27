@@ -49,7 +49,7 @@ $app->get('/v1/h5/customer/message', function () use ($app) {
     $date = date('Ymd', time() - 15 * 86400);
     $result = NotifyMessage::find([
         'conditions' => 'terminal = 1 and date >=' . $date,
-        'columns' => 'id, title, message, create_time',
+        'columns' => 'id, title, message, create_time, img',
         'order' => 'id desc',
     ])->toArray();
 
