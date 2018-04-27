@@ -168,7 +168,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 $app->get('/v1/h5/order/status', function () use ($app) {
     $out_trade_no = $app->request->getQuery("out_trade_no");
 
-    $payInfo = CustomerPay::findFirst('out_trade_no=' . $out_trade_no);
+    $payInfo = CustomerPay::findFirst("out_trade_no='" . $out_trade_no . "'");
 
     if (!$payInfo) {
         throw new BusinessException(1000, '参数有误');
