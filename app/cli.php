@@ -27,7 +27,6 @@ function init_console($di)
 }
 
 $config = load_config();
-// init_services($config);
 init_loader();
 $di = init_dependency_injection($config, true);
 init_console($di);

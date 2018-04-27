@@ -44,7 +44,6 @@ $app->post('/v1/h5/customer/feedback', function () use ($app) {
     return 1;
 });
 
-
 $app->get('/v1/h5/customer/message', function () use ($app) {
     $date = date('Ymd', time() - 15 * 86400);
     $result = NotifyMessage::find([

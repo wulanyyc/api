@@ -9,11 +9,11 @@ use Biaoye\Model\AgentOrderList;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\Product;
-use Phalcon\Mvc\Model\Transaction\Manager;
 use Biaoye\Model\NotifyMessage;
 use Biaoye\Model\AgentInventory;
 use Biaoye\Model\AgentInventoryRecords;
 use Biaoye\Model\AgentMoneyList;
+use Phalcon\Mvc\Model\Transaction\Manager;
 
 // 实名状态
 $app->get('/v1/app/agent/realname', function () use ($app) {
@@ -53,9 +53,9 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 
     $sex = Agent::findFirst($id)->sex;
 
-    //TODO 细化
+    // 默认查2天的数据
     $data = CustomerOrder::find([
-        "conditions" => "sex=" . $sex . " and status=1 and date=" . date('Ymd', time()),
+        "conditions" => "sex=" . $sex . " and status=1 and date >=" . date('Ymd', time() - 86400),
         "columns" => 'id as order_id, address_id, total_salary as salary',
         "order" => 'id asc',
         "limit" => 50,
@@ -87,7 +87,6 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $key = $app->config->params->get_order_prefix . $oid;
     if (!$app->redis->exists($key)) {
         $app->util->setRobCacheKey($app, $oid);
-        // throw new BusinessException(1000, '该单已过期');
     }
 
     $num = $app->redis->get($key);

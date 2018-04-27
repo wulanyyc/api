@@ -185,14 +185,14 @@ class Util
 
     public static function setRobCacheKey($app, $orderId) {
         $key = $app->config->params->get_order_prefix . $orderId;
-        $app->redis->setex($key, 86400, 0);
+        $app->redis->setex($key, 172800, 0); // 2天
     }
 
     public static function getAssignFlag($app) {
         $hour = date('H', time());
 
-        //早6晚9点
-        if ($hour >= $app->config->params->switch_day_night || $hour < 6) {
+        // 晚9点
+        if ($hour >= $app->config->params->switch_day_night) {
             return true;
         }
 

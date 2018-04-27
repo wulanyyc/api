@@ -14,12 +14,25 @@ use Phalcon\Mvc\Model\Transaction\Manager;
 $app->get('/v1/app/product/buy/list', function () use ($app) {
     $agentId = $app->util->getAgentId($app);
 
-    $companyId = Agent::findFirst($agentId)->company_id;
-    $products = CompanyInventory::find([
-        "conditions" => "status=0 and num > 0 and company_id = " . $companyId,
-        "columns" => 'product_id, num',
-        "order" => 'id asc',
-    ])->toArray();
+    $agentInfo = Agent::findFirst($agentId);
+
+    // 校代进货列表
+    if ($agentInfo->manager_flag == 1) {
+        $companyId = $agentInfo->company_id;
+        $products = CompanyInventory::find([
+            "conditions" => "status=0 and num > 0 and company_id = " . $companyId,
+            "columns" => 'product_id, num',
+            "order" => 'id asc',
+        ])->toArray();
+    } else {
+        // 代理进货列表
+        $parent = $agentInfo->manager_id;
+        $products = AgentInventory::find([
+            "conditions" => "status=0 and num > 0 and agent_id=" . $parent,
+            "columns" => 'product_id, num',
+            "order" => 'id asc',
+        ]);
+    }
 
     $ret = [];
     foreach($products as $key => $item) {
