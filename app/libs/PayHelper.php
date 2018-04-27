@@ -79,7 +79,7 @@ class PayHelper
                 return [
                     'params' => $output,
                     'terminal' => 'wechat',
-                    'out_trade_no' => $payData['out_trade_no'],
+                    'out_trade_no' => $info->out_trade_no,
                     'order_id' => $info->order_id,
                 ];
             }
