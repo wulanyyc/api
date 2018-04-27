@@ -36,6 +36,7 @@ class PayHelper
         // 手机支付
         if ($terminal == 'wap') {
             $script = AlipayHelper::wappay($app, $alipayParams);
+            $ret['order_id'] = $info->order_id;
             $ret['terminal'] = 'aliwap';
             $ret['script'] = $script;
         }
@@ -78,12 +79,14 @@ class PayHelper
                 return [
                     'data' => $output, 
                     'out_trade_no' => $payData['out_trade_no'],
+                    'order_id' => $info->order_id;
                 ];
             }
 
             // 外部支付
             if ($terminal == 'wap') {
                 $output = [];
+                $output['order_id'] = $info->order_id;
                 $output['terminal'] = 'wap';
                 $output['mweb_url'] = $ret['mweb_url'] . '&redirect_url=' . urlencode('http://qr.guoguojia.vip/home/paymentStatus.html?id=' . $info->order_id . '&out_trade_no=' . $info->out_trade_no);
 
