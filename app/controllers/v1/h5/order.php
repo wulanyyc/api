@@ -156,8 +156,6 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         $app->logger->info("order_ali:" . json_encode($output));
 
         return $output;
-        // TODO 删除购物车数据
-        // return $ar->id;
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
         $msg = $e->getMessage();
         $app->logger->error("order_fail:" . $msg);
