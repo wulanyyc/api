@@ -13,6 +13,7 @@ use Biaoye\Model\NotifyMessage;
 use Biaoye\Model\AgentInventory;
 use Biaoye\Model\AgentInventoryRecords;
 use Biaoye\Model\AgentMoneyList;
+use Biaoye\Model\ProductListSchool;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 // 实名状态
@@ -275,6 +276,16 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         $batch = $app->util->uuid();
         $date = date('Ymd', time());
         foreach($products as $product) {
+            // 学校库存调整
+            $pls = ProductListSchool::findFirst("product_id=" . $product['id']);
+            $pls->setTransaction($transaction);
+            $pls->num = $pls->num - $product['num'];
+            
+            if (!$pls->save()) {
+                $transaction->rollback("save ProductListSchool fail: " . $id . '_' . $product['id'] . '_' . $oid);
+            }
+
+            // 代理库存调整
             $in = AgentInventory::findFirst('agent_id=' . $id . " and product_id=" . $product['id']);
             $in->setTransaction($transaction);
             $in->num = $in->num - $product['num'];
@@ -283,6 +294,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
                 $transaction->rollback("save AgentInventory fail: " . $id . '_' . $product['id'] . '_' . $oid);
             }
 
+            // 代理库存明细
             $air = new AgentInventoryRecords();
             $air->setTransaction($transaction);
             $air->operator = 2;

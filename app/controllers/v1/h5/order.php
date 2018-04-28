@@ -104,7 +104,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         }
     }
 
-    $inventory = $app->data->checkInventory($app, $products);
+    $inventory = $app->data->checkInventory($app, $products, $customerId);
 
     if (!$inventory['status']) {
         throw new BusinessException(1000, $inventory['product'] . ", 剩余" . $inventory['num'] .",库存不足");

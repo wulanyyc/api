@@ -43,6 +43,7 @@ $app->get('/v1/h5/home/page', function () use ($app) {
     ];
 });
 
+// 检查商城是否有效
 $app->get('/v1/h5/home/check', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
     $info = Customer::findFirst($customerId);
@@ -50,6 +51,7 @@ $app->get('/v1/h5/home/check', function () use ($app) {
     $room = $info->room_id;
 
     $flag = $app->util->getSwitchFlag($app);
+
     // 切换标志
     if ($flag) {
         $exsit = Agent::count([

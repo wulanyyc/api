@@ -8,6 +8,7 @@ use Biaoye\Model\Product;
 use Biaoye\Model\CompanyInventory;
 use Biaoye\Model\AgentInventory;
 use Biaoye\Model\AgentInventoryRecords;
+use Biaoye\Model\ProductListSchool;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 // 进货
@@ -143,11 +144,13 @@ $app->get('/v1/app/product/buy/complete/list', function () use ($app) {
 
 $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num) use ($app) {
     $agentId = $app->util->getAgentId($app);
+    $agentInfo = Agent::findFirst($agent_id);
 
     try {
         $manager = new Manager();
         $transaction = $manager->get();
 
+        // 代理库存调整
         $up = AgentInventoryRecords::findFirst($id);
         $up->setTransaction($transaction);
 
@@ -158,6 +161,7 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
             $transaction->rollback("add invertory_record fail");
         }
 
+        // 库存数据调整
         $exsit = AgentInventory::count("agent_id=" . $up->agent_id . " and product_id=" . $up->product_id);
 
         if ($exsit > 0) {
@@ -171,7 +175,6 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
 
             $transaction->commit();
         } else {
-            $agentInfo = Agent::findFirst($up->agent_id);
             $add = new AgentInventory();
             $add->setTransaction($transaction);
 
@@ -182,6 +185,47 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
             $add->room_id = $agentInfo->room_id;
 
             if (!$add->save()) {
+                $transaction->rollback("add agent_inventory fail");
+            }
+
+            $transaction->commit();
+        }
+
+        // 学校库存调整
+        $schoolExsit = ProductListSchool::count("school_id=" . $agentInfo->school_id . " and product_id=" . $up->product_id);
+
+        if ($exsit > 0) {
+            $pls = ProductListSchool::findFirst("school_id=" . $agentInfo->school_id . " and product_id=" . $up->product_id);
+            $pls->setTransaction($transaction);
+
+            $pls->num = $pls->num + $num;
+            if (!$pls->save()) {
+                $transaction->rollback("update agent_inventory fail");
+            }
+
+            $transaction->commit();
+        } else {
+            $productInfo = Product::findFirst($up->product_id);
+
+            $pls = new ProductListSchool();
+            $pls->setTransaction($transaction);
+
+            $pls->num = $num;
+            $pls->product_id = $up->product_id;
+            $pls->school_id = $agentInfo->school_id;
+            $pls->category = $productInfo->category;
+            $pls->sub_category = $productInfo->sub_category;
+            $pls->name = $productInfo->name;
+            $pls->price = $productInfo->price;
+            $pls->market_price = $productInfo->market_price;
+            $pls->title = $productInfo->title;
+            $pls->slogan = $productInfo->slogan;
+            $pls->brand = $productInfo->brand;
+            $pls->img = $productInfo->img;
+            $pls->tags = $productInfo->tags;
+            $pls->status = 1;
+
+            if (!$pls->save()) {
                 $transaction->rollback("add agent_inventory fail");
             }
 

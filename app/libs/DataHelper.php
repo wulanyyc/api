@@ -11,6 +11,7 @@ use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerPay;
 use Biaoye\Model\CustomerCart;
 use Biaoye\Model\AgentOrderSuc;
+use Biaoye\Model\AgentInventory;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 class DataHelper
@@ -146,14 +147,25 @@ class DataHelper
         return 0;
     }
 
-    public function checkInventory($app, $products) {
+    public function checkInventory($app, $products, $customerId) {
         $ret = [
             'status' => true,
         ];
 
+        $switchFlag = $app->util->getSwitchFlag($app);
+        $customerInfo = Customer::findFirst($customerId);
+
         foreach($products as $product) {
-            $info = ProductListSchool::findFirst($product['id']);
-            $inventoryNum = $info->num;
+            // 白天与晚上库存检查
+            if (!$switchFlag) {
+                $info = ProductListSchool::findFirst("product_id=" . $product['id'] . " and school_id=" . $customerInfo->school_id . " and status = 1");
+
+                $inventoryNum = $info->num;
+            } else {
+                $info = AgentInventory::findFirst("product_id=" . $product['id'] . " and room_id=" . $customerInfo->room_id . " and status = 1");
+
+                $inventoryNum = $info->num;
+            }
 
             if ($inventoryNum < $product['num']) {
                 $ret['product'] = $info->name;
