@@ -8,6 +8,7 @@ use Biaoye\Model\ProductCategory;
 use Biaoye\Model\CustomerAddress;
 use Biaoye\Model\CustomerOrder;
 use Biaoye\Model\CustomerPay;
+use Biaoye\Model\Customer;
 use Phalcon\Mvc\Model\Transaction\Manager;
 
 $app->post('/v1/h5/order/confirm', function () use ($app) {
@@ -63,6 +64,7 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
 
 $app->post('/v1/h5/order/submit', function () use ($app) {
     $params = $_POST;
+    $customerId = $app->util->getCustomerId($app);
 
     if (empty($params)) {
         throw new BusinessException(1000, '参数不能为空');
@@ -85,12 +87,21 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
     // pay_style: 0, 1   terminal: wap, wechat
     if (!isset($params['pay_style']) || empty($params['terminal'])) {
-        // $app->logger->error("pay_fail:" . json_encode($params));
         throw new BusinessException(1000, '支付方式或终端不能为空');
     }
 
     if ($params['terminal'] == 'wechat' && empty($params['openid'])) {
         throw new BusinessException(1000, '参数不足');
+    }
+
+    // 判断订单地址
+    $addressInfo = CustomerAddress::findFirst($params['address_id']);
+
+    if ($app->util->getSwitchFlag($app)) {
+        $customerRoom = Customer::findFirst($customerId)->room_id;
+        if ($customerRoom != $addressInfo->rec_room) {
+            throw new BusinessException(1000, '晚上了，只配送本宿舍楼');
+        }
     }
 
     $inventory = $app->data->checkInventory($app, $products);
@@ -99,14 +110,11 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         throw new BusinessException(1000, $inventory['product'] . ", 剩余" . $inventory['num'] .",库存不足");
     }
 
-    $customerId = $app->util->getCustomerId($app);
 
     $priceInfo = $app->data->calculateOrderPrice($app, [
         'products' => $productStr,
         'coupon_ids' => $params['coupon_ids'],
     ]);
-
-    $addressInfo = CustomerAddress::findFirst($params['address_id']);
 
     try {
         $manager = new Manager();

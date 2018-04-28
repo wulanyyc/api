@@ -6,6 +6,8 @@
 use Biaoye\Model\Customer;
 use Biaoye\Model\School;
 use Biaoye\Model\Product;
+use Biaoye\Model\Agent;
+use Biaoye\Model\AgentInventory;
 
 $app->get('/v1/h5/home/page', function () use ($app) {
     $customerId = $app->util->getCustomerId($app);
@@ -39,4 +41,33 @@ $app->get('/v1/h5/home/page', function () use ($app) {
         'huodong' => $huodong,
         'tejia' => $tejia,
     ];
+});
+
+$app->get('/v1/h5/home/check', function () use ($app) {
+    $customerId = $app->util->getCustomerId($app);
+    $info = Customer::findFirst($customerId);
+    $school = $info->school_id;
+    $room = $info->room_id;
+
+    $flag = $app->util->getSwitchFlag($app);
+    // 切换标志
+    if ($flag) {
+        $exsit = Agent::count([
+            "conditions" => "manager_flag=0 and work_flag = 1 and status=1 and room_id = " . $room,
+        ]);
+
+        if ($exsit > 0) {
+            return true;
+        }
+    } else {
+        $exsit = Agent::count([
+            "conditions" => "manager_flag=0 and work_flag = 1 and status=1 and school_id = " . $school,
+        ]);
+
+        if ($exsit > 0) {
+            return true;
+        }
+    }
+
+    return false;
 });

@@ -79,6 +79,8 @@ class JobTask extends \Phalcon\CLI\Task
             // 删除抢单key
             $redisKey = $this->di->get('config')->params->get_order_prefix . $oid;
             $this->di->get('redis')->del($redisKey);
+
+            //TODO send notify
         } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
             AgentOrderList::addRecord($assignId, $oid);
 

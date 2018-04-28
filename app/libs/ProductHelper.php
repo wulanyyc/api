@@ -14,7 +14,7 @@ class ProductHelper
     public function getHomeProductByTag($app, $customerId, $tagId, $num) {
         $customerInfo = Customer::findFirst($customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             // 白天
             return $this->getDayHomeProductByTag($app, $customerInfo, $tagId, $num);
         } else {
@@ -59,7 +59,7 @@ class ProductHelper
         $customerId = $app->util->getCustomerId($app);
         $info = Customer::findFirst('id=' . $customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             return $this->getDayNewProduct($app, $info, $num);
         } else {
             return $this->getNightNewProduct($app, $info, $num);
@@ -103,7 +103,7 @@ class ProductHelper
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             return $this->getDayProductByTag($app, $customerInfo, $tagId, $num, $page);
         } else {
             return $this->getNightProductByTag($app, $customerInfo, $tagId, $num, $page);
@@ -150,7 +150,7 @@ class ProductHelper
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             return $this->getDayProductByCategory($app, $customerInfo, $categoryId, $num, $page, $level);
         } else {
             return $this->getNightProductByCategory($app, $customerInfo, $categoryId, $num, $page, $level);
@@ -212,7 +212,7 @@ class ProductHelper
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             // 白天
             return $this->getDayProductRecom($app, $num, $customerInfo);
         } else {
@@ -256,7 +256,7 @@ class ProductHelper
         $customerId = $app->util->getCustomerId($app);
         $customerInfo = Customer::findFirst($customerId);
 
-        if (!$app->util->getAssignFlag($app)) {
+        if (!$app->util->getSwitchFlag($app)) {
             // 白天
             return $this->getDayProductSearch($app, $text, $customerInfo);
         } else {

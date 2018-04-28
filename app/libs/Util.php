@@ -183,12 +183,14 @@ class Util
         return false;
     }
 
+    // 添加抢单cache
     public static function setRobCacheKey($app, $orderId) {
         $key = $app->config->params->get_order_prefix . $orderId;
         $app->redis->setex($key, 172800, 0); // 2天
     }
 
-    public static function getAssignFlag($app) {
+    // 获取夜晚标志
+    public static function getSwitchFlag($app) {
         $hour = date('H', time());
 
         // 晚9点

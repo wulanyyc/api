@@ -47,11 +47,18 @@ $app->get('/v1/app/agent/work/stop', function () use ($app) {
 $app->get('/v1/app/agent/job', function () use ($app) {
     $id = $app->util->getAgentId($app);
 
-    if ($app->util->getAssignFlag($app)) {
+    // 开工检测
+    $agentInfo = Agent::findFirst($id);
+    if ($agentInfo->work_flag < 1 && $agentInfo->manager_flag == 0) {
+        throw new BusinessException(1001, '请在侧滑栏中打开抢单');
+    }
+
+    // 夜间切换
+    if ($app->util->getSwitchFlag($app)) {
         throw new BusinessException(1000, $app->config->params->switch_day_night . '点后，系统派单');
     }
 
-    $sex = Agent::findFirst($id)->sex;
+    $sex = $agentInfo->sex;
 
     // 默认查2天的数据
     $data = CustomerOrder::find([
@@ -78,6 +85,11 @@ $app->get('/v1/app/agent/job', function () use ($app) {
 // 抢单
 $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
+
+    $managerFlag = Agent::findFirst($id)->manager_flag;
+    if ($managerFlag == 1) {
+        throw new BusinessException(1000, '校代不参与抢单');
+    }
 
     $exsit = CustomerOrder::count("id=" . $oid . " and status=1");
     if ($exsit != 1) {
