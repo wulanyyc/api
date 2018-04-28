@@ -258,7 +258,7 @@ class WxpayHelper {
     public static function getAccessToken($app) {
         $key = 'access_token';
 
-        $cache = Yii::$app->redis->get($key);
+        $cache = $app->redis->get($key);
         if (empty($cache)) {
             $appid = $app->config->wxpay->appid;
             $appsecret = $app->config->wxpay->appsecret;
