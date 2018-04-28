@@ -234,6 +234,11 @@ $app->get('/v1/app/agent/job/process', function () use ($app) {
 $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
     $id = $app->util->getAgentId($app);
 
+    $checkStatus = CustomerOrder::findFirst($oid)->status;
+    if ($checkStatus == 3) {
+        throw new BusinessException(1000, '该订单已完成');
+    }
+
     // 检查库存
     $check = CustomerOrder::findFirst($oid);
     $products = json_decode($check->products, true);
