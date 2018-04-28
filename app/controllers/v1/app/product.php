@@ -162,6 +162,7 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
 
         $up->num = $num;
         $up->status = 1;
+        $up->date = date('Ymd', time());
 
         if (!$up->save()) {
             $transaction->rollback("add invertory_record fail");
