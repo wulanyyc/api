@@ -146,6 +146,12 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
     $agentId = $app->util->getAgentId($app);
     $agentInfo = Agent::findFirst($agentId);
 
+    $checkStatus = AgentInventoryRecords::findFirst($id)->status;
+
+    if ($checkStatus == 1) {
+        throw new BusinessException(1000, '进货已完成');
+    }
+
     try {
         $manager = new Manager();
         $transaction = $manager->get();
