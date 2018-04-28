@@ -172,8 +172,6 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
             if (!$ai->save()) {
                 $transaction->rollback("update agent_inventory fail");
             }
-
-            $transaction->commit();
         } else {
             $add = new AgentInventory();
             $add->setTransaction($transaction);
@@ -187,8 +185,6 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
             if (!$add->save()) {
                 $transaction->rollback("add agent_inventory fail");
             }
-
-            $transaction->commit();
         }
 
         // 学校库存调整
