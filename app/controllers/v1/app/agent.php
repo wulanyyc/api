@@ -284,7 +284,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             // 整体销量调整
             $pdt = Product::findFirst($product['id']);
             $pdt->setTransaction($transaction);
-            $pdt->sale_num = $pls->sale_num + $product['num'];
+            $pdt->sale_num = $pdt->sale_num + $product['num'];
             
             if (!$pdt->save()) {
                 $transaction->rollback("save Product sale fail: " . $id . '_' . $product['id'] . '_' . $oid);
