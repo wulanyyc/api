@@ -281,10 +281,20 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         $batch = $app->util->uuid();
         $date = date('Ymd', time());
         foreach($products as $product) {
+            // 整体销量调整
+            $pdt = Product::findFirst($product['id']);
+            $pdt->setTransaction($transaction);
+            $pdt->sale_num = $pls->sale_num + $product['num'];
+            
+            if (!$pdt->save()) {
+                $transaction->rollback("save Product sale fail: " . $id . '_' . $product['id'] . '_' . $oid);
+            }
+
             // 学校库存调整
             $pls = ProductListSchool::findFirst("product_id=" . $product['id']);
             $pls->setTransaction($transaction);
             $pls->num = $pls->num - $product['num'];
+            $pls->sale_num = $pls->sale_num + $product['num'];
             
             if (!$pls->save()) {
                 $transaction->rollback("save ProductListSchool fail: " . $id . '_' . $product['id'] . '_' . $oid);
