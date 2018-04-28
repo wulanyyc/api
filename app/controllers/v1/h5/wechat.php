@@ -38,7 +38,7 @@ $app->post('/v1/h5/wechat/init', function () use ($app) {
 
     $timestamp = time();
     $noncestr  = WxpayHelper::getNoncestr();
-    $signature = WxpayHelper::buildPageSignature($url, $timestamp, $noncestr);
+    $signature = WxpayHelper::buildPageSignature($app, $url, $timestamp, $noncestr);
 
     $wechatData = [
         'timestamp' => $timestamp,

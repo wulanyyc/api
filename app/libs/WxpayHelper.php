@@ -212,4 +212,70 @@ class WxpayHelper {
             return $cache;
         }
     }
+
+    public static function buildPageSignature($app, $url, $timestamp, $noncestr) {
+        $data = [
+            'url' => $url,
+            'noncestr' => $noncestr,
+            'timestamp' => $timestamp,
+            'jsapi_ticket' => self::getJsapiTicket($app),
+        ];
+
+        ksort($data, SORT_STRING);
+
+        $str = '';
+        foreach($data as $key => $value) {
+            $str .= $key . "=" . $value . '&';
+        }
+
+        $str = substr($str, 0, -1);
+
+        return sha1($str);
+    }
+
+    public static function getJsapiTicket($app) {
+        $key = 'jsapi_ticket';
+
+        $cache = $app->redis->get($key);
+
+        if (empty($cache)) {
+            $url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' . self::getAccessToken($app) . '&type=jsapi';
+
+            $ret = self::curlRequest($url);
+            $data = json_decode($ret, true);
+
+            if (isset($data['ticket'])) {
+                $app->redis->setex($key, $data['expires_in'] - 60, $data['ticket']);
+                return $data['ticket'];
+            } else {
+                return '';
+            }
+        } else {
+            return $cache;
+        }
+    }
+
+    public static function getAccessToken($app) {
+        $key = 'access_token';
+
+        $cache = Yii::$app->redis->get($key);
+        if (empty($cache)) {
+            $appid = $app->config->wxpay->appid;
+            $appsecret = $app->config->wxpay->appsecret;
+
+            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='. $appid .'&secret=' . $appsecret;
+
+            $ret = self::curlRequest($url);
+            $data = json_decode($ret, true);
+
+            if (isset($data['access_token'])) {
+                $app->redis->setex($key, $data['expires_in'] - 60, $data['access_token']);
+                return $data['access_token'];
+            } else {
+                return '';
+            }
+        } else {
+            return $cache;
+        }
+    }
 }
