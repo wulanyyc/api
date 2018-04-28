@@ -28,3 +28,24 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
         throw new BusinessException(1000, '获取openid失败');
     }
 });
+
+// 微信js初始化
+$app->post('/v1/h5/wechat/init', function () use ($app) {
+    $url = $app->request->getQuery("url");
+    if (empty($url)) {
+        throw new BusinessException(1000, '参数有误');
+    }
+
+    $timestamp = time();
+    $noncestr  = WxpayHelper::getNoncestr();
+    $signature = WxpayHelper::buildPageSignature($url, $timestamp, $noncestr);
+
+    $wechatData = [
+        'timestamp' => $timestamp,
+        'noncestr'  => $noncestr,
+        'signature' => $signature,
+        'appid'     => $app->config->wxpay['appid'],
+    ];
+
+    return $wechatData;
+});
