@@ -190,7 +190,7 @@ $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num
         // 学校库存调整
         $schoolExsit = ProductListSchool::count("school_id=" . $agentInfo->school_id . " and product_id=" . $up->product_id);
 
-        if ($exsit > 0) {
+        if ($schoolExsit > 0) {
             $pls = ProductListSchool::findFirst("school_id=" . $agentInfo->school_id . " and product_id=" . $up->product_id);
             $pls->setTransaction($transaction);
 
