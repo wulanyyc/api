@@ -144,7 +144,7 @@ $app->get('/v1/app/product/buy/complete/list', function () use ($app) {
 
 $app->get('/v1/app/product/buy/complete/{id:\d+}/{num:\d+}', function ($id, $num) use ($app) {
     $agentId = $app->util->getAgentId($app);
-    $agentInfo = Agent::findFirst($agent_id);
+    $agentInfo = Agent::findFirst($agentId);
 
     try {
         $manager = new Manager();

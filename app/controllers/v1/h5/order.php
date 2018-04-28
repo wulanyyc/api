@@ -164,9 +164,9 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
 
         $transaction->commit();
 
-
         $output = $app->pay->handle($app, $pay->id);
-        $app->logger->info("order_pay:" . $pay->id);
+        // $app->logger->info("order_pay:" . $pay->id);
+        $app->logger->info("order_data:" . json_encode($output));
 
         return $output;
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
