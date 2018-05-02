@@ -49,6 +49,8 @@ class WxpayHelper {
 
         $str .= "key=" . $app->config->wxpay['key'];
 
+        $app->logger->error("test_sign:" . $str);
+
         $sign = md5($str);
 
         return strtoupper($sign);
