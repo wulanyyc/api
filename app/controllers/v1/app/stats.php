@@ -45,9 +45,9 @@ $app->get('/v1/app/stats/agent', function () use ($app) {
     return [
         'sex' => $sex,
         'day_num' => $num,
-        'day_income' => $income,
+        'day_income' => round($income, 2),
         'month_num' => $monthNum,
-        'month_income' => $monthIncome,
+        'month_income' => round($monthIncome, 2),
         'manager_flag' => $info->manager_flag,
     ];
 });
