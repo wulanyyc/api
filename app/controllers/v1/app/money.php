@@ -65,7 +65,7 @@ $app->get('/v1/app/money/income/list', function () use ($app) {
         throw new BusinessException(1000, '参数有误');
     }
 
-    $total = AgentMoneyList::sum([
+    $total = AgentMoneyList::count([
         "conditions" => "agent_id=" . $id . " and operator=0 and date=" . $date,
         "column" => 'money',
     ]);
