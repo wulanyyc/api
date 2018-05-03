@@ -21,57 +21,148 @@ use Biaoye\Model\CustomerSearchHistory;
 
 // 获取短信验证码
 $app->get('/test/init/product', function () use ($app) {
-    for ($i = 0; $i < 50; $i++) {
+    $products = [
+        [
+            'factory' => '康师傅',
+            'category' => 1,
+            'sub_category' = 2,
+            'name' => '脆海带香锅牛肉',
+            'price' => 3,
+            'market_price' => 3.5,
+            'title' => '脆海带香锅牛肉',
+            'slogan' => '脆滑香嫩 来一碗牛肉面',
+            'brand' => '康师傅',
+            'img' => 'http://qingrongby.com/imgs/nrm.png',
+            'tags' => 
+        ],
+        [
+            'factory' => '冰红茶',
+            'category' => 4,
+            'sub_category' = 6,
+            'name' => '康饮-500ml冰红茶',
+            'price' => 4,
+            'market_price' => 4.5,
+            'title' => '康饮-500ml冰红茶',
+            'slogan' => '去火',
+            'brand' => '冰红茶',
+            'img' => 'http://qingrongby.com/imgs/bhc.png'
+        ],
+        [
+            'factory' => '冰红茶',
+            'category' => 4,
+            'sub_category' = 6,
+            'name' => '康饮-500ml茉莉蜜茶',
+            'price' => 4,
+            'market_price' => 4.5,
+            'title' => '脆海带香锅牛肉',
+            'slogan' => '甜如初夏',
+            'brand' => '冰红茶',
+            'img' => 'http://qingrongby.com/imgs/mlmc.png'
+        ],
+        [
+            'factory' => '脉动',
+            'category' => 4,
+            'sub_category' = 6,
+            'name' => '脉动青橘600ML',
+            'price' => 4,
+            'market_price' => 4.5,
+            'title' => '脉动青橘600ML',
+            'slogan' => '来一口 精神百倍',
+            'brand' => '脉动',
+            'img' => 'http://qingrongby.com/imgs/mdqj.png'
+        ],
+        [
+            'factory' => '脉动',
+            'category' => 4,
+            'sub_category' = 6,
+            'name' => '脉动青芒600ML',
+            'price' => 4,
+            'market_price' => 4.5,
+            'title' => '脉动青芒600ML',
+            'slogan' => '来一口 精神百倍',
+            'brand' => '脉动',
+            'img' => 'http://qingrongby.com/imgs/mdqm.png'
+        ],
+        [
+            'factory' => '泉利堂',
+            'category' => 1,
+            'sub_category' = 2,
+            'name' => '泉利堂话梅条128g',
+            'price' => 6,
+            'market_price' => 8,
+            'title' => '泉利堂话梅条128g',
+            'slogan' => '酸酸甜甜 总是美',
+            'brand' => '泉利堂',
+            'img' => 'http://qingrongby.com/imgs/hm.png'
+        ],
+        [
+            'factory' => '泉利堂',
+            'category' => 1,
+            'sub_category' = 2,
+            'name' => '泉利堂咸榄丝-238g',
+            'price' => 6.5,
+            'market_price' => 8,
+            'title' => '泉利堂咸榄丝-238g',
+            'slogan' => '咸榄丝好吃 来一点',
+            'brand' => '泉利堂',
+            'img' => 'http://qingrongby.com/imgs/xgs.png'
+        ],
+        [
+            'factory' => '上好佳',
+            'category' => 1,
+            'sub_category' = 3,
+            'name' => '田园薯片（宫保鸡丁）',
+            'price' => 9,
+            'market_price' => 9.5,
+            'title' => '田园薯片（宫保鸡丁）',
+            'slogan' => '脆脆的 才好吃',
+            'brand' => '上好佳',
+            'img' => 'http://qingrongby.com/imgs/gbjd.png'
+        ],
+        [
+            'factory' => '上好佳',
+            'category' => 1,
+            'sub_category' = 3,
+            'name' => '田园薯片（烤肉味）',
+            'price' => 9,
+            'market_price' => 10,
+            'title' => '田园薯片（烤肉味）',
+            'slogan' => '脆脆的 才好吃',
+            'brand' => '上好佳',
+            'img' => 'http://qingrongby.com/imgs/tysp.png'
+        ],
+        [
+            'factory' => '上好佳',
+            'category' => 1,
+            'sub_category' = 3,
+            'name' => '鲜虾条',
+            'price' => 8,
+            'market_price' => 8.5,
+            'title' => '鲜虾条',
+            'slogan' => '脆脆的 才好吃',
+            'brand' => '上好佳',
+            'img' => 'http://qingrongby.com/imgs/xxt.png'
+        ],
+    ];
+
+    foreach ($products as $product) {
         $ar = new Product();
-        $ar->factory = $app->util->getChar();
-        $ar->category = 1;
-        $ar->sub_category = rand(2,3);
-        $ar->name = $app->util->getChar();
-        $ar->price = rand(1, 900) . '.' . rand(0, 99);
-        $ar->title = $app->util->getChar();
-        $ar->slogan = $app->util->getChar();
-        $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
-        $ar->brand = '麦当劳';
+        $ar->factory = $product['factory'];
+        $ar->category = $product['category'];
+        $ar->sub_category = $product['sub_category'];
+        $ar->name = $product['name'];
+        $ar->price = $product['price'];
+        $ar->title = $product['title'];
+        $ar->slogan = $product['slogan'];
+        $ar->market_price = $product['market_price'];
+        $ar->brand = $product['brand'];
         $ar->birth_date = date('Ymd', time());
         $ar->valid_date = rand(1, 365);
         $ar->province = '广东';
         $ar->place = '中国四川';
         $ar->package = '袋装';
         $ar->weight = '500g';
-        $ar->img = "http://39.107.251.99:8080/imgs/1.png";
-        $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
-        $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
-        $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
-        $ar->status = 1;
-        $ar->save();
-
-        $relation = new ProductTagRelation();
-        $relation->product_id = $ar->id;
-        $relation->tag_id = rand(1,3);
-        $relation->save();
-    }
-
-    for ($i = 0; $i < 50; $i++) {
-        $ar = new Product();
-        $ar->factory = $app->util->getChar();
-        $ar->category = 4;
-        $ar->sub_category = rand(5,6);
-        $ar->name = $app->util->getChar();
-        $ar->price = rand(1, 900) . '.' . rand(0, 99);
-        $ar->title = $app->util->getChar();
-        $ar->slogan = $app->util->getChar();
-        $ar->market_price = rand(1, 900) . '.' . rand(0, 99);
-        $ar->brand = '麦当劳';
-        $ar->birth_date = date('Ymd', time());
-        $ar->valid_date = rand(1, 365);
-        $ar->province = '广东';
-        $ar->place = '中国四川';
-        $ar->package = '袋装';
-        $ar->weight = '500g';
-        $ar->img = "http://39.107.251.99:8080/imgs/2.png";
-        $ar->img1 = "http://39.107.251.99:8080/imgs/1.png";
-        $ar->img2 = "http://39.107.251.99:8080/imgs/2.png";
-        $ar->img3 = "http://39.107.251.99:8080/imgs/3.png";
+        $ar->img = $product['img'];
         $ar->status = 1;
         $ar->save();
 
