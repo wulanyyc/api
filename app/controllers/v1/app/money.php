@@ -105,7 +105,7 @@ $app->get('/v1/app/money/get/page', function () use ($app) {
 
     return [
         'bank' => $info->card_bank,
-        'card_suffix' => substr($info->card_num, -4, 0),
+        'card_suffix' => substr($info->card_num, -4),
         'money' => $info->money,
     ];
 });
@@ -177,7 +177,7 @@ $app->get('/v1/app/money/get/list', function () use ($app) {
             $time = date('H:i', $timestamp);
             $list[$key]['date'] = $month . '月' . $day . '日';
             $list[$key]['time'] = $time;
-            $list[$key]['title'] = $agentInfo->card_bank . "(" . substr($agentInfo->card_num, -4, 0) . ")";
+            $list[$key]['title'] = $agentInfo->card_bank . "(" . substr($agentInfo->card_num, -4) . ")";
         }
     }
 
