@@ -372,14 +372,14 @@ $app->get('/test/init/company/inventory', function () use ($app) {
 
 
 $app->get('/test/init/agent/inventory', function () use ($app) {
-    for($i=0; $i < 300; $i++) {
+    for($i=0; $i < 100; $i++) {
         $agentNum = Agent::count();
         $agentId = rand(9, 11);
         $batch = $app->util->uuid();
 
         $air = new AgentInventoryRecords();
         $air->operator = 1;
-        $air->product_id = rand(1, 20);
+        $air->product_id = rand(1, 10);
         $air->status = 1;
         $air->need_num = rand(1, 100);
         $air->num = rand(1, 100);
