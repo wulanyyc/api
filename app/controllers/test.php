@@ -33,7 +33,6 @@ $app->get('/test/init/product', function () use ($app) {
             'slogan' => '脆滑香嫩 来一碗牛肉面',
             'brand' => '康师傅',
             'img' => 'http://qingrongby.com/imgs/nrm.png',
-            'tags' => 
         ],
         [
             'factory' => '冰红茶',
