@@ -25,7 +25,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '康师傅',
             'category' => 1,
-            'sub_category' = 2,
+            'sub_category' => 2,
             'name' => '脆海带香锅牛肉',
             'price' => 3,
             'market_price' => 3.5,
@@ -37,7 +37,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '冰红茶',
             'category' => 4,
-            'sub_category' = 6,
+            'sub_category' => 6,
             'name' => '康饮-500ml冰红茶',
             'price' => 4,
             'market_price' => 4.5,
@@ -49,7 +49,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '冰红茶',
             'category' => 4,
-            'sub_category' = 6,
+            'sub_category' => 6,
             'name' => '康饮-500ml茉莉蜜茶',
             'price' => 4,
             'market_price' => 4.5,
@@ -61,7 +61,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '脉动',
             'category' => 4,
-            'sub_category' = 6,
+            'sub_category' => 6,
             'name' => '脉动青橘600ML',
             'price' => 4,
             'market_price' => 4.5,
@@ -73,7 +73,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '脉动',
             'category' => 4,
-            'sub_category' = 6,
+            'sub_category' => 6,
             'name' => '脉动青芒600ML',
             'price' => 4,
             'market_price' => 4.5,
@@ -85,7 +85,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '泉利堂',
             'category' => 1,
-            'sub_category' = 2,
+            'sub_category' => 2,
             'name' => '泉利堂话梅条128g',
             'price' => 6,
             'market_price' => 8,
@@ -97,7 +97,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '泉利堂',
             'category' => 1,
-            'sub_category' = 2,
+            'sub_category' => 2,
             'name' => '泉利堂咸榄丝-238g',
             'price' => 6.5,
             'market_price' => 8,
@@ -109,7 +109,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '上好佳',
             'category' => 1,
-            'sub_category' = 3,
+            'sub_category' => 3,
             'name' => '田园薯片（宫保鸡丁）',
             'price' => 9,
             'market_price' => 9.5,
@@ -121,7 +121,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '上好佳',
             'category' => 1,
-            'sub_category' = 3,
+            'sub_category' => 3,
             'name' => '田园薯片（烤肉味）',
             'price' => 9,
             'market_price' => 10,
@@ -133,7 +133,7 @@ $app->get('/test/init/product', function () use ($app) {
         [
             'factory' => '上好佳',
             'category' => 1,
-            'sub_category' = 3,
+            'sub_category' => 3,
             'name' => '鲜虾条',
             'price' => 8,
             'market_price' => 8.5,
