@@ -125,9 +125,14 @@ $app->get('/v1/app/product/buy/process/list', function () use ($app) {
 
 $app->get('/v1/app/product/buy/complete/list', function () use ($app) {
     $agentId = $app->util->getAgentId($app);
+    $date = $app->request->getQuery("date");
+
+    if (empty($date)) {
+        throw new BusinessException(1000, '参数有误');
+    }
 
     $ret = AgentInventoryRecords::find([
-        "conditions" => "status=1 and operator=1 and agent_id = " . $agentId,
+        "conditions" => "status=1 and operator=1 and agent_id = " . $agentId . " and date=" . $date,
         "columns" => 'product_id, need_num, num, id as operator_id',
         "order" => 'id desc',
     ])->toArray();
