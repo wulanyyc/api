@@ -347,19 +347,19 @@ $app->get('/test/order/get/{id:\d+}', function ($id) use ($app) {
 
 
 $app->get('/test/init/company', function () use ($app) {
-    for ($i=0; $i < 5; $i++) {
+    // for ($i=0; $i < 5; $i++) {
         $ar = new Company();
-        $ar->name = $app->util->getChar(5);
+        $ar->name = '庆荣科技';
         $ar->parent_id = 0;
         $ar->save();
-    }
+    // }
 
     return 1;
 });
 
 
 $app->get('/test/init/company/inventory', function () use ($app) {
-    for ($i=0; $i < 20; $i++) {
+    for ($i=0; $i < 10; $i++) {
         $ar = new CompanyInventory();
         $ar->product_id = $i + 1;
         $ar->company_id = 1;
