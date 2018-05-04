@@ -34,6 +34,8 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
         throw new BusinessException(1000, '商品数据格式不正确');
     }
 
+    $customerId = $app->util->getCustomerId($app);
+
     $ret = [];
     $diff = 0;
 
@@ -60,6 +62,7 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
         'diff' => $diff,
         'express_fee' => $app->config->params->express_fee,
         'address' => $app->util->getDefaultAddress($app),
+        'wallet' => Customer::findFirst($customerId)->money,
     ];
 });
 
