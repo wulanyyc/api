@@ -140,7 +140,7 @@ class Util
 
         if (!$data) {
             $data = CustomerAddress::findFirst([
-                'conditions' => 'status=0',
+                'conditions' => 'status=0 and customer_id=' . $customerId,
                 'columns' => 'id, rec_name, rec_phone, rec_school, rec_room, rec_detail',
                 'order' => 'id desc'
             ]);
