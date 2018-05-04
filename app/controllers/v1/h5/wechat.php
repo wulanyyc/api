@@ -16,7 +16,7 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
 
     $app->logger->error($url);
     $app->logger->error($ret);
-    
+
     $data = json_decode($ret, true);
 
     if (isset($data['access_token'])) {
@@ -24,8 +24,10 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
         $app->redis->setex($keyRefresh, 30 * 86400 - 3600, $data['refresh_token']);
 
         $up = Customer::findFirst($customerId);
-        $up->openid = $data['openid'];
-        $up->save();
+        if ($up->openid) {
+            $up->openid = $data['openid'];
+            $up->save();
+        }
 
         return $data['openid'];
     } else {
