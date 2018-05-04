@@ -188,7 +188,7 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
         unset($products[$key]['id']);
     }
 
-    $ret['products'] = $products;
+    $ret['products'] = sort($products);
 
     return $ret;
 });
