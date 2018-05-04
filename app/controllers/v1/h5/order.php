@@ -124,29 +124,33 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         $manager = new Manager();
         $transaction = $manager->get();
 
-        $ar = new CustomerOrder();
-        $ar->setTransaction($transaction);
+        if (empty($params['order_id'])) {
+            $ar = new CustomerOrder();
+            $ar->setTransaction($transaction);
 
-        $ar->customer_id = $customerId;
-        $ar->cart_id = isset($params['cart_id']) ? $params['cart_id'] : 0;
-        $ar->products = $productStr;
-        $ar->sex = $addressInfo->sex;
-        $ar->address_id = $params['address_id'];
-        $ar->express_fee = $app->config->params->express_fee;
-        $ar->express_time = date('Y-m-d H:i:s', time() + $app->config->params->expect_delivery_minitue * 60);
-        $ar->deliver_fee = $app->config->params->express_fee * $app->config->params->deliver_fee_rate;
-        $ar->coupon_ids = isset($params['coupon_ids']) ? $params['coupon_ids'] : '';
-        $ar->product_price = $priceInfo['product_price'];
-        $ar->express_fee = $priceInfo['express_fee'];
-        $ar->pay_money = $priceInfo['pay_money'];
-        $ar->deliver_fee = $priceInfo['deliver_fee'];
-        $ar->product_salary = $priceInfo['product_salary'];
-        $ar->total_salary = $priceInfo['total_salary'];
-        $ar->coupon_fee = $priceInfo['coupon_fee'];
-        $ar->date = date('Ymd', time());
+            $ar->customer_id = $customerId;
+            $ar->cart_id = isset($params['cart_id']) ? $params['cart_id'] : 0;
+            $ar->products = $productStr;
+            $ar->sex = $addressInfo->sex;
+            $ar->address_id = $params['address_id'];
+            $ar->express_fee = $app->config->params->express_fee;
+            $ar->express_time = date('Y-m-d H:i:s', time() + $app->config->params->expect_delivery_minitue * 60);
+            $ar->deliver_fee = $app->config->params->express_fee * $app->config->params->deliver_fee_rate;
+            $ar->coupon_ids = isset($params['coupon_ids']) ? $params['coupon_ids'] : '';
+            $ar->product_price = $priceInfo['product_price'];
+            $ar->express_fee = $priceInfo['express_fee'];
+            $ar->pay_money = $priceInfo['pay_money'];
+            $ar->deliver_fee = $priceInfo['deliver_fee'];
+            $ar->product_salary = $priceInfo['product_salary'];
+            $ar->total_salary = $priceInfo['total_salary'];
+            $ar->coupon_fee = $priceInfo['coupon_fee'];
+            $ar->date = date('Ymd', time());
 
-        if (!$ar->save()) {
-            $transaction->rollback("save customer_order fail");
+            if (!$ar->save()) {
+                $transaction->rollback("save customer_order fail");
+            }
+        } else {
+            $ar = CustomerOrder::findFirst($params['order_id']);
         }
 
         $pay = new CustomerPay();
