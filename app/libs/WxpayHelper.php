@@ -31,6 +31,8 @@ class WxpayHelper {
 
         $ret = self::curlRequest(self::$api, $postData);
 
+        $app->logger->error($ret);
+
         if (!empty($ret)) {
             return self::xmlToArray($ret);
         } else {
