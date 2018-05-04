@@ -26,6 +26,9 @@ class WxpayHelper {
 
         $sign = self::buildSign($app, $data);
         $data['sign'] = $sign;
+
+        $app->logger->error('pay_data:' . json_encode($data));
+
         $xml = self::buildXml($data);
         $postData = $xml->asXML();
 

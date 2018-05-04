@@ -6,6 +6,12 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
     $code = $app->request->getQuery("code");
     $customerId = $app->util->getCustomerId($app);
 
+    $up = Customer::findFirst($customerId);
+
+    if ($up->openid) {
+        return $up->openid;
+    }
+
     $key = 'page_access_token';
     $keyRefresh = 'page_refresh_token';
 
@@ -23,11 +29,8 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
         $app->redis->setex($key, $data['expires_in'] - 60, $data['access_token']);
         $app->redis->setex($keyRefresh, 30 * 86400 - 3600, $data['refresh_token']);
 
-        $up = Customer::findFirst($customerId);
-        if ($up->openid) {
-            $up->openid = $data['openid'];
-            $up->save();
-        }
+        $up->openid = $data['openid'];
+        $up->save();
 
         return $data['openid'];
     } else {
