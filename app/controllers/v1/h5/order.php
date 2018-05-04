@@ -37,17 +37,19 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
     $ret = [];
     $diff = 0;
 
-    foreach($products as $item) {
+    foreach($products as $key => $item) {
         if (isset($item['id']) && isset($item['num']) && $item['id'] > 0 && $item['num'] > 0) {
             $info = Product::findFirst($item['id']);
-            $ret[$item['id']]['id']    = $item['id'];
-            $ret[$item['id']]['name']  = $info->name;
-            $ret[$item['id']]['title'] = $info->title;
-            $ret[$item['id']]['slogan'] = $info->slogan;
-            $ret[$item['id']]['num'] = $item['num'];
-            $ret[$item['id']]['img']   = $info->img;
-            $ret[$item['id']]['price'] = $app->product->getProductPrice($item['id']);
-            $diff += $info->market_price - $ret[$item['id']]['price'];
+            $products[$key]['id']    = $item['id'];
+            $products[$key]['name']  = $info->name;
+            $products[$key]['title'] = $info->title;
+            $products[$key]['slogan'] = $info->slogan;
+            $products[$key]['num'] = $item['num'];
+            $products[$key]]['img']   = $info->img;
+            $products[$key]['price'] = $app->product->getProductPrice($item['id']);
+            $diff += $info->market_price - $products[$key]['price'];
+
+            $ret[] = $products[$key];
         } else {
             throw new BusinessException(1000, '商品数据有误');
         }
