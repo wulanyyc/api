@@ -181,14 +181,16 @@ $app->get('/v1/app/agent/job/detail/{oid:\d+}', function ($oid) use ($app) {
     $ret['order_num'] = date('Ymd', strtotime($ret['express_time'])) . $ret['order_id'];
 
     $products = json_decode($ret['products'], true);
+    $temp = [];
     foreach($products as $key => $item) {
         $products[$key]['name'] = Product::findFirst($item['id'])->name;
         $products[$key]['pid'] = $item['id'];
         $products[$key]['price'] = $app->product->getProductPrice($item['id']);
         unset($products[$key]['id']);
+        $temp[] = $products[$key];
     }
 
-    $ret['products'] = sort($products);
+    $ret['products'] = $temp;
 
     return $ret;
 });
