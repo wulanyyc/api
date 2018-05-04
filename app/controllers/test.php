@@ -300,7 +300,7 @@ $app->get('/test/init/address', function () use ($app) {
 
 
 $app->get('/test/init/order', function () use ($app) {
-    $num = 100;
+    $num = 10;
 
     for($i = 0; $i < $num; $i++) {
         $addressId = rand(1, 4);
