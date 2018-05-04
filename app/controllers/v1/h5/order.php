@@ -53,8 +53,10 @@ $app->post('/v1/h5/order/confirm', function () use ($app) {
         }
     }
 
+    sort($ret);
+
     return [
-        'products' => sort($ret),
+        'products' => $ret,
         'diff' => $diff,
         'express_fee' => $app->config->params->express_fee,
         'address' => $app->util->getDefaultAddress($app),
