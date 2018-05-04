@@ -13,6 +13,10 @@ $app->get('/v1/h5/wechat/get/openid', function () use ($app) {
     $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='. $config['appid'] .'&secret=' . $config['appsecret'] . '&code=' . $code . '&grant_type=authorization_code';
 
     $ret = $app->util->curlRequest($url);
+
+    $app->logger->error($url);
+    $app->logger->error($ret);
+    
     $data = json_decode($ret, true);
 
     if (isset($data['access_token'])) {
