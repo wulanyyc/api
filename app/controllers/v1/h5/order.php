@@ -68,6 +68,8 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
     $params = $_POST;
     $customerId = $app->util->getCustomerId($app);
 
+    $app->logger->info("params:" . json_encode($params));
+
     if (empty($params)) {
         throw new BusinessException(1000, '参数不能为空');
     }
