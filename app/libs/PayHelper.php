@@ -18,6 +18,21 @@ class PayHelper
         if ($payInfo->pay_type == 1) {
             return $this->handleWechat($app, $payInfo);
         }
+
+        if ($payInfo->pay_type == 2) {
+            return $this->handleWallet($app, $payInfo);
+        }
+    }
+
+    public function handleWallet($app, $info) {
+        $ret['order_id'] = $info->order_id;
+        $ret['terminal'] = $info->terminal;
+        $ret['out_trade_no'] = $info->out_trade_no;
+
+        $ok = $app->data->handlePayOkOrder($app, $info->order_id, $info->out_trade_no);
+        $ret['pay_status'] = $ok;
+
+        return $ret;
     }
 
     public function handleAlipay($app, $info) {

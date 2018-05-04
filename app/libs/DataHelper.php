@@ -210,6 +210,21 @@ class DataHelper
             $payMoney = 0;
         }
 
+        // 钱包支付
+        $customerInfo = Customer::findFirst($data['customer_id']);
+        $wallet = $customerInfo->money;
+        $payWallet = 0;
+
+        if ($wallet > 0 && $wallet >= $payMoney) {
+            $payWallet = $payMoney;
+            $payMoney  = 0;
+        }
+
+        if ($wallet > 0 && $wallet < $payMoney) {
+            $payWallet = $wallet;
+            $payMoney  = $payMoney - $wallet;
+        }
+
         $deliverFee = round($expressFee * $app->config->params->deliver_fee_rate, 2);
         $productSalary = round(($productPrice - $couponFee) * $app->config->params->order_salary_rate, 2);
         $totalSalary = $productSalary + $deliverFee;
@@ -218,6 +233,7 @@ class DataHelper
             'product_price' => $productPrice,
             'express_fee' => $expressFee,
             'pay_money' => $payMoney,
+            'pay_wallet' => $payWallet,
             'deliver_fee' => $deliverFee,
             'product_salary' => $productSalary,
             'total_salary' => $totalSalary,
@@ -319,7 +335,7 @@ class DataHelper
             $msg = $e->getMessage();
             $app->logger->error("handlePayOkOrder fail: " . $msg);
         
-            throw new BusinessException(1000, '更新失败');
+            return 0;
         }
     }
 

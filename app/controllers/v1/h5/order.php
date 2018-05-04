@@ -117,10 +117,10 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         throw new BusinessException(1000, $inventory['product'] . ", 剩余" . $inventory['num'] .",库存不足");
     }
 
-
     $priceInfo = $app->data->calculateOrderPrice($app, [
         'products' => $productStr,
         'coupon_ids' => $params['coupon_ids'],
+        'customer_id' => $customerId,
     ]);
 
     try {
@@ -143,6 +143,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             $ar->product_price = $priceInfo['product_price'];
             $ar->express_fee = $priceInfo['express_fee'];
             $ar->pay_money = $priceInfo['pay_money'];
+            $ar->pay_wallet = $priceInfo['pay_wallet'];
             $ar->deliver_fee = $priceInfo['deliver_fee'];
             $ar->product_salary = $priceInfo['product_salary'];
             $ar->total_salary = $priceInfo['total_salary'];
@@ -154,6 +155,30 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             }
         } else {
             $ar = CustomerOrder::findFirst($params['order_id']);
+            $ar->setTransaction($transaction);
+
+            $ar->customer_id = $customerId;
+            $ar->cart_id = isset($params['cart_id']) ? $params['cart_id'] : 0;
+            $ar->products = $productStr;
+            $ar->sex = $addressInfo->sex;
+            $ar->address_id = $params['address_id'];
+            $ar->express_fee = $app->config->params->express_fee;
+            $ar->express_time = date('Y-m-d H:i:s', time() + $app->config->params->expect_delivery_minitue * 60);
+            $ar->deliver_fee = $app->config->params->express_fee * $app->config->params->deliver_fee_rate;
+            $ar->coupon_ids = isset($params['coupon_ids']) ? $params['coupon_ids'] : '';
+            $ar->product_price = $priceInfo['product_price'];
+            $ar->express_fee = $priceInfo['express_fee'];
+            $ar->pay_money = $priceInfo['pay_money'];
+            $ar->pay_wallet = $priceInfo['pay_wallet'];
+            $ar->deliver_fee = $priceInfo['deliver_fee'];
+            $ar->product_salary = $priceInfo['product_salary'];
+            $ar->total_salary = $priceInfo['total_salary'];
+            $ar->coupon_fee = $priceInfo['coupon_fee'];
+            $ar->date = date('Ymd', time());
+
+            if (!$ar->save()) {
+                $transaction->rollback("save customer_order fail");
+            }
         }
 
         $pay = new CustomerPay();
@@ -176,7 +201,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
         $transaction->commit();
 
         $output = $app->pay->handle($app, $pay->id);
-        // $app->logger->info("order_pay:" . $pay->id);
+
         $app->logger->info("order_data:" . json_encode($output));
 
         return $output;
