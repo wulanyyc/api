@@ -98,7 +98,7 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     }
 
     $robExsit = AgentOrderSuc::count("order_id=" . $oid);
-    if ($robExsit) {
+    if ($robExsit > 0) {
         throw new BusinessException(1000, '该单已被抢');
     }
 
