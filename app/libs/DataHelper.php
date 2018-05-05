@@ -253,7 +253,7 @@ class DataHelper
             $transaction = $manager->get();
 
             // 更新支付表状态
-            $up = CustomerPay::findFirst('order_id=' . $orderId . " and out_trade_no=" . $outTradeNo);
+            $up = CustomerPay::findFirst('order_id=' . $orderId . " and out_trade_no='" . $outTradeNo . "'");
             $up->setTransaction($transaction);
             $up->trade_no = $tradeNo;
             $up->pay_result = 1;
