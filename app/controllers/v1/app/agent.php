@@ -97,6 +97,11 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
         throw new BusinessException(1000, '订单ID有误');
     }
 
+    $robExsit = AgentOrderSuc::count("order_id=" . $oid);
+    if ($robExsit) {
+        throw new BusinessException(1000, '该单已被抢');
+    }
+
     $key = $app->config->params->get_order_prefix . $oid;
     if (!$app->redis->exists($key)) {
         $app->util->setRobCacheKey($app, $oid);
