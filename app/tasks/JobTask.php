@@ -81,6 +81,7 @@ class JobTask extends \Phalcon\CLI\Task
             $this->di->get('redis')->del($redisKey);
 
             //TODO send notify
+            
         } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
             AgentOrderList::addRecord($assignId, $oid);
 

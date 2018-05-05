@@ -171,7 +171,9 @@ class Util
             'content' => $content . $suffix,
         ];
 
-        return $app->util->curlRequest($api, http_build_query($config));
+        $ret = $app->util->curlRequest($api, http_build_query($config));
+        $app->logger->error("sms req:" . json_encode($ret));
+        return $ret;
     }
 
     public static function checkPhoneFormat($phone) {
