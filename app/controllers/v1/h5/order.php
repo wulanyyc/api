@@ -223,9 +223,11 @@ $app->get('/v1/h5/order/status', function () use ($app) {
         throw new BusinessException(1000, '参数有误');
     }
 
+    $orderInfo = CustomerOrder::findFirst($payInfo->order_id);
+
     return [
         'status' => $payInfo->pay_result,
-        'pay_money' => $payInfo->pay_money,
+        'pay_money' => $orderInfo->pay_money + $orderInfo->pay_wallet,
     ];
 });
 
