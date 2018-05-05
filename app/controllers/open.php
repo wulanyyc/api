@@ -315,7 +315,7 @@ $app->post('/open/notify/wx', function () use ($app) {
 
     // if ($data['result_code'] == 'SUCCESS' && $pay_money == $checkData->pay_money) {
     if ($data['result_code'] == 'SUCCESS') {
-        $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
+        $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no, $out_trade_no);
 
         if ($ok == 1) {
             $app->util->setRobCacheKey($app, $checkData->order_id);
@@ -354,7 +354,7 @@ $app->post('/open/notify/ali', function () use ($app) {
             $checkData = CustomerPay::findFirst('out_trade_no = "' . $out_trade_no . '"');
 
             // if ($total_amount == $checkData->pay_money) {
-                $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no);
+                $ok = $app->data->handlePayOkOrder($app, $checkData->order_id, $trade_no, $out_trade_no);
                 if ($ok == 1) {
                     $app->util->setRobCacheKey($app, $checkData->order_id);
                     $app->logger->info("ali_wap_pay_ok" . json_encode($arr));

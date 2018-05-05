@@ -247,13 +247,13 @@ class DataHelper
     }
 
     // 支付完成
-    public function handlePayOkOrder($app, $orderId, $tradeNo) {
+    public function handlePayOkOrder($app, $orderId, $tradeNo, $outTradeNo) {
         try {
             $manager = new Manager();
             $transaction = $manager->get();
 
             // 更新支付表状态
-            $up = CustomerPay::findFirst('order_id=' . $orderId);
+            $up = CustomerPay::findFirst('order_id=' . $orderId . " and out_trade_no=" . $outTradeNo);
             $up->setTransaction($transaction);
             $up->trade_no = $tradeNo;
             $up->pay_result = 1;

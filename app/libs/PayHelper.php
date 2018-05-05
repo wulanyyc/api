@@ -29,7 +29,7 @@ class PayHelper
         $ret['terminal'] = $info->terminal;
         $ret['out_trade_no'] = $info->out_trade_no;
 
-        $ok = $app->data->handlePayOkOrder($app, $info->order_id, $info->out_trade_no);
+        $ok = $app->data->handlePayOkOrder($app, $info->order_id, $info->out_trade_no, $info->out_trade_no);
         $ret['pay_status'] = $ok;
 
         return $ret;
