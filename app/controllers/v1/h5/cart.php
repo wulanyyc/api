@@ -48,6 +48,8 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
         throw new BusinessException(1000, '参数有误');
     }
 
+    // CustomerCart::findFirst("customer_id=" . $customerId);
+
     $cart = [];
     $cart[] = [
         'id' => $pid,

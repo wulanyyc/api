@@ -89,7 +89,7 @@ $app->get('/v1/app/manager/agent/buy/complete/list', function () use ($app) {
     }
 
     $list = AgentInventoryRecords::find([
-        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =1",
+        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =1 and date=" . $date,
         "columns" => 'product_id,need_num,num,agent_id',
         "order" => 'id desc',
     ])->toArray();
@@ -131,7 +131,7 @@ $app->get('/v1/app/manager/agent/buy/process/list', function () use ($app) {
     }
 
     $list = AgentInventoryRecords::find([
-        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =0",
+        "conditions" => "operator=1 and agent_id in (" . implode(',', $agents) . ") and status =0 and date=" . $date,
         "columns" => 'product_id,need_num,agent_id',
         "order" => 'id desc',
     ])->toArray();

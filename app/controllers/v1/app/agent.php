@@ -92,6 +92,12 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
         throw new BusinessException(1000, '校代不参与抢单');
     }
 
+    // 开工检测
+    $agentInfo = Agent::findFirst($id);
+    if ($agentInfo->work_flag < 1 && $agentInfo->manager_flag == 0) {
+        throw new BusinessException(1001, '请在侧滑栏中打开抢单');
+    }
+
     $exsit = CustomerOrder::count("id=" . $oid . " and status=1");
     if ($exsit == 0) {
         throw new BusinessException(1000, '订单ID有误');
