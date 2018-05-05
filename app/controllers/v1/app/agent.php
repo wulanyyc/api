@@ -140,7 +140,9 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
 
                 $msg = $e->getMessage();
                 $app->logger->error("rob job db save fail_" . $id . '_' . $oid . ':' . $msg);
-                
+
+                $app->redis->set($key, 0);
+
                 throw new BusinessException(1000, '抢单失败了');
             }
 
