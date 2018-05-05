@@ -93,7 +93,7 @@ $app->get('/v1/app/agent/rob/job/{oid:\d+}', function ($oid) use ($app) {
     }
 
     $exsit = CustomerOrder::count("id=" . $oid . " and status=1");
-    if ($exsit != 1) {
+    if ($exsit == 0) {
         throw new BusinessException(1000, '订单ID有误');
     }
 
