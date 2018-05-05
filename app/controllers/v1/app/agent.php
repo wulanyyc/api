@@ -263,6 +263,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
 
         $ar = AgentOrderSuc::findFirst("agent_id=" . $id . " and order_id=" . $oid);
         $ar->setTransaction($transaction);
+        $ar->date = date("Ymd", time());
         $ar->complete_time = date("Y-m-d H:i:s", time());
         $ar->status = 1;
 
