@@ -48,24 +48,41 @@ $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app
         throw new BusinessException(1000, '参数有误');
     }
 
-    // CustomerCart::findFirst("customer_id=" . $customerId);
-
-    $cart = [];
-    $cart[] = [
-        'id' => $pid,
-        'num' => $num,
-    ];
-
-    $ar = new CustomerCart();
-    $ar->customer_id = $customerId;
-    $ar->cart = json_encode($cart);
-
-    if ($ar->save()) {
-        return [
-            'cart_id'  => $ar->id,
+    $cartInfo = CustomerCart::findFirst("customer_id=" . $customerId);
+    if ($cartInfo) {
+        $cart = [];
+        $temp = [
+            'id' => $pid,
+            'num' => $num,
         ];
+        $cart[] = $temp;
+        $cartInfo->cart = json_encode($cart);
+        
+        if ($cartInfo->save()) {
+            return [
+                'cart_id'  => $cartInfo->id,
+            ];
+        } else {
+            throw new BusinessException(1000, '添加失败');
+        }
     } else {
-        throw new BusinessException(1000, '添加失败');
+        $cart = [];
+        $cart[] = [
+            'id' => $pid,
+            'num' => $num,
+        ];
+
+        $ar = new CustomerCart();
+        $ar->customer_id = $customerId;
+        $ar->cart = json_encode($cart);
+
+        if ($ar->save()) {
+            return [
+                'cart_id'  => $ar->id,
+            ];
+        } else {
+            throw new BusinessException(1000, '添加失败');
+        }
     }
 });
 
