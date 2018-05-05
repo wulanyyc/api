@@ -6,7 +6,7 @@
 // 个人中心
 $app->get('/v1/app/version', function () use ($app) {
     return [
-        'version' => '1.0.0',
-        'link' => 'http://api.qingrongby.com/test.apk',
+        'version' => '1.0.1',
+        'link' => 'https://api.qingrongby.com/pub/app-release.apk',
     ];
 });
