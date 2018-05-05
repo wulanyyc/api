@@ -71,16 +71,6 @@ $app->post('/open/sms/h5/vcode', function () use ($app) {
         throw new BusinessException(1000, '参数不正确');
     }
 
-    // test code
-    if ($phone == '13880494109' && $code == 111111) {
-        $token = $app->util->uuid();
-        $app->redis->setex($token, 1800, $phone);
-        
-        return [
-            'temp_token' => $token,
-        ];
-    }
-
     $key = $phone . '_smscode';
     $vcode = $app->redis->get($key);
 
@@ -145,6 +135,25 @@ $app->post('/open/h5/login', function () use ($app) {
 
     if (empty($phone) || empty($code)) {
         throw new BusinessException(1000, '参数不正确');
+    }
+
+    // test code
+    if ($phone == '13880494109' && $code == 111111) {
+        $info = Customer::findFirst('phone=' . $phone);
+        if (empty($info)) {
+            throw new BusinessException(1000, '该手机号还未注册');
+        }
+
+        $token = $app->util->uuid();
+        $app->redis->setex($phone . '_customer_token', $app->config->login_cache_time, $token);
+
+        $app->redis->hmset($token, ['customer_id' => $info->id]);
+        $app->redis->expire($token, $app->config->login_cache_time);
+
+        return [
+            'token' => $token,
+            'customer_id' => $info->id,
+        ];
     }
 
     $key = $phone . '_smscode';
