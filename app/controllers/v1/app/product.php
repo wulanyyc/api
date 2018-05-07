@@ -74,6 +74,7 @@ $app->post('/v1/app/product/buy/submit', function () use ($app) {
 
     $buy = [];
     // 参数检测
+    $app->logger->error(json_encode($info));
     foreach($info as $item) {
         $item['product_id'] = intval($item['product_id']);
         $item['num'] = intval($item['num']);
