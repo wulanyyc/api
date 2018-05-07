@@ -41,102 +41,102 @@ $app->get('/v1/h5/cart/init', function () use ($app) {
 
 
 // 新增购物车
-$app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
-    $customerId = $app->util->getCustomerId($app);
+// $app->get('/v1/h5/cart/new/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
+//     $customerId = $app->util->getCustomerId($app);
 
-    if ($num == 0 || $pid == 0) {
-        throw new BusinessException(1000, '参数有误');
-    }
+//     if ($num == 0 || $pid == 0) {
+//         throw new BusinessException(1000, '参数有误');
+//     }
 
-    $cartInfo = CustomerCart::findFirst("customer_id=" . $customerId);
-    if ($cartInfo) {
-        $cart = [];
-        $temp = [
-            'id' => $pid,
-            'num' => $num,
-        ];
-        $cart[] = $temp;
-        $cartInfo->cart = json_encode($cart);
+//     $cartInfo = CustomerCart::findFirst("customer_id=" . $customerId);
+//     if ($cartInfo) {
+//         $cart = [];
+//         $temp = [
+//             'id' => $pid,
+//             'num' => $num,
+//         ];
+//         $cart[] = $temp;
+//         $cartInfo->cart = json_encode($cart);
         
-        if ($cartInfo->save()) {
-            return [
-                'cart_id'  => $cartInfo->id,
-            ];
-        } else {
-            throw new BusinessException(1000, '添加失败');
-        }
-    } else {
-        $cart = [];
-        $cart[] = [
-            'id' => $pid,
-            'num' => $num,
-        ];
+//         if ($cartInfo->save()) {
+//             return [
+//                 'cart_id'  => $cartInfo->id,
+//             ];
+//         } else {
+//             throw new BusinessException(1000, '添加失败');
+//         }
+//     } else {
+//         $cart = [];
+//         $cart[] = [
+//             'id' => $pid,
+//             'num' => $num,
+//         ];
 
-        $ar = new CustomerCart();
-        $ar->customer_id = $customerId;
-        $ar->cart = json_encode($cart);
+//         $ar = new CustomerCart();
+//         $ar->customer_id = $customerId;
+//         $ar->cart = json_encode($cart);
 
-        if ($ar->save()) {
-            return [
-                'cart_id'  => $ar->id,
-            ];
-        } else {
-            throw new BusinessException(1000, '添加失败');
-        }
-    }
-});
+//         if ($ar->save()) {
+//             return [
+//                 'cart_id'  => $ar->id,
+//             ];
+//         } else {
+//             throw new BusinessException(1000, '添加失败');
+//         }
+//     }
+// });
 
 
 // 更新购物车
-$app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
-    $customerId = $app->util->getCustomerId($app);
+// $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
+//     $customerId = $app->util->getCustomerId($app);
 
-    if ($cid == 0) {
-        throw new BusinessException(1000, '参数有误');
-    }
+//     if ($cid == 0) {
+//         throw new BusinessException(1000, '参数有误');
+//     }
 
-    $ar = CustomerCart::findFirst($cid);
-    if (!$ar) {
-        throw new BusinessException(1000, '未找到购物车信息');
-    }
+//     $ar = CustomerCart::findFirst($cid);
+//     if (!$ar) {
+//         throw new BusinessException(1000, '未找到购物车信息');
+//     }
 
-    $customerId = $app->util->getCustomerId($app);
+//     $customerId = $app->util->getCustomerId($app);
 
-    if ($customerId != $ar->customer_id) {
-        throw new BusinessException(1000, '无操作权限');
-    }
+//     if ($customerId != $ar->customer_id) {
+//         throw new BusinessException(1000, '无操作权限');
+//     }
 
-    $updateCart = $app->request->getPost("cart");
-    if (empty($updateCart)) {
-        throw new BusinessException(1000, '购物车信息有误');
-    }
+//     $updateCart = $app->request->getPost("cart");
+//     if (empty($updateCart)) {
+//         throw new BusinessException(1000, '购物车信息有误');
+//     }
 
-    $cartInfo = json_decode($updateCart, true);
-    if (empty($cartInfo)) {
-        throw new BusinessException(1000, '购物车信息有误');
-    }
+//     $cartInfo = json_decode($updateCart, true);
+//     if (empty($cartInfo)) {
+//         throw new BusinessException(1000, '购物车信息有误');
+//     }
 
-    $cart = [];
-    foreach($cartInfo as $item) {
-        $item['id'] = intval($item['id']);
-        $item['num'] = intval($item['num']);
-        if ($item['id'] > 0 && $item['num'] > 0) {
-            $cart[$item['id']] = [
-                'id' => $item['id'],
-                'num' => $item['num'],
-            ];
-        }
-    }
+//     $cart = [];
+//     foreach($cartInfo as $item) {
+//         $item['id'] = intval($item['id']);
+//         $item['num'] = intval($item['num']);
+//         if ($item['id'] > 0 && $item['num'] > 0) {
+//             $cart[$item['id']] = [
+//                 'id' => $item['id'],
+//                 'num' => $item['num'],
+//             ];
+//         }
+//     }
 
-    sort($cart);
-    $ar->cart = json_encode($cart);
+//     sort($cart);
+//     $ar->cart = json_encode($cart);
 
-    if ($ar->save()) {
-        return 1;
-    } else {
-        throw new BusinessException(1000, '提交失败');
-    }
-});
+//     if ($ar->save()) {
+//         return 1;
+//     } else {
+//         throw new BusinessException(1000, '提交失败');
+//     }
+// });
 
 
 // 增加

@@ -341,7 +341,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             }
         }
 
-        // 收入调整
+        // 派送员收入调整
         $agentUp = Agent::findFirst($id);
         $agentUp->setTransaction($transaction);
         $agentUp->money = $agentUp->money + $co->total_salary;
@@ -350,7 +350,7 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
             $transaction->rollback("save Agent money fail: " . $id . '_' . $oid);
         }
 
-        // 收入明细
+        // 派送员收入明细
         $moneyList = new AgentMoneyList();
         $moneyList->setTransaction($transaction);
         $moneyList->agent_id = $id;
@@ -362,6 +362,30 @@ $app->get('/v1/app/agent/job/complete/{oid:\d+}', function ($oid) use ($app) {
         if (!$moneyList->save()) {
             $transaction->rollback("save AgentMoneyList fail: " . $id . '_' . $oid);
         }
+
+        // 校代收入调整
+        $managerId = $agentUp->manager_id;
+        $agentM = Agent::findFirst($managerId);
+        $agentM->setTransaction($transaction);
+        $agentM->money = $agentM->money + $co->manager_salary;
+
+        if (!$agentM->save()) {
+            $transaction->rollback("save Agent manager money fail: " . $id . '_' . $oid);
+        }
+
+        // 校代收入明细
+        $moneyList = new AgentMoneyList();
+        $moneyList->setTransaction($transaction);
+        $moneyList->agent_id = $managerId;
+        $moneyList->money = $co->manager_salary;
+        $moneyList->operator = 0;
+        $moneyList->order_id = $oid;
+        $moneyList->date = $date;
+        
+        if (!$moneyList->save()) {
+            $transaction->rollback("save AgentMoneyList manager fail: " . $id . '_' . $oid);
+        }
+
 
         $transaction->commit();
     } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
