@@ -55,23 +55,25 @@ class ProductHelper
     }
 
     // 获取新品
-    public function getNewProduct($app, $num) {
+    public function getNewProduct($app, $num, $page) {
         $customerId = $app->util->getCustomerId($app);
         $info = Customer::findFirst('id=' . $customerId);
 
         if (!$app->util->getSwitchFlag($app)) {
-            return $this->getDayNewProduct($app, $info, $num);
+            return $this->getDayNewProduct($app, $info, $num, $page);
         } else {
-            return $this->getNightNewProduct($app, $info, $num);
+            return $this->getNightNewProduct($app, $info, $num, $page);
         }
     }
 
-    public function getDayNewProduct($app, $info, $num) {
+    public function getDayNewProduct($app, $info, $num, $page) {
+        $offset = ($page - 1) * $num;
         $products = ProductListSchool::find([
             'conditions' => 'status=1 and num > 0 and school_id= ' . $info->school_id,
             'columns' => 'product_id, name, title, price, img',
             'limit' => $num,
-            'order' => 'product_id desc'
+            'order' => 'product_id desc',
+            'offset' => $offset,
         ]);
 
         if (!$products) {
@@ -90,8 +92,9 @@ class ProductHelper
         return $data;
     }
 
-    public function getNightNewProduct($app, $info, $num) {
-        $sql = "select pl.id, pl.name, pl.price, pl.title, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $info->school_id . " and ai.num > 0 and ai.status = 0 group by pl.id order by ai.product_id desc limit " . $num;
+    public function getNightNewProduct($app, $info, $num, $page) {
+        $offset = ($page - 1) * $num;
+        $sql = "select pl.id, pl.name, pl.price, pl.title, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $info->school_id . " and ai.num > 0 and ai.status = 0 group by pl.id order by ai.product_id desc limit " . $num . " offset " . $offset;
 
         $products = $app->db->query($sql)->fetchAll();
 

@@ -8,10 +8,10 @@ use Biaoye\Model\ProductTag;
 use Biaoye\Model\ProductCategory;
 use Biaoye\Model\ProductTagRelation;
 
-$app->get('/v1/h5/list/new', function () use ($app) {
+$app->get('/v1/h5/list/new/num/{num:\d+}/page/{page:\d+}', function ($num, $page) use ($app) {
     $num = 10;
 
-    $products = $app->product->getNewProduct($app, $num);
+    $products = $app->product->getNewProduct($app, $num, $page);
 
     return [
         'title' => '新品',
