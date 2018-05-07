@@ -16,12 +16,30 @@ $app->get('/v1/h5/customer/center', function () use ($app) {
     $sql = "select status, count(*) as status_cnt from customer_order where customer_id = " . $customerId . " group by status";
     $order = $app->db->query($sql)->fetchAll();
 
+    foreach($order as $item) {
+        if ($item['status'] == 0) {
+            $unpay = $item['status_cnt'];
+        }
+
+        if ($item['status'] == 1) {
+            $undeliver = $item['status_cnt'];
+        }
+
+        if ($item['status'] == 2) {
+            $deliver = $item['status_cnt'];
+        }
+
+        if ($item['status'] == 3) {
+            $ok = $item['status_cnt'];
+        }
+    }
+
     $ret = [
         'phone' => $info->phone,
-        'unpay' => isset($order[0]) ? $order[0]['status_cnt'] : 0,
-        'undeliver' => isset($order[1]) ? $order[1]['status_cnt'] : 0,
-        'deliver' => isset($order[2]) ? $order[2]['status_cnt'] : 0,
-        'ok' => isset($order[3]) ? $order[3]['status_cnt'] : 0,
+        'unpay' => isset($unpay) ? $unpay : 0,
+        'undeliver' => isset($undeliver) ? $undeliver : 0,
+        'deliver' => isset($deliver) ? $deliver : 0,
+        'ok' => isset($ok) ? $ok : 0,
         'money' => $info->money,
         'score' => $info->score,
     ];
