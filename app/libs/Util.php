@@ -1,6 +1,7 @@
 <?php
 use Phalcon\Security\Random;
 use Biaoye\Model\Customer;
+use Biaoye\Model\CustomerCart;
 use Biaoye\Model\CustomerAddress;
 use Biaoye\Model\School;
 use Biaoye\Model\Room;
@@ -158,6 +159,30 @@ class Util
                 'room' => $app->data->getRoomName($app, $data->rec_school),
             ];
         }
+    }
+
+    public static function getCartId($app) {
+        $customerId = self::getCustomerId($app);
+        $ar = CustomerCart::findFirst("customer_id=" . $customerId);
+        if ($ar) {
+            return $ar->id;
+        }
+
+        $cart = [];
+        $add = new CustomerCart();
+        $add->customer_id = $customerId;
+        $add->cart = json_encode($cart);
+        $add->save();
+
+        return $add->id;
+    }
+
+    public static function getCartNum($app) {
+        $cartId = self::getCartId($app);
+        $ar = CustomerCart::findFirst($cartId);
+
+        $cart = json_decode($ar->cart, true);
+        return count($cart);
     }
 
     public static function sendSms($app, $phones, $content) {

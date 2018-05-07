@@ -140,21 +140,14 @@ $app->post('/v1/h5/cart/update/{cid:\d+}', function ($cid) use ($app) {
 
 
 // 增加
-$app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($cid, $pid, $num) use ($app) {
+$app->get('/v1/h5/cart/plus/product/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
+    $cid = $app->util->getCartId($app);
+
     if ($num == 0) {
         throw new BusinessException(1000, '参数有误');
     }
 
     $cartInfo = CustomerCart::findFirst($cid);
-    if (!$cartInfo) {
-        throw new BusinessException(1000, '未找到购物车信息');
-    }
-
-    $customerId = $app->util->getCustomerId($app);
-    if ($customerId != $cartInfo->customer_id) {
-        throw new BusinessException(1000, '无操作权限');
-    }
-
     $cart = json_decode($cartInfo->cart, true);
     
     $exsit = false;
@@ -172,10 +165,11 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
         ]);
     }
 
+    $num = count($cart);
     $cartInfo->cart = json_encode($cart);
 
     if ($cartInfo->save()) {
-        return 1;
+        return $num;
     } else {
         throw new BusinessException(1000, '更新购物车失败');
     }
@@ -183,21 +177,15 @@ $app->get('/v1/h5/cart/plus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($c
 
 
 // 减少
-$app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($cid, $pid, $num) use ($app) {
-    if ($num == 0) {
+$app->get('/v1/h5/cart/minus/product/{pid:\d+}/{num:\d+}', function ($pid, $num) use ($app) {
+    $cid = $app->util->getCartId($app);
+
+    if ($num == 0 || $pid == 0) {
         throw new BusinessException(1000, '参数有误');
     }
 
     $cartInfo = CustomerCart::findFirst($cid);
-    if (!$cartInfo) {
-        throw new BusinessException(1000, '未找到购物车信息');
-    }
-
     $customerId = $app->util->getCustomerId($app);
-
-    if ($customerId != $cartInfo->customer_id) {
-        throw new BusinessException(1000, '无操作权限');
-    }
 
     $cart = json_decode($cartInfo->cart, true);
     
@@ -210,10 +198,11 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
         }
     }
 
+    $num = count($cart);
     $cartInfo->cart = json_encode($cart);
 
     if ($cartInfo->save()) {
-        return 1;
+        return $num;
     } else {
         throw new BusinessException(1000, '更新购物车失败');
     }
@@ -221,11 +210,10 @@ $app->get('/v1/h5/cart/minus/{cid:\d+}/product/{pid:\d+}/{num:\d+}', function ($
 
 
 // 删除单品
-$app->post('/v1/h5/cart/del/{cid:\d+}', function ($cid) use ($app) {
+$app->post('/v1/h5/cart/del', function () use ($app) {
+    $cid = $app->util->getCartId($app);
+
     $cartInfo = CustomerCart::findFirst($cid);
-    if (!$cartInfo) {
-        throw new BusinessException(1000, '未找到购物车信息');
-    }
 
     $ids = $app->request->getPost("ids");
     if (empty($ids)) {
