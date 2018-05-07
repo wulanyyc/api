@@ -45,7 +45,7 @@ $app->get('/v1/h5/product/{id:\d+}', function ($id) use ($app) {
 
     $data['sub_category'] = ProductCategory::findFirst($data['sub_category'])->name;
     $data['coupons'] = $app->data->getValidCoupons($app);
-    $data['cartNum'] = $app->util->getCartNum($app);
+    $data['cart_num'] = $app->util->getCartNum($app);
 
     return $data;
 });
