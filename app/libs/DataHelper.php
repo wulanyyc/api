@@ -228,8 +228,10 @@ class DataHelper
         $deliverFee = round($expressFee * $app->config->params->deliver_fee_rate, 2);
         if ($couponFee >= $productPrice) {
             $productSalary = 0;
+            $managerSalary = 0;
         } else {
             $productSalary = round(($productPrice - $couponFee) * $app->config->params->order_salary_rate, 2);
+            $managerSalary = round(($productPrice - $couponFee) * $app->config->params->order_manager_rate, 2);
         }
         
         $totalSalary = $productSalary + $deliverFee;
@@ -241,6 +243,7 @@ class DataHelper
             'pay_wallet' => $payWallet,
             'deliver_fee' => $deliverFee,
             'product_salary' => $productSalary,
+            'manager_salary' => $managerSalary,
             'total_salary' => $totalSalary,
             'coupon_fee' => $couponFee,
         ];

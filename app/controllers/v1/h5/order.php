@@ -146,6 +146,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             $ar->pay_wallet = $priceInfo['pay_wallet'];
             $ar->deliver_fee = $priceInfo['deliver_fee'];
             $ar->product_salary = $priceInfo['product_salary'];
+            $ar->manager_salary = $priceInfo['manager_salary'];
             $ar->total_salary = $priceInfo['total_salary'];
             $ar->coupon_fee = $priceInfo['coupon_fee'];
             $ar->date = date('Ymd', time());
@@ -172,6 +173,7 @@ $app->post('/v1/h5/order/submit', function () use ($app) {
             $ar->pay_wallet = $priceInfo['pay_wallet'];
             $ar->deliver_fee = $priceInfo['deliver_fee'];
             $ar->product_salary = $priceInfo['product_salary'];
+            $ar->manager_salary = $priceInfo['manager_salary'];
             $ar->total_salary = $priceInfo['total_salary'];
             $ar->coupon_fee = $priceInfo['coupon_fee'];
             $ar->date = date('Ymd', time());
