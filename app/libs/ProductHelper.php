@@ -200,9 +200,9 @@ class ProductHelper
         $offset = ($page - 1) * $num;
 
         if ($level == 1) {
-            $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 and category_id=" . $categoryId . " group by pl.id order by ai.product_id desc limit " . $num . " offset " . $offset;
+            $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 and pl.category_id=" . $categoryId . " group by pl.id order by ai.product_id desc limit " . $num . " offset " . $offset;
         } else {
-            $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 and sub_category= " . $categoryId . " group by pl.id order by ai.product_id desc limit " . $num . " offset " . $offset;
+            $sql = "select pl.id, pl.name, pl.price, pl.title, pl.slogan, pl.img from agent_inventory as ai left join product_list as pl on ai.product_id = pl.id where ai.school_id = " . $customerInfo->school_id . " and ai.room_id=" . $customerInfo->room_id . " and ai.num > 0 and ai.status = 0 and pl.sub_category= " . $categoryId . " group by pl.id order by ai.product_id desc limit " . $num . " offset " . $offset;
         }
 
         $products = $app->db->query($sql)->fetchAll();
