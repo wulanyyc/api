@@ -34,8 +34,10 @@ $app->get('/v1/h5/list/tag/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($i
 $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
     $products = $app->product->getProductByCategory($app, $id, $num, $page);
 
+    $categoryInfo = ProductCategory::findFirst($id);
+
     return [
-        'title' => ProductCategory::findFirst($id)->name,
+        'title' => $categoryInfo ? $categoryInfo->name : '',
         'products' => $products
     ];
 });
@@ -45,8 +47,10 @@ $app->get('/v1/h5/list/category/{id:\d+}/num/{num:\d+}/page/{page:\d+}', functio
 $app->get('/v1/h5/list/subcategory/{id:\d+}/num/{num:\d+}/page/{page:\d+}', function ($id, $num, $page) use ($app) {
     $products = $app->product->getProductByCategory($app, $id, $num, $page, 2);
 
+    $categoryInfo = ProductCategory::findFirst($id);
+    
     return [
-        'title' => ProductCategory::findFirst($id)->name,
+        'title' => $categoryInfo ? $categoryInfo->name : '',
         'products' => $products
     ];
 });
